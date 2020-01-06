@@ -1,0 +1,17 @@
+{-# OPTIONS --without-K --exact-split --safe #-}
+module Type.Sum where
+
+open import Universes
+
+infix 51 _,_
+record Σ {X : 𝒰 ˙} (A : (x : X) → 𝒱 ˙) : 𝒰 ⊔ 𝒱 ˙ where
+  constructor _,_
+  field
+    pr₁ : X
+    pr₂ : A pr₁
+
+infix 57 _×_
+_×_ : (X : 𝒰 ˙) (Y : 𝒱 ˙) → 𝒰 ⊔ 𝒱 ˙
+X × Y = Σ λ (_ : X) → Y
+
+open Σ public
