@@ -1,0 +1,10 @@
+  /home/acalc79/data/projects/agda-stdlib-adam-kucz:
+  insgesamt 200
+  drwxr-xr-x. 11 acalc79 acalc79  4096  6. Jan 11:26 .
+  drwxrwxr-x.  9 acalc79 acalc79  4096  6. Jan 10:55 ..
+  drwxr-xr-x.  3 acalc79 acalc79  4096  6. Jan 11:29 src
+  drwxr-xr-x.  8 acalc79 acalc79  4096  6. Jan 11:28 .git
+  -rw-r--r--.  1 acalc79 acalc79   714  6. Jan 10:56 .gitignore
+  -rw-r--r--.  1 acalc79 acalc79 35149  6. Jan 10:55 LICENSE
+  -rw-r--r--.  1 acalc79 acalc79    59  6. Jan 11:26 stdlib-adam-kucz.agda-lib
+  -rw-r--r--.  1 acalc79 acalc79    48  6. Jan 11:23 stdlib-adam-kucz.agda-lib~
