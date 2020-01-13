@@ -44,3 +44,6 @@ _∘_ :
   (x : X) → K x (g x)
 (f ∘ g) x = f (g x)
 
+{-# DISPLAY _$_ f x = f x #-}
+
+

@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --exact-split --safe --prop #-}
 module Type.Sum where
 
 open import Universes
@@ -15,3 +15,14 @@ _×_ : (X : 𝒰 ˙) (Y : 𝒱 ˙) → 𝒰 ⊔ 𝒱 ˙
 X × Y = Σ λ (_ : X) → Y
 
 open Σ public
+
+open import Proposition.Identity
+
+Σ== :
+  {A : (x : X) → 𝒰 ˙}
+  {σ ρ : Σ A}
+  (p : pr₁ σ == pr₁ ρ)
+  (q : pr₂ σ == pr₂ ρ)
+  → ------------------
+  σ == ρ
+Σ== {σ = σ} (refl _) (refl _) = refl σ

@@ -11,7 +11,8 @@ variable
   𝑋 𝑌 𝑍 𝑊 : 𝒰 ᵖ
   
 record Lift𝒰ᵖ {𝒱} (X : 𝒰 ᵖ) : 𝒰 ⊔ 𝒱 ᵖ where
+  constructor ↑prop
   field
-    unlift : X
+    ↓prop : X
 
 open Lift𝒰ᵖ public

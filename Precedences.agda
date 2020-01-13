@@ -13,10 +13,9 @@ infixl 120 _⊔_ -- Data.Nat
 
 infixr 115 _∷_ -- Data.List
 infixr 115 _∷_ -- Data.Vec
-infixr 112 _∈_ -- Data.List
-infixr 112 _∈_ -- Data.Vec
 infixr 110 _!_[_] -- Data.List
 infixr 110 _!_[_] -- Data.Vec
+infixl 105 _++_ -- Data.Collection
 
 infixr 100 _$_ -- Function
 
@@ -30,6 +29,7 @@ infix 50 _,_ -- Type.Transport
 
 -- Logic formers (40 - 30)
 
+infixr 35 _∈_ -- Data.Collection
 infix 35 _<_ -- Data.Nat.Order
 infix 35 _≤_ -- Data.Nat.Order
 infix 35 _<ₜ_ -- Data.Nat.Order

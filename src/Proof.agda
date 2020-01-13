@@ -4,9 +4,16 @@ module Proof where
 open import PropUniverses
 
 open import Type.Sum using (Σ; _,_; pr₁; pr₂; _×_)
-open import Proposition.Identity.Definition using (_==_; refl)
+open import Proposition.Identity.Definition renaming (Idₚ to Id) using (_==_)
 open import Relation.Binary.Definition using (Rel)
 open import Relation.Binary.Property using (Transitive; trans)
+
+open import Proposition.Identity.Property public
+open import Proposition.Function using (_$_) public
+open import Function.Proof
+  using (ap; Relating-all-==; ap'; RRelating-all-==) public
+open Proposition.Identity.Definition using (_==_) public
+open Relation.Binary.Property using (sym; refl) public
 
 record Composable 𝒵 (R : Rel 𝒯 X Y) (S : Rel 𝒮 Y Z) : 𝒰ω
   where
@@ -24,25 +31,25 @@ instance
   Composable.compose Composable-trans-instance = trans
 
   trans-== : ∀ {X : 𝒰 ˙} → Transitive {X = X} _==_
-  trans ⦃ trans-== ⦄ p (refl x) = p 
+  trans ⦃ trans-== ⦄ p (Id.refl x) = p 
 
 composable-R-== : {X : 𝒰 ˙} {Y : 𝒱 ˙}
   (R : Rel 𝒲 X Y)
   → ------------------
   Composable 𝒲 R _==_
 Composable.rel (composable-R-== R) = R
-Composable.compose (composable-R-== R) p (refl x) = p
+Composable.compose (composable-R-== R) p (Id.refl x) = p
 
 composable-==-R : {X : 𝒰 ˙} {Y : 𝒱 ˙}
   (R : Rel 𝒲 X Y)
   → ------------------
   Composable 𝒲 _==_ R
 Composable.rel (composable-==-R R) = R
-Composable.compose (composable-==-R R) (refl x) q = q
+Composable.compose (composable-==-R R) (Id.refl x) q = q
 
 infix 7 proof_
 proof_ : {X : 𝒰 ˙} (x : X) → x == x
-proof_ = refl
+proof_ = Id.refl
 
 infix 5 _qed
 _qed : {X : 𝒰 ᵖ} (x : X) → X
