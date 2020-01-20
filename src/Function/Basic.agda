@@ -25,6 +25,9 @@ codomain {Y = Y} _ = Y
 type-of : {X : 𝒰 ˙} (x : X) → 𝒰 ˙
 type-of {X = X} _ = X
 
+universe-of : (X : 𝒰 ˙) → Universe
+universe-of {𝒰} _ = 𝒰
+
 infixr 100 _$_
 _$_ : {A : 𝒰 ˙} {B : A → 𝒱 ˙}
   (f : (x : A) → B x)
@@ -33,10 +36,10 @@ _$_ : {A : 𝒰 ˙} {B : A → 𝒱 ˙}
   B x
 f $ x = f x
 
-infixl 150 _∘_
+{-# DISPLAY _$_ f x = f x #-}
+
+infixl 150 _∘_ _∘ₛ_
 _∘_ :
-  {X : 𝒰 ˙}
-  {A : (x : X) → 𝒱 ˙}
   {K : (x : X) (y : A x) → 𝒲 ˙}
   (f : {x : X} (y : A x) → K x y)
   (g : (x : X) → A x)
@@ -44,6 +47,12 @@ _∘_ :
   (x : X) → K x (g x)
 (f ∘ g) x = f (g x)
 
-{-# DISPLAY _$_ f x = f x #-}
+_∘ₛ_ : (g : Y → Z)(f : X → Y) → (X → Z)
+g ∘ₛ f = g ∘ f
 
-
+flip :
+  {K : (x : X) (y : Y) → 𝒲 ˙}
+  (f : (x : X) (y : Y) → K x y)
+  → ---------------------------
+  (y : Y)(x : X) → K x y
+flip f y x = f x y

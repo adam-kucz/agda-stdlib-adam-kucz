@@ -11,7 +11,7 @@ open import Data.Functor
 open import Proposition.Identity
 
 instance
-  MaybeFunctor : Functor (Maybe {𝒰})
+  MaybeFunctor : Functor (λ X → Maybe X)
   fmap ⦃ MaybeFunctor ⦄ _ nothing = nothing
   fmap ⦃ MaybeFunctor ⦄ f (just x) = just (f x)
   fmap-id ⦃ MaybeFunctor ⦄ nothing = refl nothing

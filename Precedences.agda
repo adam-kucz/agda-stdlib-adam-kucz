@@ -6,6 +6,7 @@ infixl 150 _∘_ -- Type.Transport
 infixl 150 _∘_ -- Function
 
 infixl 140 _*_ -- Data.Nat
+infixl 130 _*_ -- Structure.Monoid
 infixl 130 _+_ -- Data.Nat
 infixl 130 _∙_ -- Structure.Semigroup
 infixl 120 _⊓_ -- Data.Nat
@@ -17,6 +18,7 @@ infixr 110 _!_[_] -- Data.List
 infixr 110 _!_[_] -- Data.Vec
 infixl 105 _++_ -- Data.Collection
 
+infixr 104 _<$>_ -- Data.Functor
 infixr 100 _$_ -- Function
 
 -- Types (60 - 50)

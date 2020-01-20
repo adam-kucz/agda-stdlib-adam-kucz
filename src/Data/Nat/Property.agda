@@ -33,7 +33,8 @@ instance
     false λ { (Id.refl (suc m)) → ¬n==m (refl m) }
 
   Postfix-+-left-< : ∀ {n} → UniversalPostfix (suc n +_) _<_
-  UniversalPostfix.postfix (Postfix-+-left-< {zero}) = postfix suc ⦃ Postfix-suc-< ⦄
+  UniversalPostfix.postfix (Postfix-+-left-< {zero}) =
+    postfix suc ⦃ Postfix-suc-< ⦄
   UniversalPostfix.postfix (Postfix-+-left-< {suc n}) x =
     proof x
       〉 _<_ 〉 suc n + x   :by: postfix (suc n +_) x

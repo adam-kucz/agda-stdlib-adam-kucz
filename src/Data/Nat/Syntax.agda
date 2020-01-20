@@ -22,3 +22,14 @@ instance
   Natℕ : Nat ℕ
   Nat.Constraint Natℕ _ = ⊤
   Nat.fromℕ Natℕ n = n
+
+module Pattern where
+  pattern _+1 x = suc x
+  pattern _+2 x = suc (suc x)
+  pattern _+3 x = suc (suc (suc x))
+
+module Display where
+  open Pattern
+  {-# DISPLAY _+1 zero = 1 #-}
+  {-# DISPLAY _+2 zero = 2 #-}
+  {-# DISPLAY _+3 zero = 3 #-}

@@ -42,11 +42,28 @@ module Id where
     y == x
   sym (refl x) = refl x
 
-  transport :
+  subst :
     (𝐴 : (x : X) → 𝒰 ᵖ)
     {x y : X}
     (p : x == y)
     (ax : 𝐴 x)
     → ----------
     𝐴 y
-  transport 𝐴 (refl x) ax = ax
+  subst 𝐴 (refl x) ax = ax
+
+  coe :
+    (p : 𝑋 == 𝑌)
+    (x : 𝑋)
+    → ----------
+    𝑌
+  coe (refl 𝑋) x = x
+
+  coe-eval :
+    {𝑋 : 𝒰 ᵖ}
+    (p : 𝑋 == 𝑌)
+    (x : 𝑋)
+    {A : {𝑋 : 𝒰 ᵖ}(x : 𝑋) → 𝒱 ˙}
+    (f : {𝑋 : 𝒰 ᵖ}(x : 𝑋) → A x)
+    → ---------------
+    f (coe p x) == f x
+  coe-eval (refl _) x f = refl (f x)

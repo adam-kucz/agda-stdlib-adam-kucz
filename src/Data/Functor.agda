@@ -5,15 +5,21 @@ open import Universes
 open import Proposition.Identity
 open import Function
 
-record Functor (F : (X : 𝒰 ˙) → 𝒱 ˙) : 𝒰 ⁺ ⊔ 𝒱 ˙ where
+record Functor
+    {U : ∀ {𝒰} → 𝒰 ˙ → Universe}
+    (F : ∀ {𝒰}(X : 𝒰 ˙) → U X ˙)
+    : ----------------------
+    𝒰ω
+    where
   field
     fmap :
+      {Y : 𝒱 ˙}
       (f : (x : X) → Y)
       (fx : F X)
       → ------------------
       F Y
     fmap-id : fmap (𝑖𝑑 X) ~ 𝑖𝑑 (F X)
-    fmap-∘ :
+    fmap-∘ : {Y : 𝒱 ˙}{Z : 𝒲 ˙}
       (g : Y → Z)
       (f : X → Y)
       → ------------------------------
@@ -21,10 +27,12 @@ record Functor (F : (X : 𝒰 ˙) → 𝒱 ˙) : 𝒰 ⁺ ⊔ 𝒱 ˙ where
 
 open Functor ⦃ … ⦄ public
 
+infixr 104 _<$>_
 _<$>_ :
-  {F : 𝒰 ˙ → 𝒱 ˙}
+  {U : ∀ {𝒰} → 𝒰 ˙ → Universe}
+  {F : ∀ {𝒰}(X : 𝒰 ˙) → U X ˙}
   ⦃ r : Functor F ⦄
-  {X Y : 𝒰 ˙}
+  {X : 𝒰 ˙}{Y : 𝒱 ˙}
   (f : X → Y)
   (fx : F X)
   → ---------------

@@ -20,11 +20,17 @@ open import Function.Proof
 open Composable ⦃ ... ⦄ public
 
 instance
+  comp-<-< : Composable 𝒰₀ _<_ _<_
+  comp-<-< = composable-trans
+
   comp-<-== : Composable 𝒰₀ _<_ _==_
   comp-<-== = composable-R-== _<_
 
   comp-==-< : Composable 𝒰₀ _==_ _<_
   comp-==-< = composable-==-R _<_
+
+  comp-≤-≤ : Composable 𝒰₀ _≤_ _≤_
+  comp-≤-≤ = composable-trans
 
   comp-≤-== : Composable 𝒰₀ _≤_ _==_
   comp-≤-== = composable-R-== _≤_

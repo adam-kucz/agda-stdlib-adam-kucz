@@ -12,21 +12,21 @@ open import Proposition.Function
   renaming (_$_ to _$'_) using ()
 open import Function.Property
 
-is-finite : (X : 𝒰 ˙) → 𝒰 ᵖ
-is-finite X = ∃ λ (n : ℕ) → ∃ λ (f : (x : X) → Finℕ n) → Bijective f
+-- is-finite : (X : 𝒰 ˙) → 𝒰 ᵖ
+-- is-finite X = ∃ λ (n : ℕ) → ∃ λ (f : (x : X) → Finℕ n) → Bijective f
 
-list-of-Finℕ-fun : ∀ {n} → Bijection (Vec X n) (λ _ → (a : Finℕ n) → X)
-list-of-Finℕ-fun {n = n} = fun , record {}
-  where fun : (vec : Vec X n) (a : Finℕ n) → X
-        fun vec a = vec ! toℕ a [ toℕ< a ]
-        instance
-          Surjective-fun : Surjective fun
-          sur ⦃ Surjective-fun ⦄ y = {!!} , {!!}
-          Injective-fun : Injective fun
-          inj ⦃ Injective-fun ⦄ {[]} {[]} p = refl []
-          inj ⦃ Injective-fun ⦄ {h1 ∷ t1} {h2 ∷ t2} p =
-            ⟵ Vec== ((ap (_$ 0) p) , {!!})
+-- list-of-Finℕ-fun : ∀ {n} → ∃Bijective (Vec X n) ((a : Finℕ n) → X)
+-- list-of-Finℕ-fun {n = n} = {!!}
+--   where fun : (vec : Vec X n) (a : Finℕ n) → X
+--         fun vec a = vec ! toℕ a [ toℕ< a ]
+--         instance
+--           Surjective-fun : Surjective fun
+--           surj ⦃ Surjective-fun ⦄ y = {!!} , {!!}
+--           Injective-fun : Injective fun
+--           inj ⦃ Injective-fun ⦄ {[]} {[]} p = refl []
+--           inj ⦃ Injective-fun ⦄ {h1 ∷ t1} {h2 ∷ t2} p =
+--             ⟵ Vec== ((ap (_$ 0) p) , {!!})
 
-finite-can-be-enumerated : is-finite X ↔ ∃ λ n → ∃ λ (l : Vec X n) → ∀ x → x ∈ l
-⟶ finite-can-be-enumerated (n , (f , f-def)) = {!!} , {!!}
-⟵ finite-can-be-enumerated = {!!}
+-- finite-can-be-enumerated : is-finite X ↔ ∃ λ n → ∃ λ (l : Vec X n) → ∀ x → x ∈ l
+-- ⟶ finite-can-be-enumerated (n , (f , f-def)) = {!!} , {!!}
+-- ⟵ finite-can-be-enumerated = {!!}

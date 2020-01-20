@@ -16,7 +16,7 @@ open import Relation.Binary
 
 open import Axiom.UniqueChoice
 
-invertible-is-bijective : {f : (x : X) → Y} → invertible f ↔ Bijective f
+invertible-is-bijective : {f : (x : X) → Y} → Invertible f ↔ Bijective f
 ⟶ (invertible-is-bijective {f = f}) (g , (g∘f~id , f∘g~id)) = record {}
   where
     instance
@@ -28,7 +28,7 @@ invertible-is-bijective : {f : (x : X) → Y} → invertible f ↔ Bijective f
           〉 _==_ 〉 y       :by: g∘f~id y
         qed
       Surjective-f : Surjective f
-      sur ⦃ Surjective-f ⦄ y = g y , f∘g~id y
+      surj ⦃ Surjective-f ⦄ y = g y , f∘g~id y
 ⟵ (invertible-is-bijective {X = X} {Y = Y} {f = f}) q =
   inverse , ((λ x → inj $ prop (!inv $' f x)) , λ y → prop (!inv y))
   where instance _ = q

@@ -108,3 +108,12 @@ instance
         〉 _==_ 〉 c * a + b * c :by: ap (c * a +_) $ comm c b
         〉 _==_ 〉 a * c + b * c :by: ap (_+ b * c) $ comm c a
     qed
+
+Monoid+ : Monoid ℕ
+_∙_ ⦃ Monoid+ ⦄ = _+_
+e ⦃ Monoid+ ⦄ = 0
+
+Monoid* : Monoid ℕ
+_∙_ ⦃ Monoid* ⦄ = _*_
+e ⦃ Monoid* ⦄ = 1
+

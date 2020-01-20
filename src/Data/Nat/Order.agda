@@ -102,22 +102,17 @@ instance
 ⟵ -≤-↔-<s (z<s {0}) = refl 0
 ⟵ -≤-↔-<s (z<s {suc n}) = ∨right z<s
 
--<s∨->- : ∀ a b → a < b ∨ b < suc a
--<s∨->- a zero = ∨right z<s
--<s∨->- zero (suc b) = ∨left z<s
--<s∨->- (suc a) (suc b) with -<s∨->- a b
--<s∨->- (suc a) (suc b) | ∨left a<b = ∨left $ ap suc a<b
--<s∨->- (suc a) (suc b) | ∨right b<sa = ∨right $ ap suc b<sa
+open import Proposition.Comparable
 
-<→== : ∀ {n m}
-  (p : n < suc m)
-  (q : ¬ n < m)
-  → ---------------
-  n == m
-<→== {n} {m} p q with -<s∨->- n m
-<→== {n} {m} p q | ∨left n<m = ⊥-recursion (n == m) (q n<m)
-<→== {0} {0} p q | ∨right z<s = refl zero
-<→== {suc n} {suc m} (s<s p) q | ∨right m<sn = ap suc $ <→== p (λ n<m → q $ s<s n<m)
+instance
+  Comparableℕ : {x y : ℕ} → Comparable _<_ x y
+  Comparableℕ {zero} {zero} = eq (refl 0)
+  Comparableℕ {zero} {suc y} = lt z<s
+  Comparableℕ {suc x} {zero} = gt z<s
+  Comparableℕ {suc x} {suc y} with compare x _<_ y
+  Comparableℕ {suc x} {suc y} | lt p = lt (ap suc p)
+  Comparableℕ {suc x} {suc y} | eq p = eq (ap suc p)
+  Comparableℕ {suc x} {suc y} | gt p = gt (ap suc p)
 
 -<s↔¬->- : ∀ {a b} → a < suc b ↔ ¬ a > b
 ⟶ (-<s↔¬->- {suc a} {zero}) (s<s ())
@@ -125,6 +120,16 @@ instance
 ⟵ (-<s↔¬->- {zero}) q = z<s
 ⟵ (-<s↔¬->- {suc a} {zero}) q = ⊥-recursion (suc a < 1) (q z<s)
 ⟵ (-<s↔¬->- {suc a} {suc b}) q = ap suc $ ⟵ -<s↔¬->- $ λ a>b → q (s<s a>b )
+
+<→== : ∀ {n m}
+  (p : n < suc m)
+  (q : ¬ n < m)
+  → ---------------
+  n == m
+<→== {n} {m} p q with compare n _<_ m
+<→== {n} {m} p q | lt p₁ = ⊥-recursion (n == m) (q p₁)
+<→== {n} {m} p q | eq p₁ = p₁
+<→== {n} {m} p q | gt p₁ = ⊥-recursion (n == m) (⟶ -<s↔¬->- p p₁)
 
 infix 35 _<ₜ_
 _<ₜ_ : (n m : ℕ) → 𝒰₀ ᵖ

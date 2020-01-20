@@ -4,7 +4,7 @@ module Proof where
 open import PropUniverses
 
 open import Type.Sum using (Σ; _,_; pr₁; pr₂; _×_)
-open import Proposition.Identity.Definition renaming (Idₚ to Id) using (_==_)
+import Proposition.Identity.Definition as Identity
 open import Relation.Binary.Definition using (Rel)
 open import Relation.Binary.Property using (Transitive; trans)
 
@@ -12,7 +12,8 @@ open import Proposition.Identity.Property public
 open import Proposition.Function using (_$_) public
 open import Function.Proof
   using (ap; Relating-all-==; ap'; RRelating-all-==) public
-open Proposition.Identity.Definition using (_==_) public
+open Identity.Id renaming (sym to Id-sym) public
+open Identity renaming (Idₚ to Id) using (_==_) public
 open Relation.Binary.Property using (sym; refl) public
 
 record Composable 𝒵 (R : Rel 𝒯 X Y) (S : Rel 𝒮 Y Z) : 𝒰ω
@@ -22,16 +23,18 @@ record Composable 𝒵 (R : Rel 𝒯 X Y) (S : Rel 𝒮 Y Z) : 𝒰ω
       compose : {x : X} {y : Y} {z : Z} (p : R x y) (q : S y z) → rel x z
 
 instance
-  Composable-trans-instance : {X : 𝒰 ˙}
-    {R : Rel 𝒱 X X}
-    ⦃ p : Transitive R ⦄
-    → -----------------
-    Composable 𝒱 R R
-  Composable.rel (Composable-trans-instance {R = R}) = R
-  Composable.compose Composable-trans-instance = trans
+  Composable-==-== : ∀ {X Y Z : 𝒰 ˙} →
+    Composable 𝒰 (_==_ {X = X}{Y}) (_==_ {X = Y}{Z})
+  Composable.rel Composable-==-== = _==_
+  Composable.compose Composable-==-== (Id.refl _) q = q
 
-  trans-== : ∀ {X : 𝒰 ˙} → Transitive {X = X} _==_
-  trans ⦃ trans-== ⦄ p (Id.refl x) = p 
+composable-trans : {X : 𝒰 ˙}
+  {R : Rel 𝒱 X X}
+  ⦃ p : Transitive R ⦄
+  → -----------------
+  Composable 𝒱 R R
+Composable.rel (composable-trans {R = R}) = R
+Composable.compose composable-trans = trans
 
 composable-R-== : {X : 𝒰 ˙} {Y : 𝒱 ˙}
   (R : Rel 𝒲 X Y)
@@ -67,3 +70,15 @@ _〉_〉_:by:_ : {X : 𝒰 ˙} {Y : 𝒱 ˙} {Z : 𝒲 ˙}
   → -------------------------------------
   Composable.rel c x z
 _〉_〉_:by:_ p r a q ⦃ c ⦄  = Composable.compose c p q
+
+infixl 6 _===_:by:_
+_===_:by:_ : {X : 𝒰 ˙} {Y Z : 𝒱 ˙}
+  {x : X} {y : Y}
+  {_R_ : Rel 𝒯 X Y}
+  (p : x R y)
+  (z : Z)
+  (q : y == z)
+  ⦃ c : Composable 𝒵 _R_ _==_ ⦄
+  → -------------------------------------
+  Composable.rel c x z
+p === z :by: q = p 〉 _==_ 〉 z :by: q

@@ -1,5 +1,5 @@
--- {-# OPTIONS --exact-split --safe --prop #-}
--- module Type.Natural where
+{-# OPTIONS --exact-split --safe --prop #-}
+module Type.Natural where
 
 -- open import Universes
 -- open import Type.Empty

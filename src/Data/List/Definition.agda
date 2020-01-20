@@ -30,3 +30,9 @@ List== :
   → ---------------
   h ∷ t == h' ∷ t'
 List== (refl h) (refl t) = refl (h ∷ t)
+
+pattern [_] a₀ = a₀ ∷ []
+pattern [_⸴_] a₀ a₁ = a₀ ∷ a₁ ∷ []
+pattern [_⸴_⸴_] a₀ a₁ a₂ = a₀ ∷ a₁ ∷ a₂ ∷ []
+pattern [_⸴_⸴_⸴_] a₀ a₁ a₂ a₃ = a₀ ∷ a₁ ∷ a₂ ∷ a₃ ∷ []
+

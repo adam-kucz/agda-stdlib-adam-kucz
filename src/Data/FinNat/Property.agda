@@ -43,7 +43,7 @@ toℕ-toFinℕ : ∀ {m n} (n<m : n < m) → toℕ (toFinℕ n n<m) == n
 toℕ-toFinℕ {m = suc m} z<s = refl 0
 toℕ-toFinℕ {m = suc m} (s<s n<m) = ap suc $' toℕ-toFinℕ n<m
 
-open Nat using (-<s∨->-; -≤-↔-<s)
+open Nat using (-≤-↔-<s)
 
 -- private
 --   open Id using (_≠_)

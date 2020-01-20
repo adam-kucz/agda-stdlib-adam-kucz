@@ -26,6 +26,7 @@ record Group (X : 𝒰 ˙) : 𝒰 ˙ where
 
 open Group ⦃ ... ⦄ public
 
+-- lit name: canonical structures
 instance
   -- TODO: find a way of using compound properties in default definitions
   DefaultGroup : {op : Op X} {e : X} {_⁻¹ : (x : X) → X}
@@ -34,6 +35,6 @@ instance
     ⦃ _ : e IsRightUnitOf op ⦄
     ⦃ _ : Inverse _⁻¹ op ⦄
     → -------------------
-    FormMonoid op e
+    FormGroup op e _⁻¹
   DefaultGroup = record {}
   

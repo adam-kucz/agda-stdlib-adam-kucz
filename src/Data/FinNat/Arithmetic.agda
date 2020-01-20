@@ -1,10 +1,9 @@
 {-# OPTIONS --exact-split --safe --prop #-}
 module Data.FinNat.Arithmetic where
 
-open import Data.Nat as Nat hiding (Injective-suc)
+open import Data.Nat hiding (Injective-suc)
 open import Data.FinNat.Definition
 open import Data.FinNat.Property
-open import Proposition.Function renaming (_$_ to _$'_) using ()
 open import Function using (_∘_; _$_)
 open import Logic
 
@@ -14,7 +13,7 @@ open import Structure.Monoid
 open import Structure.Hemiring
   using (FormHemiring; *0; 0*; *[+]==*+*; [+]*==*+*)
 
-open import Proof
+open import Proof renaming (_$_ to _$'_)
 open import Function.Proof
 open import Function.Property using (inj)
 open import Data.Nat.Proof

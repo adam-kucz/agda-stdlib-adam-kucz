@@ -14,6 +14,13 @@ _≡_ : {X Y : 𝒰 ˙}
   𝒰 ˙
 x ≡ y = Id _ _ x y
 
+ap : ∀ {x y}
+  (f : (x : X) → A x)
+  (p : x ≡ y)
+  → ----------
+  f x ≡ f y
+ap f (refl x) = refl (f x)
+
 transport :
   (p : X ≡ Y)
   (x : X)

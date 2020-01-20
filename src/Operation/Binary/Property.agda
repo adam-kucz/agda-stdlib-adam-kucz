@@ -18,6 +18,16 @@ record Associative {X : 𝒰 ˙} (_∙_ : ClosedOp X) : 𝒰 ᵖ where
 
 open Associative ⦃ ... ⦄ public
 
+open import Function using (flip)
+open import Proof
+
+assoc-of-flip :
+  (op : Op X X X)
+  ⦃ _ : Associative op ⦄
+  → --------------------------
+  Associative (flip op)
+assoc ⦃ assoc-of-flip op ⦄ x y z = sym $ assoc z y x
+
 swap : {_∙_ : ClosedOp X}
   ⦃ _ : Associative _∙_ ⦄
   ⦃ _ : Commutative _∙_ ⦄
@@ -30,9 +40,6 @@ swap {_∙_ = _∙_} x y z =
       〉 _==_ 〉 (y ∙ x) ∙ z :by: ap (_∙ z) (comm x y)
       〉 _==_ 〉 y ∙ (x ∙ z) :by: sym (assoc y x z)
   qed
-  where open import Proof
-        open import Proposition.Identity using (ap)
-        open import Relation.Binary.Property using (sym)
 
 record _IsLeftUnitOf_ {X : 𝒰 ˙} {Y : 𝒱 ˙} (e : X) (_∙_ : Op X Y Y) : 𝒱 ᵖ where
   field
@@ -57,8 +64,7 @@ open _IsUnitOf_ ⦃ ... ⦄ public
 
 instance
   DefaultUnit :
-    {e : X}
-    {op : Op X X X}
+    {e : X}{op : Op X X X}
     ⦃ _ : e IsLeftUnitOf op ⦄
     ⦃ _ : e IsRightUnitOf op ⦄
     → -------------------------
@@ -68,7 +74,7 @@ instance
 open import Proof
 
 right-unit-of-commutative-left-unit :
-  {X : 𝒰 ˙} (e : X) (op : Op X X X)
+  (e : X) (op : Op X X X)
   ⦃ _ : Commutative op ⦄
   ⦃ _ : e IsLeftUnitOf op ⦄
   → --------------------------
@@ -80,7 +86,7 @@ right-unit ⦃ right-unit-of-commutative-left-unit e _∙_ ⦄ a =
   qed
      
 left-unit-of-commutative-right-unit :
-  {X : 𝒰 ˙} (e : X) (op : Op X X X)
+  (e : X) (op : Op X X X)
   ⦃ _ : Commutative op ⦄
   ⦃ _ : e IsRightUnitOf op ⦄
   → --------------------------
@@ -90,6 +96,20 @@ left-unit ⦃ left-unit-of-commutative-right-unit e _∙_ ⦄ a =
     〉 _==_ 〉 a ∙ e :by: comm e a
     〉 _==_ 〉 a     :by: right-unit a
   qed
+
+left-of-flip :
+  (e : X) (op : Op X X X)
+  ⦃ _ : e IsRightUnitOf op ⦄
+  → --------------------------
+  e IsLeftUnitOf (flip op)
+left-unit ⦃ left-of-flip e op ⦄ = right-unit
+
+right-of-flip :
+  (e : X) (op : Op X X X)
+  ⦃ _ : e IsLeftUnitOf op ⦄
+  → --------------------------
+  e IsRightUnitOf (flip op)
+right-unit ⦃ right-of-flip e op ⦄ = left-unit
 
 record LeftInverse {X : 𝒰 ˙}
     (_⁻¹ : (x : X) → X) (_∙_ : ClosedOp X) {e : X}

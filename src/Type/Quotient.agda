@@ -35,6 +35,6 @@ module Quotient (X : 𝒰 ˙) (_≈_ : Rel 𝒱 X X) ⦃ _ : Equivalence _≈_ �
     (t : Type)
     → ----------------------------------------
     𝐴 t
-  elim 𝐴 f t@(p , (x , q)) = Id.transport 𝐴 (Id.sym h) (f x)
+  elim 𝐴 f t@(p , (x , q)) = Id.subst 𝐴 (Id.sym h) (f x)
     where h : t == class-of x
           h = Σₚ== (fun-ext q)
