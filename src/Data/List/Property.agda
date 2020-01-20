@@ -49,6 +49,19 @@ instance
   ⟵ (remove-valid ListRemovable {y = y} {h ∷ t})
     (x∈tail h x∈t , x≠y) | false h≠y = x∈tail h (⟵ remove-valid (x∈t , x≠y))
 
+  ListDecidable∈ : {X : 𝒰 ˙}
+    ⦃ d : ∀ {x y : X} → Decidable (x == y) ⦄
+    → ----------------------------------------
+    ∀ {x : X}{l : List X} → Decidable (x ∈ l)
+  ListDecidable∈ {l = []} = false (λ ())
+  ListDecidable∈ {x = x}{h ∷ l} with decide (x == h)
+  ListDecidable∈ {x = x} {h ∷ l} | true p =
+    true (Id.coe (ap (λ — → x ∈ — ∷ l) p) (x∈x∷ l))
+  ListDecidable∈ {x = x} {h ∷ l} | false ¬p with decide (x ∈ l)
+  ListDecidable∈ {x = x} {h ∷ l} | false ¬p | true p = true (x∈tail h p)
+  ListDecidable∈ {x = x} {h ∷ l} | false ¬p | false ¬p₁ =
+    false (λ { (x∈x∷ t) → ¬p (refl x) ; (x∈tail h q) → ¬p₁ q })
+
 remove-at : (n : ℕ) (l : List X) (p : n < len l) → List X
 remove-at zero    (h ∷ l) p = l
 remove-at (suc n) (h ∷ l) p = remove-at n l (s<s→-<- p)
