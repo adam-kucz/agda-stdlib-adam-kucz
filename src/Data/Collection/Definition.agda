@@ -15,6 +15,7 @@ open Collection ⦃ … ⦄ public
 open import Proposition.Identity
 open import Logic
 
+infix 35 _∉_
 _∉_ :
   {Elem : 𝒰 ˙}
   {Col : 𝒱 ˙}
@@ -24,3 +25,20 @@ _∉_ :
   𝒲 ᵖ
 x ∉ S = ¬ x ∈ S
 
+infix 35 _⊆_ _⊈_
+_⊆_ _⊈_ : {Elem : 𝒰 ˙}{Col : 𝒱 ˙}{Col' : 𝒲 ˙}
+  ⦃ col : Collection 𝒯 Col Elem ⦄
+  ⦃ col' : Collection 𝒮 Col' Elem ⦄
+  (S : Col)(S' : Col')
+  → -------------------------
+  𝒰 ⊔ 𝒮 ⊔ 𝒯 ᵖ
+_⊆_ {Elem = Elem} S S' = ∀ (x : Elem) → x ∈ S → x ∈ S'
+S ⊈ S' = ¬ S ⊆ S'
+
+infix 35 _=∅
+_=∅ : {Elem : 𝒰 ˙}{Col : 𝒱 ˙}
+  ⦃ col : Collection 𝒲 Col Elem ⦄
+  (S : Col)
+  → -------------------------
+  𝒰 ⊔ 𝒲 ᵖ
+_=∅ {Elem = Elem} S = ¬ ∃ λ (x : Elem) → x ∈ S

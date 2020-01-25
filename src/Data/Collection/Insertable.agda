@@ -48,4 +48,26 @@ record Insertable
   ⟵ (extend-prop {l = _ ∷ l}) (∨right q) =
     ⟵ insert-valid (∨left (⟵ (extend-prop {l = l}) (∨right q)))
 
+  open import Data.Collection.Empty
+
+  from-list :
+    ⦃ e : Empty Col Elem ⦄
+    (l : List Elem)
+    → --------------
+    Col
+  from-list l = extend l ∅
+
+  from-list-prop :
+    ⦃ e : Empty Col Elem ⦄
+    {l : List Elem}
+    {x : Elem}
+    → --------------
+    x ∈ from-list l ↔ x ∈ l
+  ⟶ (from-list-prop {l = l}) p with ⟶ (extend-prop {l = l}) p
+  ⟶ from-list-prop p | ∨left q = q
+  ⟶ (from-list-prop {l = l}{x}) p | ∨right q =
+    ⊥-recursion (x ∈ l) ((x ∉∅) q)
+  ⟵ from-list-prop p = ⟵ extend-prop (∨left p)
+
 open Insertable ⦃ … ⦄ public
+

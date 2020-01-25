@@ -94,7 +94,7 @@ on-elems : {𝐴 : (x : X) → 𝒰 ᵖ}
   Rel 𝒱 (Subset X 𝐴) (Subset X 𝐴)
 on-elems _R_ (x , _) (x' , _) = x R x'
 
-open import Proposition.Decidable using (Decidable)
+open import Proposition.Decidable.Definition using (Decidable)
 
 record WellFounded {X : 𝒰 ˙}
   (_≼_ : Rel 𝒱 X X)

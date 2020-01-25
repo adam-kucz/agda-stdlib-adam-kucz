@@ -4,6 +4,7 @@ module Data.Nat.Order where
 open import PropUniverses hiding (_⊔_)
 open import Data.Nat.Definition
 open import Data.Nat.Syntax
+open Pattern
 
 open import Proposition.Identity renaming (Idₚ to Id) using (_==_; ap)
 open import Proposition.Decidable
@@ -152,28 +153,28 @@ min = _⊓_
 max = _⊔_
 
 instance
-  Commutative-min : Commutative _⊓_
-  comm ⦃ Commutative-min ⦄ zero zero = refl 0
-  comm ⦃ Commutative-min ⦄ zero (suc b) = refl 0
-  comm ⦃ Commutative-min ⦄ (suc a) zero = refl 0
-  comm ⦃ Commutative-min ⦄ (suc a) (suc b) = ap suc $ comm a b
+  min-comm : Commutative _⊓_
+  min-0-left : 0 IsLeftZeroOf _⊓_
+  min-0-right : 0 IsRightZeroOf _⊓_
+  max-comm : Commutative _⊔_
+  max-0-left : 0 IsLeftUnitOf _⊔_
+  max-0-right : 0 IsRightUnitOf _⊔_
 
-  Meet-min : Meet _⊓_ _≤_
-  lower-bound ⦃ Meet-min ⦄ zero y = refl 0
-  lower-bound ⦃ Meet-min ⦄ (suc x) zero = ∨right z<s
-  lower-bound ⦃ Meet-min ⦄ (suc x) (suc y) = ap suc $ lower-bound x y
+comm ⦃ min-comm ⦄ zero zero = refl 0
+comm ⦃ min-comm ⦄ zero (suc b) = refl 0
+comm ⦃ min-comm ⦄ (suc a) zero = refl 0
+comm ⦃ min-comm ⦄ (suc a) (suc b) = ap suc $ comm a b
+left-zero ⦃ min-0-left ⦄ _ = refl 0
+right-zero ⦃ min-0-right ⦄ zero = refl 0
+right-zero ⦃ min-0-right ⦄ (_ +1) = refl 0
 
-  Commutative-max : Commutative _⊔_
-  comm ⦃ Commutative-max ⦄ zero zero = refl 0
-  comm ⦃ Commutative-max ⦄ zero (suc y) = refl (suc y)
-  comm ⦃ Commutative-max ⦄ (suc x) zero = refl (suc x)
-  comm ⦃ Commutative-max ⦄ (suc x) (suc y) = ap suc $ comm x y
-
-  Join-max : Join _⊔_ _≤_
-  upper-bound ⦃ Join-max ⦄ zero zero = refl 0
-  upper-bound ⦃ Join-max ⦄ zero (suc y) = ∨right z<s
-  upper-bound ⦃ Join-max ⦄ (suc x) zero = refl (suc x)
-  upper-bound ⦃ Join-max ⦄ (suc x) (suc y) = ap suc $ upper-bound x y
+comm ⦃ max-comm ⦄ zero zero = refl 0
+comm ⦃ max-comm ⦄ zero (suc y) = refl (suc y)
+comm ⦃ max-comm ⦄ (suc x) zero = refl (suc x)
+comm ⦃ max-comm ⦄ (suc x) (suc y) = ap suc $ comm x y
+left-unit ⦃ max-0-left ⦄ y = refl y
+right-unit ⦃ max-0-right ⦄ zero = refl 0
+right-unit ⦃ max-0-right ⦄ (y +1) = refl (y +1)
 
 min== : ∀ m n → m ⊓ n == m ∨ m ⊓ n == n
 min== zero n = ∨left (refl 0)

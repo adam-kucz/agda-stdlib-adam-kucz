@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Data.Bool.Definition where
 
 open import Universes

@@ -17,8 +17,10 @@ infixr 115 _∷_ -- Data.Vec
 infixr 110 _!_[_] -- Data.List
 infixr 110 _!_[_] -- Data.Vec
 infixl 105 _++_ -- Data.Collection
+infixl 105 _++_ -- Data.List
 
 infixr 104 _<$>_ -- Data.Functor
+infixl 103 _<*>_ -- Data.Applicative
 infixr 100 _$_ -- Function
 
 -- Types (60 - 50)
@@ -31,7 +33,8 @@ infix 50 _,_ -- Type.Transport
 
 -- Logic formers (40 - 30)
 
-infixr 35 _∈_ -- Data.Collection
+infix 35 _∈_ -- Type.Subset
+infix 35 _∈_ -- Data.Collection
 infix 35 _<_ -- Data.Nat.Order
 infix 35 _≤_ -- Data.Nat.Order
 infix 35 _<ₜ_ -- Data.Nat.Order

@@ -18,6 +18,12 @@ record Associative {X : 𝒰 ˙} (_∙_ : ClosedOp X) : 𝒰 ᵖ where
 
 open Associative ⦃ ... ⦄ public
 
+record Idempotent {X : 𝒰 ˙}(_∙_ : ClosedOp X) : 𝒰 ᵖ where
+  field
+    idemp : ∀ x → x ∙ x == x
+
+open Idempotent ⦃ ... ⦄ public
+
 open import Function using (flip)
 open import Proof
 
@@ -52,8 +58,6 @@ record _IsRightUnitOf_ {X : 𝒰 ˙} {Y : 𝒱 ˙} (e : X) (_∙_ : Op Y X Y) : 
     right-unit : ∀ y → y ∙ e == y
 
 open _IsRightUnitOf_ ⦃ ... ⦄ public
-
-open import Logic using (⊥)
 
 record _IsUnitOf_ {X : 𝒰 ˙} (e : X) (op : Op X X X) : 𝒰 ᵖ where
   field
@@ -152,28 +156,6 @@ instance
     Inverse _⁻¹ op
   DefaultInverse = record {}
 
-open import Relation.Binary.Definition renaming (Rel to BinRel) using ()
-
-record Join {X : 𝒰 ˙}
-    (_⊔_ : ClosedOp X) (_≼_ : BinRel 𝒱 X X)
-    : --------------------------------------------
-    𝒰 Univ.⊔ 𝒱 ᵖ where
-  field
-    ⦃ join-comm ⦄ : Commutative _⊔_
-    upper-bound : ∀ x y → x ≼ (x ⊔ y)
-
-open Join ⦃ ... ⦄ public
-
-record Meet {X : 𝒰 ˙}
-    (_⊓_ : ClosedOp X) (_≼_ : BinRel 𝒱 X X)
-    : --------------------------------------------
-    𝒰 ⊔ 𝒱 ᵖ where
-  field
-    ⦃ meet-comm ⦄ : Commutative _⊓_
-    lower-bound : ∀ x y → (x ⊓ y) ≼ x
-
-open Meet ⦃ ... ⦄ public
-
 open import Relation.Unary renaming (Rel to UnRel) using ()
 
 record ClosedUnder
@@ -187,3 +169,31 @@ record ClosedUnder
     closure : {x y : X} (p₁ : R x) (p₂ : R y) → R (x ∙ y)
 
 open ClosedUnder ⦃ … ⦄ public
+
+record _IsLeftZeroOf_ {X : 𝒰 ˙}{Y : 𝒱 ˙}(z : X)(_∙_ : Op X Y X) : 𝒰 ⊔ 𝒱 ᵖ where
+  field
+    left-zero : ∀ y → z ∙ y == z
+
+open _IsLeftZeroOf_ ⦃ ... ⦄ public
+
+record _IsRightZeroOf_ {X : 𝒰 ˙}{Y : 𝒱 ˙}(z : X)(_∙_ : Op Y X X) : 𝒰 ⊔ 𝒱 ᵖ where
+  field
+    right-zero : ∀ y → y ∙ z == z
+
+open _IsRightZeroOf_ ⦃ ... ⦄ public
+
+record _IsZeroOf_ {X : 𝒰 ˙} (z : X) (op : ClosedOp X) : 𝒰 ᵖ where
+  field
+    ⦃ zero-left ⦄ : z IsLeftZeroOf op
+    ⦃ zero-right ⦄ : z IsRightZeroOf op
+
+open _IsZeroOf_ ⦃ ... ⦄ public
+
+instance
+  DefaultZero :
+    {z : X}{op : ClosedOp X}
+    ⦃ _ : z IsLeftZeroOf op ⦄
+    ⦃ _ : z IsRightZeroOf op ⦄
+    → -------------------------
+    z IsZeroOf op
+DefaultZero = record {}

@@ -8,12 +8,13 @@ import Proposition.Identity.Definition as Identity
 open import Relation.Binary.Definition using (Rel)
 open import Relation.Binary.Property using (Transitive; trans)
 
+open import Proposition.Identity.Definition
+  renaming (Idₚ to Id) hiding (refl) public
 open import Proposition.Identity.Property public
+open import Proposition.Identity.Function using (ap2) public
 open import Proposition.Function using (_$_) public
 open import Function.Proof
   using (ap; Relating-all-==; ap'; RRelating-all-==) public
-open Identity.Id renaming (sym to Id-sym) public
-open Identity renaming (Idₚ to Id) using (_==_) public
 open Relation.Binary.Property using (sym; refl) public
 
 record Composable 𝒵 (R : Rel 𝒯 X Y) (S : Rel 𝒮 Y Z) : 𝒰ω
@@ -28,27 +29,25 @@ instance
   Composable.rel Composable-==-== = _==_
   Composable.compose Composable-==-== (Id.refl _) q = q
 
-composable-trans : {X : 𝒰 ˙}
-  {R : Rel 𝒱 X X}
-  ⦃ p : Transitive R ⦄
-  → -----------------
-  Composable 𝒱 R R
-Composable.rel (composable-trans {R = R}) = R
-Composable.compose composable-trans = trans
+module MakeComposable (R : Rel 𝒲 X Y) where
+  instance
+    composable-R-== : Composable 𝒲 R _==_
+    Composable.rel composable-R-== = R
+    Composable.compose composable-R-== p (Id.refl x) = p
+  
+    composable-==-R : Composable 𝒲 _==_ R
+    Composable.rel composable-==-R = R
+    Composable.compose composable-==-R (Id.refl x) q = q
 
-composable-R-== : {X : 𝒰 ˙} {Y : 𝒱 ˙}
-  (R : Rel 𝒲 X Y)
-  → ------------------
-  Composable 𝒲 R _==_
-Composable.rel (composable-R-== R) = R
-Composable.compose (composable-R-== R) p (Id.refl x) = p
+module TransMakeComposable
+    (R : Rel 𝒱 X X) ⦃ p : Transitive R ⦄
+    where
+  instance
+    composable-trans : Composable 𝒱 R R
+    Composable.rel composable-trans = R
+    Composable.compose composable-trans = trans
 
-composable-==-R : {X : 𝒰 ˙} {Y : 𝒱 ˙}
-  (R : Rel 𝒲 X Y)
-  → ------------------
-  Composable 𝒲 _==_ R
-Composable.rel (composable-==-R R) = R
-Composable.compose (composable-==-R R) (Id.refl x) q = q
+  open MakeComposable R public
 
 infix 7 proof_
 proof_ : {X : 𝒰 ˙} (x : X) → x == x
@@ -82,3 +81,9 @@ _===_:by:_ : {X : 𝒰 ˙} {Y Z : 𝒱 ˙}
   → -------------------------------------
   Composable.rel c x z
 p === z :by: q = p 〉 _==_ 〉 z :by: q
+
+data Singleton {X Y : 𝒰 ˙}(x : X) : 𝒰 ˙ where
+  _with==_ : (y : Y) (p : x == y) → Singleton x
+
+inspect : {X : 𝒰 ˙} (x : X) → Singleton x
+inspect x = x with== Id.refl x

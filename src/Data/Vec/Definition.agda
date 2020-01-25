@@ -12,15 +12,16 @@ data Vec (X : 𝒰 ˙) : (n : ℕ) → 𝒰 ˙ where
 open import Data.Nat
   using (ℕ; zero; suc; _+_; _<_; s<s→-<-)
 
+head : ∀ {m}(v : Vec X (m +1)) → X
+head (h ∷ _) = h
+
+tail : ∀ {m}(v : Vec X (m +1)) → Vec X m
+tail (_ ∷ t) = t
+
 infixr 110 _!_[_]
 _!_[_] : ∀ {m} (l : Vec X m) (n : ℕ) (p : n < m) → X
 h ∷ _ ! zero [ _ ] = h
 _ ∷ l ! suc n [ p ] = l ! n [ s<s→-<- p ]
-
-infixr 112 _∈_
-data _∈_ {X : 𝒰 ˙} (x : X) : {n : ℕ} (l : Vec X n) → 𝒰 ᵖ where
-  x∈x∷_ : ∀ {n} (t : Vec X n) → x ∈ x ∷ t
-  x∈tail : ∀ {n} (h : X) {t : Vec X n} (p : x ∈ t) → x ∈ h ∷ t
 
 pattern [_] a₀ = a₀ ∷ []
 pattern [_⸴_] a₀ a₁ = a₀ ∷ a₁ ∷ []
@@ -36,3 +37,16 @@ Vec== : ∀ {m}
   h1 ∷ t1 == h2 ∷ t2 ↔ h1 == h2 ∧ t1 == t2
 ⟶ Vec== (refl (h ∷ t)) = refl h , refl t
 ⟵ Vec== (refl h , refl t) = refl (h ∷ t)
+
+last : {m : ℕ}(v : Vec X (m +1)) → X
+last [ h ] = h
+last (_ ∷ h₁ ∷ v) = last (h₁ ∷ v)
+
+drop-last : {m : ℕ}(v : Vec X (m +1)) → Vec X m
+drop-last [ _ ] = []
+drop-last (h₀ ∷ h₁ ∷ v) = h₀ ∷ drop-last (h₁ ∷ v)
+
+infixl 105 _++_
+_++_ : ∀ {m n}(v : Vec X m)(v' : Vec X n) → Vec X (m + n)
+[] ++ v' = v'
+h ∷ v ++ v' = h ∷ (v ++ v')

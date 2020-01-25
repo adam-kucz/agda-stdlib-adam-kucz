@@ -2,7 +2,8 @@
 module Function.Property where
 
 open import PropUniverses
-open import Proposition.Identity renaming (Idₚ to Id) using (_==_)
+open import Proposition.Identity.Definition
+  renaming (Idₚ to Id) using (_==_; refl)
 open import Proposition.Sum
 open import Logic
 open import Function.Basic hiding (_$_)
@@ -122,33 +123,6 @@ open Bijection ⦃ … ⦄ public
 
 {-# DISPLAY Bijection.forw B = forw #-}
 {-# DISPLAY Bijection.back B = back #-}
-
-open import Proof
-
-bijection-is-bijective : (b : Bijection X Y)
-  → let instance _ = b in
-  Bijective forw ∧ Bijective back
-bijection-is-bijective b = record {} , record {}
-  where instance
-          _ = b
-          Surjective-forw : Surjective (forw ⦃ b ⦄)
-          Surjective-back : Surjective (back ⦃ b ⦄)
-          Injective-forw : Injective (forw ⦃ b ⦄)
-          Injective-back : Injective (back ⦃ b ⦄)
-        surj ⦃ Surjective-forw ⦄ y = back y , right-inv y
-        surj ⦃ Surjective-back ⦄ x = forw x , left-inv x
-        inj ⦃ Injective-forw ⦄ {x}{y} p =
-          proof x
-            〉 _==_ 〉 back (forw x) :by: sym $ left-inv x
-            〉 _==_ 〉 back (forw y) :by: ap back p
-            〉 _==_ 〉 y             :by: left-inv y
-          qed
-        inj ⦃ Injective-back ⦄ {x}{y} p =
-          proof x
-            〉 _==_ 〉 forw (back x) :by: sym $ right-inv x
-            〉 _==_ 〉 forw (back y) :by: ap forw p
-            〉 _==_ 〉 y             :by: right-inv y
-          qed
 
 LeftInverse-id : LeftInverse (𝑖𝑑 X) (𝑖𝑑 X)
 left-inv ⦃ LeftInverse-id ⦄ x = refl x

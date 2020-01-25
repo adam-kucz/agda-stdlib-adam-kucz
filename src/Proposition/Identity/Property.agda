@@ -2,18 +2,19 @@
 module Proposition.Identity.Property where
 
 open import PropUniverses
-open import Relation.Binary.Property
-open import Proposition.Identity.Definition hiding (refl)
+open import Relation.Binary.Property as Rel
+  renaming (refl to rel-refl; sym to rel-sym)
+open import Proposition.Identity.Definition
 
 instance
   Transitive== : Transitive {𝒱 = 𝒱} {X = X} _==_
-  trans ⦃ Transitive== ⦄ p (Idₚ.refl x) = p
+  trans ⦃ Transitive== ⦄ p (refl x) = p
 
   Reflexive== : Reflexive {𝒱 = 𝒱} {X = X} _==_
-  refl ⦃ Reflexive== ⦄ = Idₚ.refl
+  rel-refl ⦃ Reflexive== ⦄ = refl
 
   Symmetric== : Symmetric {𝒱 = 𝒱} {X = X} _==_
-  sym ⦃ Symmetric== ⦄ (Idₚ.refl x) = refl x
+  rel-sym ⦃ Symmetric== ⦄ (refl x) = refl x
   
   Equivalence== : Equivalence {𝒱 = 𝒱} {X = X} _==_
   equiv-reflexive ⦃ Equivalence== ⦄ = Reflexive==

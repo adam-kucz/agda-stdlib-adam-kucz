@@ -4,6 +4,8 @@ module Data.Nat.Property where
 open import Data.Nat.Definition
 open import Data.Nat.Arithmetic
 open import Data.Nat.Order
+open import Data.Nat.Syntax
+open Pattern
 
 open import Proposition.Identity
   renaming (Idₚ to Id) using (_==_; ap)
@@ -71,3 +73,27 @@ instance
       〉 _≤_ 〉 suc n * x :by: postfix (suc n *_) ⦃ Postfix-*-left-≤ {n} ⦄ x
       〉 _==_ 〉 x * suc n :by: comm (suc n) x
     qed
+
++-inv : ∀ m k → m + k - k [ postfix (m +_) k ] == m
++-inv 0 0 = refl 0
++-inv 0 (k +1) = +-inv 0 k
++-inv (m +1) 0 = right-unit (suc m)
++-inv (m +1) (k +1) =
+  proof m + (k +1) - k [ _ ]
+    === m + k +1 - k [ _ ]
+      :by: -== (+-suc m k) (refl k)
+    === m +1 + k - k [ _ ]
+      :by: Id.refl _
+    === m +1
+      :by: +-inv (m +1) k
+  qed
+
+postfix-sub-< : ∀ {m n} k {p p'}
+  (q : m < n)
+  → --------------------
+  m - k [ p ] < n - k [ p' ]
+postfix-sub-< {zero} {_ +1} zero _ = z<s
+postfix-sub-< {zero} {_ +1} (_ +1) {Logic.∨left ()}
+postfix-sub-< {zero} {_ +1} (_ +1) {∨right ()}
+postfix-sub-< {_ +1} {_ +1} zero q = q
+postfix-sub-< {m +1} {n +1} (k +1) q = postfix-sub-< k (s<s→-<- q)

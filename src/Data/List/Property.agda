@@ -1,22 +1,24 @@
-{-# OPTIONS --safe --exact-split --prop  #-}
+{-# OPTIONS --exact-split --prop --safe #-}
 open import PropUniverses
 
-module Data.List.Property {𝒰 : Universe} where
+module Data.List.Property where
 
 open import Data.List.Definition
 open import Data.List.Collection
 
-open import Data.Nat
-open import Data.Collection
-open import Logic
 open import Proposition.Identity
 open import Proposition.Decidable
+open import Data.Nat.Definition
+open import Data.Nat.Order
+open import Data.Collection
+open import Data.Foldable.Definition
+open import Structure.Monoid
+open import Logic
 
 instance
-  ListListable : {X : 𝒰 ˙} → Listable (List X) X
-  to-list ⦃ ListListable ⦄ l = l
-  ⟶ (to-list-valid ⦃ ListListable ⦄) p = p
-  ⟵ (to-list-valid ⦃ ListListable ⦄) p = p
+  ListEmpty : Empty (List X) X
+  ∅ ⦃ ListEmpty ⦄ = []
+  _∉∅ ⦃ ListEmpty ⦄ _ ()
 
   ListRemovable : {X : 𝒰 ˙}
     ⦃ d : ∀ {x y : X} → Decidable (x == y) ⦄
@@ -66,25 +68,3 @@ remove-at : (n : ℕ) (l : List X) (p : n < len l) → List X
 remove-at zero    (h ∷ l) p = l
 remove-at (suc n) (h ∷ l) p = remove-at n l (s<s→-<- p)
 
-open import Data.Functor
-open import Function
-
-instance
-  ListFunctor : Functor {U = universe-of}(λ X → List X)
-  fmap ⦃ ListFunctor ⦄ _ [] = []
-  fmap ⦃ ListFunctor ⦄ f (h ∷ t) = f h ∷ fmap f t
-  fmap-id ⦃ ListFunctor ⦄ [] = refl []
-  fmap-id ⦃ ListFunctor ⦄ (h ∷ t) = List== (refl h) (fmap-id t)
-  fmap-∘ ⦃ ListFunctor ⦄ _ _ [] = refl []
-  fmap-∘ ⦃ ListFunctor ⦄ g f (h ∷ t) =
-    List== (refl (g (f h))) (fmap-∘ g f t)
-
-∈fmap :
-  {X : 𝒰 ˙}{Y : 𝒱 ˙}
-  {x : X}{l : List X}
-  (f : (x : X) → Y)
-  (p : x ∈ l)
-  → ------------------
-  f x ∈ (f <$> l)
-∈fmap f (x∈x∷ t) = x∈x∷ f <$> t
-∈fmap f (x∈tail h p) = x∈tail (f h) (∈fmap f p)

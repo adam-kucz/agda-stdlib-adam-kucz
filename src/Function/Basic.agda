@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --exact-split --safe --prop #-}
 module Function.Basic where
 
 open import Universes
@@ -27,6 +27,14 @@ type-of {X = X} _ = X
 
 universe-of : (X : 𝒰 ˙) → Universe
 universe-of {𝒰} _ = 𝒰
+
+open import Type.Sum
+
+uncurry : {K : (x : X)(y : A x) → 𝒰 ˙}
+  (f : (x : X)(y : A x) → K x y)
+  → ---------------------------
+  (xy : Σ A) → K (pr₁ xy) (pr₂ xy)
+uncurry f (x , y) = f x y
 
 infixr 100 _$_
 _$_ : {A : 𝒰 ˙} {B : A → 𝒱 ˙}

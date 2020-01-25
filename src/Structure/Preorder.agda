@@ -5,11 +5,6 @@ open import PropUniverses
 open import Relation.Binary
 open import Function.Proof using (Relating)
 
-record FormPreorder {X : 𝒰 ˙} (_⊑_ : Rel 𝒱 X X) : 𝒰 ⊔ 𝒱 ᵖ where
-  field
-    ⦃ reflexive ⦄ : Reflexive _⊑_
-    ⦃ transitive ⦄ : Transitive _⊑_
-
 record Preorder 𝒰 (X : 𝒱 ˙) : 𝒰 ⁺ ⊔ 𝒱 ˙ where
   field
     _⊑_ : Rel 𝒰 X X
@@ -18,18 +13,17 @@ record Preorder 𝒰 (X : 𝒱 ˙) : 𝒰 ⁺ ⊔ 𝒱 ˙ where
 open Preorder ⦃ ... ⦄ public
 
 monotone : {X : 𝒰 ˙}
-  ⦃ P : Preorder 𝒱 X ⦄
-  ⦃ R : Preorder 𝒲 Y ⦄
+  (_⊑₀_ : Rel 𝒱 X X)
+  (_⊑₁_ : Rel 𝒲 Y Y)
+  ⦃ P : FormPreorder _⊑₀_ ⦄
+  ⦃ R : FormPreorder _⊑₁_ ⦄
   (f : (x : X) → Y)
   → -------------------
   𝒰 ⊔ 𝒱 ⊔ 𝒲 ᵖ
-monotone f = Relating f _⊑_ _⊑_
+monotone _⊑₀_ _⊑₁_ f = Relating f _⊑₀_ _⊑₁_
 
-instance
-  DefaultPreorder : {R : Rel 𝒰 X X}
-    ⦃ _ : Reflexive R ⦄
-    ⦃ _ : Transitive R ⦄
-    → -------------------
-    FormPreorder R
-  DefaultPreorder = record {}
-  
+module Composable⊑ (P : Preorder 𝒰 X) where
+  open import Proof
+
+  private instance _ = P
+  open TransMakeComposable _⊑_ ⦃ FormPreorder.transitive def ⦄ public

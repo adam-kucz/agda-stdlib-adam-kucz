@@ -7,19 +7,29 @@ open import PropUniverses
 open import Proposition.Identity
 open import Logic
 
-open import Function
+open import Data.Nat using (ℕ)
 
-open import Data.Functor
+data member {X : 𝒰 ˙} (x : X) : {n : ℕ} (l : Vec X n) → 𝒰 ᵖ where
+  x∈x∷_ : ∀ {n} (t : Vec X n) → member x (x ∷ t)
+  x∈tail : ∀ {n} (h : X) {t : Vec X n} (p : member x t) → member x (h ∷ t)
+
+open import Data.Collection
 
 instance
-  VecFunctor : ∀ {n}
-    → -------------------------------
-    Functor {U = universe-of}(λ — → Vec — n)
-  fmap ⦃ VecFunctor ⦄ _ [] = []
-  fmap ⦃ VecFunctor ⦄ f (h ∷ v) = f h ∷ fmap f v
-  fmap-id ⦃ VecFunctor ⦄ [] = refl []
-  fmap-id ⦃ VecFunctor ⦄ (h ∷ v) =
-    ⟵ Vec== (refl h , fmap-id v)
-  fmap-∘ ⦃ VecFunctor ⦄ _ _ [] = refl []
-  fmap-∘ ⦃ VecFunctor ⦄ g f (h ∷ v) =
-    ⟵ Vec== (refl (g (f h)) , fmap-∘ g f v)
+  VecCollection : ∀ {X : 𝒰 ˙}{m} → Collection 𝒰 (Vec X m) X
+  _∈_ ⦃ VecCollection ⦄ x = member x
+
+open import Data.List
+
+instance
+  VecListable : ∀ {m} → Listable (Vec X m) X
+  to-list ⦃ VecListable ⦄ [] = []
+  to-list ⦃ VecListable ⦄ (h ∷ S) = h ∷ to-list S
+  ⟶ (to-list-valid ⦃ VecListable ⦄) (x∈x∷ t) =
+    x∈x∷ to-list t 
+  ⟶ (to-list-valid ⦃ VecListable ⦄) (x∈tail h p) =
+    x∈tail h (⟶ to-list-valid p)
+  ⟵ (to-list-valid ⦃ VecListable ⦄ {h ∷ S}) (x∈x∷ .(to-list S)) =
+    x∈x∷ S
+  ⟵ (to-list-valid ⦃ VecListable ⦄ {h ∷ S}) (x∈tail h q) =
+    x∈tail h (⟵ to-list-valid q)

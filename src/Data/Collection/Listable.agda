@@ -9,14 +9,9 @@ open import Logic
 open import Data.List.Definition
 open import Data.List.Collection
 
-record Listable
-    (Col : 𝒱 ˙)
-    (Elem : 𝒰 ˙)
-    ⦃ col : Collection 𝒲 Col Elem ⦄
-    : --------------------
-    𝒰 ⁺ ⊔ 𝒱 ⊔ 𝒲 ˙
-    where
+record Listable 𝒲 (Col : 𝒱 ˙) (Elem : 𝒰 ˙) : 𝒰 ⁺ ⊔ 𝒱 ⁺ ⊔ 𝒲 ⁺ ˙ where
   field
+    ⦃ collection ⦄ : Collection 𝒲 Col Elem
     to-list : (S : Col) → List Elem
     to-list-valid :
       {S : Col} {x : Elem}
@@ -28,18 +23,16 @@ open Listable ⦃ … ⦄ public
 infixl 105 _++_
 _++_ :
   {Elem : 𝒰 ˙} {Col : 𝒱 ˙}
-  ⦃ _ : Collection 𝒲 Col Elem ⦄
+  ⦃ _ : Listable 𝒲 Col Elem ⦄
   ⦃ _ : Insertable Col Elem ⦄
-  ⦃ _ : Listable Col Elem ⦄
   → ----------------------
   (l l' : Col) → Col
 l ++ l' = extend (to-list l') l
 
 ++-prop : 
   {Elem : 𝒰 ˙} {Col : 𝒱 ˙}
-  ⦃ _ : Collection 𝒲 Col Elem ⦄
+  ⦃ _ : Listable 𝒲 Col Elem ⦄
   ⦃ _ : Insertable Col Elem ⦄
-  ⦃ _ : Listable Col Elem ⦄
   {x : Elem}
   {l l' : Col}
   → -----------------------

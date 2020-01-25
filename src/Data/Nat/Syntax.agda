@@ -9,9 +9,9 @@ open Logic using (⋆ₚ) public
 
 {-# BUILTIN NATURAL ℕ #-}
 
-record Nat (X : 𝒰 ˙) : 𝒰 ⁺ ˙ where
+record Nat 𝒰 (X : 𝒱 ˙) : 𝒰 ⁺ ⊔ 𝒱 ⁺ ˙ where
   field
-    Constraint : (n : ℕ) → 𝒰 ᵖ
+    Constraint : (n : ℕ) → 𝒱 ᵖ
     fromℕ : (n : ℕ) ⦃ p : Constraint n ⦄ → X
 
 open Nat ⦃ ... ⦄ public using (fromℕ)
@@ -19,14 +19,15 @@ open Nat ⦃ ... ⦄ public using (fromℕ)
 {-# BUILTIN FROMNAT fromℕ #-}
 
 instance
-  Natℕ : Nat ℕ
+  Natℕ : Nat 𝒰₀ ℕ
   Nat.Constraint Natℕ _ = ⊤
   Nat.fromℕ Natℕ n = n
 
 module Pattern where
+  infixl 130 _+1 _+2 _+3
   pattern _+1 x = suc x
-  pattern _+2 x = suc (suc x)
-  pattern _+3 x = suc (suc (suc x))
+  pattern _+2 x = x +1 +1
+  pattern _+3 x = x +2 +1
 
 module Display where
   open Pattern

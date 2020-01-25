@@ -19,25 +19,12 @@ open import Function.Proof
 
 open Composable ⦃ ... ⦄ public
 
+module comp-< where
+  open TransMakeComposable _<_ public
+module comp-≤ where
+  open TransMakeComposable _≤_ public
+
 instance
-  comp-<-< : Composable 𝒰₀ _<_ _<_
-  comp-<-< = composable-trans
-
-  comp-<-== : Composable 𝒰₀ _<_ _==_
-  comp-<-== = composable-R-== _<_
-
-  comp-==-< : Composable 𝒰₀ _==_ _<_
-  comp-==-< = composable-==-R _<_
-
-  comp-≤-≤ : Composable 𝒰₀ _≤_ _≤_
-  comp-≤-≤ = composable-trans
-
-  comp-≤-== : Composable 𝒰₀ _≤_ _==_
-  comp-≤-== = composable-R-== _≤_
-
-  comp-==-≤ : Composable 𝒰₀ _==_ _≤_
-  comp-==-≤ = composable-==-R _≤_
-
   comp-<-≤ : Composable 𝒰₀ _<_ _≤_
   rel ⦃ comp-<-≤ ⦄ = _<_
   compose ⦃ comp-<-≤ ⦄ a<b (∨left (Idₚ.refl _)) = a<b

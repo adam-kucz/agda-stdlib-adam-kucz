@@ -13,7 +13,7 @@ data Finℕ : (n : ℕ) → 𝒰₀ ˙ where
   suc : ∀ {n} → (x : Finℕ n) → Finℕ (suc n)
 
 instance
-  NatFinℕ : ∀ {n} → Nat (Finℕ n)
+  NatFinℕ : ∀ {n} → Nat 𝒰₀ (Finℕ n)
   Nat.Constraint (NatFinℕ {n}) m = m <ₜ n
   Nat.fromℕ (NatFinℕ {suc n}) zero = zero
   Nat.fromℕ (NatFinℕ {suc n}) (suc m) = suc $ Nat.fromℕ (NatFinℕ {n}) m
