@@ -2,4 +2,5 @@
 module Data.Bool where
 
 open import Data.Bool.Definition public 
-open import Data.Bool.Property public 
+open import Data.Bool.Monoid public 
+open import Data.Bool.Correspondence public 

@@ -1,59 +1,53 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --prop #-}
 module Data.Bool.Property where
 
 open import Data.Bool.Definition
+open import Data.Bool.Monoid
+open import Data.Bool.Correspondence
 
 open import PropUniverses
-open import Proposition.Decidable
+open import Proposition.Decidable as Dec hiding (true; false)
+open import Type.Sum hiding (_,_) 
+open import Proposition.Sum.Monoid
+open import Structure.Monoid
+open import Data.Collection
+open import Data.Collection.Listable.Function
+open import Data.Functor
+open import Data.List
+open import Data.List.Functor
+open import Logic
+open import Proof
 
-to-bool :
-  (𝑋 : 𝒰 ᵖ)
-  ⦃ _ : Decidable 𝑋 ⦄
-  → ------------------
-  Bool
-to-bool 𝑋 with decide 𝑋
-to-bool _ | true _ = true
-to-bool _ | false _ = true
-
-open import Proposition.Identity
-open import Operation.Binary
+fold-to-bool : {Col : 𝒰 ˙}
+  ⦃ list : Listable 𝒲 Col (Σ λ (𝑋 : 𝒱 ᵖ) → Decidable 𝑋) ⦄
+  ⦃ monᵖ : Monoid (𝒱 ᵖ) ⦄
+  ⦃ monBool : Monoid Bool ⦄
+  (p : e <~> e)
+  (q : _∙_ <~2~> _∙_)
+  (S : Col)
+  → --------------------------------------
+  fold-map pr₁ ⦃ monᵖ ⦄ S
+  <~>
+  fold-map (λ {(𝑋 Σ., d) → to-bool 𝑋 ⦃ d ⦄}) ⦃ monBool ⦄ S
+fold-to-bool {𝒱 = 𝒱} ⦃ monᵖ = monᵖ ⦄ ⦃ monBool ⦄ p q S = go p q (to-list S)
+  where go :
+          (p : e <~> e)
+          (q : _∙_ <~2~> _∙_)
+          (l : List (Σ λ (𝑋 : 𝒱 ᵖ) → Decidable 𝑋))
+          → ----------------------------------------------------------------------
+          mconcat ⦃ monᵖ ⦄ (pr₁ <$> l)
+          <~>
+          mconcat ⦃ monBool ⦄ ((λ {(𝑋 Σ., d) → to-bool 𝑋 ⦃ d ⦄}) <$> l)
+        go p q []  = p
+        go p q ((𝑋 Σ., d) ∷ t) = 
+          q 𝑋 (to-bool 𝑋 ⦃ d ⦄) (d , refl _)
+            (mconcat (pr₁ <$> t))
+            (mconcat ((λ {(𝑋 Σ., d) → to-bool 𝑋 ⦃ d ⦄}) <$> t))
+            (go p q t)
 
 instance
-  and-assoc : Associative _and_
-  assoc ⦃ and-assoc ⦄ true y z = refl (y and z)
-  assoc ⦃ and-assoc ⦄ false _ _ = refl false
-
-  or-assoc : Associative _or_
-  assoc ⦃ or-assoc ⦄ true _ _ = refl true
-  assoc ⦃ or-assoc ⦄ false y z = refl (y or z)
-
-  and-comm : Commutative _and_
-  comm ⦃ and-comm ⦄ true true = refl true
-  comm ⦃ and-comm ⦄ true false = refl false
-  comm ⦃ and-comm ⦄ false true = refl false
-  comm ⦃ and-comm ⦄ false false = refl false
-
-  or-comm : Commutative _or_
-  comm ⦃ or-comm ⦄ true true = refl true
-  comm ⦃ or-comm ⦄ true false = refl true
-  comm ⦃ or-comm ⦄ false true = refl true
-  comm ⦃ or-comm ⦄ false false = refl false
-
-  true-and : true IsLeftUnitOf _and_
-  left-unit ⦃ true-and ⦄ = refl
-
-  false-or : false IsLeftUnitOf _or_
-  left-unit ⦃ false-or ⦄ = refl
-  
-  and-true = right-unit-of-commutative-left-unit true _and_
-  or-false = right-unit-of-commutative-left-unit false _or_
-
-open import Structure.Monoid
-
-MonoidAnd : Monoid Bool
-_∙_ ⦃ MonoidAnd ⦄ = _and_
-e ⦃ MonoidAnd ⦄ = true
-
-MonoidOr : Monoid Bool
-_∙_ ⦃ MonoidOr ⦄ = _or_
-e ⦃ MonoidOr ⦄ = false
+  DecidableBool== : {b₀ b₁ : Bool} → Decidable (b₀ == b₁)
+DecidableBool== {true} {true} = Dec.true (refl true)
+DecidableBool== {true} {false} = Dec.false λ ()
+DecidableBool== {false} {true} = Dec.false λ ()
+DecidableBool== {false} {false} = Dec.true (refl false)

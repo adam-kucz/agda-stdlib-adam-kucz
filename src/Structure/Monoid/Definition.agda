@@ -23,6 +23,8 @@ record Monoid (X : 𝒰 ˙) : 𝒰 ˙ where
 
 open Monoid ⦃ ... ⦄ public
 
+{-# DISPLAY Monoid._∙_ M x y = _∙_ x y #-}
+
 instance
   DefaultMonoid : {op : Op X} {e : X}
     ⦃ _ : FormSemigroup op ⦄

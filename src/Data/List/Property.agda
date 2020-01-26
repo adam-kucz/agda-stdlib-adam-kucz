@@ -1,24 +1,28 @@
 {-# OPTIONS --exact-split --prop --safe #-}
-open import PropUniverses
-
 module Data.List.Property where
 
 open import Data.List.Definition
 open import Data.List.Collection
 
+open import PropUniverses
 open import Proposition.Identity
-open import Proposition.Decidable
+open import Proposition.Decidable.Definition
 open import Data.Nat.Definition
 open import Data.Nat.Order
 open import Data.Collection
-open import Data.Foldable.Definition
-open import Structure.Monoid
+open import Structure.Monoid.Definition
 open import Logic
 
 instance
   ListEmpty : Empty (List X) X
   ∅ ⦃ ListEmpty ⦄ = []
   _∉∅ ⦃ ListEmpty ⦄ _ ()
+
+  ListListable : Listable 𝒰₀ (List X) X
+  collection ⦃ ListListable ⦄ = ListCollection
+  to-list ⦃ ListListable ⦄ S = S
+  ⟶ (to-list-valid ⦃ ListListable ⦄) p = p
+  ⟵ (to-list-valid ⦃ ListListable ⦄) q = q
 
   ListRemovable : {X : 𝒰 ˙}
     ⦃ d : ∀ {x y : X} → Decidable (x == y) ⦄

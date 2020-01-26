@@ -3,7 +3,7 @@ module Data.List.Monoid where
 
 open import Data.List.Definition
 open import Data.List.Operation
-open import Structure.Monoid
+open import Structure.Monoid.Definition
 
 open import Universes
 open import Operation.Binary

@@ -8,11 +8,11 @@ open import Data.List.Insertable
 open import PropUniverses
 open import Proposition.Identity hiding (refl)
 open import Proposition.Empty
-open import Proposition.Decidable
+open import Proposition.Decidable.Definition
 open import Data.Nat.Definition
 open import Data.Maybe.Definition
 open import Data.Functor
-open import Data.Collection hiding (_++_)
+open import Data.Collection.Definition
 open import Logic hiding (⊥-recursion)
 open import Proof
 
@@ -45,9 +45,22 @@ instance
   right-unit ⦃ ++-[] ⦄ (h ∷ t) =
     List== (refl h) (right-unit t)
 
+∈++ : ∀ (x : X) l l'
+  → ------------------------------
+  x ∈ l ++ l' ↔ x ∈ l ∨ x ∈ l'
+⟶ (∈++ x [] l') p = ∨right p
+⟶ (∈++ x (x ∷ l) l') (x∈x∷ .(l ++ l')) = ∨left (x∈x∷ l)
+⟶ (∈++ x (h ∷ l) l') (x∈tail h p) with ⟶ (∈++ x l l') p
+⟶ (∈++ x (h ∷ l) l') (x∈tail h p) | ∨left p₁ = ∨left (x∈tail h p₁)
+⟶ (∈++ x (h ∷ l) l') (x∈tail h p) | ∨right q = ∨right q
+⟵ (∈++ x [] l') (∨right q) = q
+⟵ (∈++ x (x ∷ l) l') (∨left (x∈x∷ l)) = x∈x∷ (l ++ l')
+⟵ (∈++ x (h ∷ l) l') (∨left (x∈tail h p)) = x∈tail h (⟵ (∈++ x l l') (∨left p))
+⟵ (∈++ x (h ∷ l) l') (∨right q) = x∈tail h (⟵ (∈++ x l l') (∨right q))
+
 filter :
   (p : X → 𝒰 ᵖ)
-  ⦃ _ : ∀ {x} → Decidable (p x) ⦄
+  ⦃ d : ∀ {x} → Decidable (p x) ⦄
   (l : List X)
   → --------------------
   List X

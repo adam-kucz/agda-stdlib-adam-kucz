@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --exact-split --safe --prop #-}
 module Type.BinarySum.Definition where
 
 open import Universes

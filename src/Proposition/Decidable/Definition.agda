@@ -47,6 +47,16 @@ _ by-difₚ 𝑋 then f else g | true p = f p
 _ by-difₚ 𝑋 then f else g | false ¬p = g ¬p
 
 instance
+  ⊥Decidable : Decidable ⊥
+  ⊥Decidable = false λ ()
+
+  ⊤Decidable : Decidable ⊤
+  ⊤Decidable = true ⋆ₚ
+  
+  LiftDecidable : ⦃ d : Decidable 𝑋 ⦄ → Decidable (Lift𝒰ᵖ {𝒱 = 𝒰} 𝑋)
+  LiftDecidable ⦃ d = true p ⦄ = true (↑prop p)
+  LiftDecidable ⦃ d = false ¬p ⦄ = false (λ z → ¬p (↓prop z))
+  
   ¬Decidable : ⦃ p : Decidable 𝑋 ⦄ → Decidable (¬ 𝑋)
   ¬Decidable ⦃ true p ⦄ = false λ ¬p → ¬p p
   ¬Decidable ⦃ false ¬p ⦄ = true ¬p

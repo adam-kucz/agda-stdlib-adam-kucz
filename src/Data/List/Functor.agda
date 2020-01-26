@@ -7,7 +7,7 @@ open import Data.List.Operation
 open import Data.List.Monoid
 
 open import Universes
-open import Data.Collection hiding (_++_)
+open import Data.Collection.Definition
 open import Data.Functor
 open import Data.Applicative
 open import Data.Monad
@@ -50,6 +50,21 @@ fmap-∘ ⦃ ListFunctor ⦄ g f = fun-ext go
   f x ∈ (f <$> l)
 ∈fmap f (x∈x∷ t) = x∈x∷ f <$> t
 ∈fmap f (x∈tail h p) = x∈tail (f h) (∈fmap f p)
+
+open import Logic hiding (_,_)
+
+∈fmap⁻¹ : 
+  {X : 𝒰 ˙}{Y : 𝒱 ˙}
+  {y : Y}
+  (l : List X)
+  (f : (x : X) → Y)
+  (p : y ∈ (f <$> l))
+  → ------------------
+  ∃ λ (x : X) → f x == y ∧ x ∈ l
+∈fmap⁻¹ (h ∷ l) f (x∈x∷ .(f <$> l)) = h ∃., (refl (f h) _∧_., x∈x∷ l)
+∈fmap⁻¹ (h ∷ l) f (x∈tail .(f h) p) with ∈fmap⁻¹ l f p
+∈fmap⁻¹ (h ∷ l) f (x∈tail .(f h) p) | x ∃., (fx==y _∧_., x∈l) =
+  x ∃., (fx==y _∧_., x∈tail h x∈l)
 
 fmap-++ : {X : 𝒰 ˙}{Y : 𝒱 ˙}
   (f : X → Y)(l l' : List X)

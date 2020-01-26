@@ -9,20 +9,21 @@ open import Logic
 
 open import Data.Nat using (ℕ)
 
-data member {X : 𝒰 ˙} (x : X) : {n : ℕ} (l : Vec X n) → 𝒰 ᵖ where
+data member {X : 𝒰 ˙} (x : X) : {n : ℕ} (l : Vec X n) → 𝒰₀ ᵖ where
   x∈x∷_ : ∀ {n} (t : Vec X n) → member x (x ∷ t)
   x∈tail : ∀ {n} (h : X) {t : Vec X n} (p : member x t) → member x (h ∷ t)
 
 open import Data.Collection
 
 instance
-  VecCollection : ∀ {X : 𝒰 ˙}{m} → Collection 𝒰 (Vec X m) X
+  VecCollection : ∀ {X : 𝒰 ˙}{m} → Collection 𝒰₀ (Vec X m) X
   _∈_ ⦃ VecCollection ⦄ x = member x
 
 open import Data.List
 
 instance
-  VecListable : ∀ {m} → Listable (Vec X m) X
+  VecListable : ∀ {m} → Listable 𝒰₀ (Vec X m) X
+  collection ⦃ VecListable ⦄ = VecCollection
   to-list ⦃ VecListable ⦄ [] = []
   to-list ⦃ VecListable ⦄ (h ∷ S) = h ∷ to-list S
   ⟶ (to-list-valid ⦃ VecListable ⦄) (x∈x∷ t) =

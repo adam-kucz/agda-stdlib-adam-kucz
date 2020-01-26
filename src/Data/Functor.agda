@@ -31,3 +31,4 @@ record Functor
 open Functor ⦃ … ⦄ public
 
 {-# DISPLAY Functor.fmap F f = fmap f #-}
+{-# DISPLAY Functor._<$>_ F f x = _<$>_ f x #-}

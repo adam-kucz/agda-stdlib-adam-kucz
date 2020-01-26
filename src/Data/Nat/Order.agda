@@ -7,7 +7,7 @@ open import Data.Nat.Syntax
 open Pattern
 
 open import Proposition.Identity renaming (Idₚ to Id) using (_==_; ap)
-open import Proposition.Decidable
+open import Proposition.Decidable.Definition
 open import Relation.Binary.Property
 open import Operation.Binary
 open import Logic
@@ -154,9 +154,11 @@ max = _⊔_
 
 instance
   min-comm : Commutative _⊓_
+  min-assoc : Associative _⊓_
   min-0-left : 0 IsLeftZeroOf _⊓_
   min-0-right : 0 IsRightZeroOf _⊓_
   max-comm : Commutative _⊔_
+  max-assoc : Associative _⊔_
   max-0-left : 0 IsLeftUnitOf _⊔_
   max-0-right : 0 IsRightUnitOf _⊔_
 
@@ -164,6 +166,10 @@ comm ⦃ min-comm ⦄ zero zero = refl 0
 comm ⦃ min-comm ⦄ zero (suc b) = refl 0
 comm ⦃ min-comm ⦄ (suc a) zero = refl 0
 comm ⦃ min-comm ⦄ (suc a) (suc b) = ap suc $ comm a b
+assoc ⦃ min-assoc ⦄ zero y z = refl 0
+assoc ⦃ min-assoc ⦄ (x +1) zero z = refl 0
+assoc ⦃ min-assoc ⦄ (x +1) (y +1) zero = refl 0
+assoc ⦃ min-assoc ⦄ (x +1) (y +1) (z +1) = ap suc $ assoc x y z
 left-zero ⦃ min-0-left ⦄ _ = refl 0
 right-zero ⦃ min-0-right ⦄ zero = refl 0
 right-zero ⦃ min-0-right ⦄ (_ +1) = refl 0
@@ -172,6 +178,10 @@ comm ⦃ max-comm ⦄ zero zero = refl 0
 comm ⦃ max-comm ⦄ zero (suc y) = refl (suc y)
 comm ⦃ max-comm ⦄ (suc x) zero = refl (suc x)
 comm ⦃ max-comm ⦄ (suc x) (suc y) = ap suc $ comm x y
+assoc ⦃ max-assoc ⦄ zero y z = refl (y ⊔ z)
+assoc ⦃ max-assoc ⦄ (x +1) zero z = refl (x +1 ⊔ z)
+assoc ⦃ max-assoc ⦄ (x +1) (y +1) zero = refl ((x ⊔ y) +1)
+assoc ⦃ max-assoc ⦄ (x +1) (y +1) (z +1) = ap suc $ assoc x y z
 left-unit ⦃ max-0-left ⦄ y = refl y
 right-unit ⦃ max-0-right ⦄ zero = refl 0
 right-unit ⦃ max-0-right ⦄ (y +1) = refl (y +1)
@@ -182,6 +192,17 @@ min== (suc _) zero = ∨right (refl 0)
 min== (suc m) (suc n) with min== m n
 min== (suc m) (suc n) | ∨left min-m-n==m = ∨left $ ap suc min-m-n==m
 min== (suc m) (suc n) | ∨right min-m-n==n = ∨right $ ap suc min-m-n==n
+
+min≤ : ∀ m n → m ⊓ n ≤ m
+min≤ zero n = refl 0
+min≤ (m +1) zero = ∨right z<s
+min≤ (m +1) (n +1) = ap suc (min≤ m n)
+
+≤max : ∀ m n → m ≤ m ⊔ n
+≤max zero zero = refl 0
+≤max zero (n +1) = ∨right z<s
+≤max (m +1) zero = refl (m +1)
+≤max (m +1) (n +1) = ap suc (≤max m n)
 
 ≤→min== : ∀ {m n} → (p : n ≤ m) → n ⊓ m == n
 ≤→min== (∨left (Id.refl n)) = ∨-contract (min== n n)
