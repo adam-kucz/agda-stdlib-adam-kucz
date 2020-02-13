@@ -12,7 +12,7 @@ open Collection ⦃ … ⦄ public
 
 {-# DISPLAY Collection._∈_ C x l = x ∈ l #-}
 
-open import Proposition.Identity
+open import Proposition.Identity.Definition
 open import Logic
 
 infix 35 _∉_

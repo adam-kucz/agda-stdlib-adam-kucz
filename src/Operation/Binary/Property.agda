@@ -4,7 +4,7 @@ module Operation.Binary.Property where
 open import PropUniverses as Univ
 open import Operation.Binary.Definition
 
-open import Proposition.Identity using (_==_)
+open import Proposition.Identity.Definition using (_==_)
 
 record Commutative {X : 𝒰 ˙} {Y : 𝒱 ˙} (_∙_ : Op X X Y) : 𝒰 ⊔ 𝒱 ᵖ where
   field
@@ -24,7 +24,7 @@ record Idempotent {X : 𝒰 ˙}(_∙_ : ClosedOp X) : 𝒰 ᵖ where
 
 open Idempotent ⦃ ... ⦄ public
 
-open import Function using (flip)
+open import Function.Basic using (flip)
 open import Proof
 
 assoc-of-flip :

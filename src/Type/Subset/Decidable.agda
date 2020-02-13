@@ -39,8 +39,8 @@ open import Data.Functor
 open import Data.List
 open import Data.List.Functor
 open import Structure.Monoid
-open import Operation.Binary
-open import Function using (id; _∘_)
+open import Operation.Binary hiding (Inverse)
+open import Function hiding (_$_)
 open import Logic
 open import Proof
 open import Proposition.Proof
@@ -91,3 +91,17 @@ _[_,_]`_ {𝒲 = 𝒲}{X = X}{Y} f f⁻¹ p S@(dec-set set) = dec-set (f Subset.
                       :by: (λ q → ⟶ (==→↔ $ ap ¬_ q) ∀x∉set)
                     ⟶ ⊥
                       :by: (_$ (↑prop ⋆ₚ))
+
+infixr 105 _`_
+_`_ : {X : 𝒰 ˙}{Y : 𝒱 ˙}
+  (f : X → Y)
+  {f⁻¹ : Y → X}
+  ⦃ inv : Inverse f f⁻¹ ⦄
+  (S : DecSubset 𝒲 X)
+  → ----------------
+  DecSubset (𝒰 ⊔ 𝒱 ⊔ 𝒲) Y
+_`_ f {f⁻¹} ⦃ inv ⦄ S = f [ [_] ∘ f⁻¹ , p ]` S
+  where p : ∀ x y → x ∈ [ f⁻¹ y ] ↔ f x == y
+        ⟶ (p .(f⁻¹ y) y) (x∈x∷ []) = right-inv y
+        ⟵ (p x .(f x)) (Id.refl .(f x)) =
+          Id.coe (ap (λ — → x ∈ [ — ]) $ sym $ left-inv x) $ x∈x∷ []

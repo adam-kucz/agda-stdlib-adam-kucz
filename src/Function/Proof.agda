@@ -3,7 +3,7 @@ module Function.Proof where
 
 open import PropUniverses
 open import Proposition.Identity.Definition using (_==_; refl)
-open import Logic
+open import Logic.Basic
 open import Relation.Binary.Definition using (Rel)
 
 record Relating {X : 𝒰 ˙} {A : (x : X) → 𝒱 ˙}
@@ -104,16 +104,22 @@ prefix :
   f x ⊑ x
 prefix f ⦃ pre ⦄ = UniversalPrefix.prefix pre
 
+open import Function.Basic
+open import Function.Equivalence
+
 instance
   Relating-all-== : {f : (x : X) → A x} → Relating f _==_ _==_
-  rel-preserv ⦃ Relating-all-== {f = f} ⦄ (refl x) = refl (f x)
+  Relating-∘-~ : {f : (y : Y) → A y} → Relating (f ∘_) (_~_ {X = X}) _~_
 
   RRelating-all-== :
     {I : 𝒰 ˙} {F : (i : I) → 𝒱 ˙} {j : (i : I) → I}
     {f : ∀ {i} → F i → F (j i)}
     → ----------------------------
     ReindexingRelating F f _==_
-  reindexed ⦃ RRelating-all-== {f = f} ⦄ i = Relating-all-==
+
+rel-preserv ⦃ Relating-all-== {f = f} ⦄ (refl x) = refl (f x)
+rel-preserv ⦃ Relating-∘-~ {f = f} ⦄ p x = ap f (p x)
+reindexed ⦃ RRelating-all-== {f = f} ⦄ i = Relating-all-==
 
   -- TODO (low priority): think of a different approach, this produces too many choice points
   -- Relating-∧-intro :

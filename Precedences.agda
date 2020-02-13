@@ -20,6 +20,7 @@ infixl 105 _++_ -- Data.Collection
 infixl 105 _++_ -- Data.List
 infixl 105 _∪_ -- Type.Subset.Definition
 infixl 105 _∪_ -- Type.Subset.Decidable
+infixl 105 _[_,_]`_ -- Type.Subset.Decidable
 
 infixr 104 _<$>_ -- Data.Functor
 infixl 103 _<*>_ -- Data.Applicative

@@ -17,20 +17,24 @@ open import Data.Collection
 
 instance
   VecCollection : ∀ {X : 𝒰 ˙}{m} → Collection 𝒰₀ (Vec X m) X
-  _∈_ ⦃ VecCollection ⦄ x = member x
+  VecEmpty : Empty (Vec X 0) X
+  VecListable : ∀ {m} → Listable 𝒰₀ (Vec X m) X
+
+_∈_ ⦃ VecCollection ⦄ x = member x
+
+∅ ⦃ VecEmpty ⦄ = []
+_∉∅ ⦃ VecEmpty ⦄ _ ()
 
 open import Data.List
 
-instance
-  VecListable : ∀ {m} → Listable 𝒰₀ (Vec X m) X
-  collection ⦃ VecListable ⦄ = VecCollection
-  to-list ⦃ VecListable ⦄ [] = []
-  to-list ⦃ VecListable ⦄ (h ∷ S) = h ∷ to-list S
-  ⟶ (to-list-valid ⦃ VecListable ⦄) (x∈x∷ t) =
-    x∈x∷ to-list t 
-  ⟶ (to-list-valid ⦃ VecListable ⦄) (x∈tail h p) =
-    x∈tail h (⟶ to-list-valid p)
-  ⟵ (to-list-valid ⦃ VecListable ⦄ {h ∷ S}) (x∈x∷ .(to-list S)) =
-    x∈x∷ S
-  ⟵ (to-list-valid ⦃ VecListable ⦄ {h ∷ S}) (x∈tail h q) =
-    x∈tail h (⟵ to-list-valid q)
+collection ⦃ VecListable ⦄ = VecCollection
+to-list ⦃ VecListable ⦄ [] = []
+to-list ⦃ VecListable ⦄ (h ∷ S) = h ∷ to-list S
+⟶ (to-list-valid ⦃ VecListable ⦄) (x∈x∷ t) =
+  x∈x∷ to-list t 
+⟶ (to-list-valid ⦃ VecListable ⦄) (x∈tail h p) =
+  x∈tail h (⟶ to-list-valid p)
+⟵ (to-list-valid ⦃ VecListable ⦄ {h ∷ S}) (x∈x∷ .(to-list S)) =
+  x∈x∷ S
+⟵ (to-list-valid ⦃ VecListable ⦄ {h ∷ S}) (x∈tail h q) =
+  x∈tail h (⟵ to-list-valid q)

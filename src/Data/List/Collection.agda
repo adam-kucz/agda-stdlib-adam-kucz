@@ -14,3 +14,6 @@ open import Data.Collection.Definition
 instance
   ListCollection : Collection 𝒰₀ (List X) X
   _∈_ ⦃ ListCollection ⦄ = member
+
+{-# DISPLAY member v l = v ∈ l #-}
+

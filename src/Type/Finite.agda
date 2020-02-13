@@ -3,14 +3,14 @@ module Type.Finite where
 
 open import PropUniverses
 open import Data.Vec
+open import Data.Collection
 open import Logic
 
 is-finite : (X : 𝒰 ˙) → 𝒰 ᵖ
 is-finite X =
   ∃ λ n →
   ∃ λ (l : Vec X n) →
-  ∀ x →
-  x ∈ l
+  ∀ (x : X) → x ∈ l
 
 open import Proposition.Sum
 

@@ -21,7 +21,7 @@ open import Proposition.Decidable using (decide; true; false)
 open import Proposition.Identity renaming (Idₚ to Id) using (_==_)
 
 min<s : ∀ m n → min m n < suc m
-min<s m n = ⟶ -≤-↔-<s (lower-bound m n)
+min<s m n = ⟶ -≤-↔-<s (min≤ m n)
 
 -- return n if n fits in Finℕ (m + 1) [i.e. when n ≤ m]
 -- otherwise return the largest element of Finℕ (m + 1)

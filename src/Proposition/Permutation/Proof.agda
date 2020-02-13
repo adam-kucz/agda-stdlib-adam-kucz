@@ -10,19 +10,12 @@ open import Proof
 open import Proposition.Identity using (_==_)
 open import Relation.Binary.Property using (subrel)
 
+module comp-~ {X : 𝒰 ˙} where
+  open TransMakeComposable (_~_ {X = X}) public
+module comp-~~ {X : 𝒰 ˙} where
+  open TransMakeComposable (_~~_ {X = X}) public
+
 instance
-  comp-~-== : {X : 𝒰 ˙} → Composable 𝒰 (_~_ {X = X}) _==_
-  comp-~-== = composable-R-== _~_
-
-  comp-==-~ : {X : 𝒰 ˙} → Composable 𝒰 _==_ (_~_ {X = X})
-  comp-==-~ = composable-==-R _~_
-
-  comp-~~-== : {X : 𝒰 ˙} → Composable 𝒰 (_~~_ {X = X}) _==_
-  comp-~~-== = composable-R-== _~~_
-
-  comp-==-~~ : {X : 𝒰 ˙} → Composable 𝒰 _==_ (_~~_ {X = X})
-  comp-==-~~ = composable-==-R _~~_
-
   comp-~-~~ : {X : 𝒰 ˙} → Composable 𝒰 _~_ (_~~_ {X = X})
   Composable.rel comp-~-~~ = _~~_
   Composable.compose comp-~-~~ p q = trans (subrel p) q

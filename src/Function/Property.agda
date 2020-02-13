@@ -5,7 +5,7 @@ open import PropUniverses
 open import Proposition.Identity.Definition
   renaming (Idₚ to Id) using (_==_; refl)
 open import Proposition.Sum
-open import Logic
+open import Logic.Basic
 open import Function.Basic hiding (_$_)
 open import Function.Equivalence
 
@@ -139,13 +139,9 @@ surj ⦃ Surjective-id ⦄ y = y , refl y
 Involutive : {X : 𝒰 ˙}(f : X → X) → 𝒰 ᵖ
 Involutive f = Inverse f f
 
-mk-involutive : {f : X → X}
-  (p : f ∘ f ~ id)
-  → -------------------------
-  Involutive f
-mk-involutive {f = f} p = record {}
-  where instance
-          lft : LeftInverse f f
-          rght : RightInverse f f
-        left-inv ⦃ lft ⦄ = p
-        right-inv ⦃ rght ⦄ = p
+module mkInvolutive {f : X → X}(p : f ∘ f ~ id) where
+  instance
+    lft : LeftInverse f f
+    rght : RightInverse f f
+  left-inv ⦃ lft ⦄ = p
+  right-inv ⦃ rght ⦄ = p

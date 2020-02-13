@@ -4,7 +4,7 @@ module Relation.Binary.Property where
 open import PropUniverses
 open import Relation.Binary.Definition
 open import Proposition.Identity.Definition using (_==_; _≠_)
-open import Logic using (¬_; _∨_; _∧_; ⊥)
+open import Logic.Basic using (¬_; _∨_; _∧_; ⊥)
 
 private
   module RelProp (property : RelProperty) where
@@ -82,40 +82,7 @@ record Minimal {X : 𝒰 ˙} (_≼_ : Rel 𝒱 X X) (⊥ : X) : 𝒰 ⊔ 𝒱 �
 
 open Minimal ⦃ … ⦄ public
 
-open import Proposition.Sum using (Σₚ; _,_)
-
--- TODO: put in separate module
-Subset : (X : 𝒰 ˙) (𝐴 : (x : X) → 𝒱 ᵖ) → 𝒰 ⊔ 𝒱 ˙ 
-Subset X 𝐴 = Σₚ λ (x : X) → 𝐴 x
-
-on-elems : {𝐴 : (x : X) → 𝒰 ᵖ}
-  (R : Rel 𝒱 X X)
-  → ------------------------------
-  Rel 𝒱 (Subset X 𝐴) (Subset X 𝐴)
-on-elems _R_ (x , _) (x' , _) = x R x'
-
 open import Proposition.Decidable.Definition using (Decidable)
-
-record WellFounded {X : 𝒰 ˙}
-  (_≼_ : Rel 𝒱 X X)
-  (min : ∀ {𝒲}
-    (𝐴 : (x : X) → 𝒲 ᵖ)
-    ⦃ _ : ∀ {x} → Decidable (𝐴 x) ⦄
-    (non-empty : Subset X 𝐴)
-    → ------------------------
-    Subset X 𝐴)
-  : ---------------------------------
-  𝒰ω
-  where
-  field
-    well-founded :
-      (𝐴 : (x : X) → 𝒲 ᵖ)
-      ⦃ _ : ∀ {x} → Decidable (𝐴 x) ⦄
-      (non-empty : Subset X 𝐴)
-      → -----------------------
-      Minimal (on-elems _≼_) (min 𝐴 non-empty)
-
-open WellFounded ⦃ … ⦄ public
 
 infix 21 _⊆_
 record _⊆_ {X : 𝒰 ˙} {Y : 𝒱 ˙} (_R_ : Rel 𝒲 X Y) (_P_ : Rel 𝒯 X Y) : 𝒰 ⊔ 𝒱 ⊔ 𝒲 ⊔ 𝒯 ᵖ

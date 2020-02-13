@@ -1,0 +1,11 @@
+  /home/acalc79/data/projects/agda-stdlib-adam-kucz/src/Logic:
+  insgesamt 92
+  drwxr-xr-x.  2 acalc79 acalc79  4096 13. Feb 17:13 .
+  drwxr-xr-x. 12 acalc79 acalc79  4096 13. Feb 17:15 ..
+  -rw-r--r--.  1 acalc79 acalc79   696 13. Feb 17:01 Basic.agda
+  -rw-r--r--.  1 acalc79 acalc79   520 13. Feb 17:02 Iff.agda
+  -rw-r--r--.  1 acalc79 acalc79   691 13. Feb 17:01 Iff.agda~
+  -rw-r--r--.  1 acalc79 acalc79 14718 13. Feb 17:02 Iff.agdai
+  -rw-r--r--.  1 acalc79 acalc79   548 13. Feb 17:13 Property.agda
+  -rw-r--r--.  1 acalc79 acalc79   102 13. Feb 17:02 Property.agda~
+  -rw-r--r--.  1 acalc79 acalc79 24109 13. Feb 17:08 Property.agdai

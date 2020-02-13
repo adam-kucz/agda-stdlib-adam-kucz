@@ -31,4 +31,3 @@ distrib-++ f p q (h ∷ l) l' =
     === f (h ∷ l) ++ f l'
       :by: ap (_++ f l') $ sym $ q h l
   qed
-

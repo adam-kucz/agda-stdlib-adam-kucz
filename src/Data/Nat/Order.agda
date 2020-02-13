@@ -30,6 +30,9 @@ a > b = b < a
 s<s→-<- : ∀ {m n} → (p : suc n < suc m) → n < m
 s<s→-<- (s<s p) = p
 
+-≮0 : ∀ {n} → ¬ n < 0
+-≮0 ()
+
 instance
   Irreflexive< : Irreflexive _<_
   irrefl ⦃ Irreflexive< ⦄ 0 ()

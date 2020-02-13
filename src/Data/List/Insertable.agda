@@ -13,8 +13,9 @@ open import Logic
 
 instance
   ListInsertable : Insertable (List X) X
-  insert ⦃ ListInsertable ⦄ = _∷_
-  ⟶ (insert-valid ⦃ ListInsertable ⦄ {x = x}) (x∈x∷ _) = ∨right (refl x)
-  ⟶ (insert-valid ⦃ ListInsertable ⦄) (x∈tail _ p) = ∨left p
-  ⟵ (insert-valid ⦃ ListInsertable ⦄ {x = x}) (∨left p) = x∈tail x p
-  ⟵ (insert-valid ⦃ ListInsertable ⦄) (∨right (Id.refl x)) = x∈x∷ _
+
+insert ⦃ ListInsertable ⦄ = _∷_
+⟶ (insert-valid ⦃ ListInsertable ⦄ {x = x}) (x∈x∷ _) = ∨right (refl x)
+⟶ (insert-valid ⦃ ListInsertable ⦄) (x∈tail _ p) = ∨left p
+⟵ (insert-valid ⦃ ListInsertable ⦄ {x = x}) (∨left p) = x∈tail x p
+⟵ (insert-valid ⦃ ListInsertable ⦄) (∨right (Id.refl x)) = x∈x∷ _

@@ -28,6 +28,9 @@ module Pattern where
   pattern _+1 x = suc x
   pattern _+2 x = x +1 +1
   pattern _+3 x = x +2 +1
+  pattern one = 0 +1
+  pattern two = 0 +2
+  pattern three = 0 +3
 
 module Display where
   open Pattern

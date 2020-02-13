@@ -16,6 +16,9 @@ X × Y = Σ λ (_ : X) → Y
 
 open Σ public
 
+mk-Σ-implicit : {x : X}(y : A x) → Σ A
+mk-Σ-implicit {x = x} y = x , y
+
 open import Proposition.Identity.Definition
 
 Σ== :
@@ -42,6 +45,13 @@ from-Σ== (refl σ) = refl (pr₁ σ) ,, refl (pr₂ σ)
   → -------------------------
   Σ λ (xy : Σ A) → K (pr₁ xy) (pr₂ xy)
 Σ-assoc (x , (y , z)) = ((x , y), z)
+
+〈_,_〉 :
+  (f : (x : X) → Y)
+  (g : (x : X) → Z)
+  → -----------------------
+  (x : X) → Y × Z
+〈 f , g 〉 x = f x , g x
 
 [_×_] :
   (f : (x : X₀) → X₁)
