@@ -17,35 +17,60 @@ open import Function.Proof
   using (ap; Relating-all-==; ap'; RRelating-all-==) public
 open Relation.Binary.Property using (sym; refl) public
 
+-- generalisation of symmetry
+record StrongSymmetric
+    {X : 𝒰 ˙}
+    {LevF : X → Universe}
+    {F : (x : X) → LevF x ˙}
+    {LevR : (x y : X) → Universe}
+    (_R_ : ∀ {x y} → Rel (LevR x y) (F x) (F y)) : 𝒰ω
+  where
+  field
+    strong-sym : ∀ {x y}{x₁ : F x}{y₁ : F y}
+      (p : x₁ R y₁)
+      → ---------------
+      y₁ R x₁
+
+open StrongSymmetric ⦃ … ⦄ public
+
+instance
+  StrongSymmetric== : StrongSymmetric {𝒰 ⁺}{F = λ x → x} _==_
+
+strong-sym ⦃ StrongSymmetric== ⦄ (Id.refl x) = refl x
+
+-- generalisation of transitivity
 record Composable 𝒵 (R : Rel 𝒯 X Y) (S : Rel 𝒮 Y Z) : 𝒰ω
   where
   field
       rel : Rel 𝒵 X Z
-      compose : {x : X} {y : Y} {z : Z} (p : R x y) (q : S y z) → rel x z
+      compose : ∀ {x y z}(p : R x y) (q : S y z) → rel x z
 
 instance
   Composable-==-== : ∀ {X Y Z : 𝒰 ˙} →
     Composable 𝒰 (_==_ {X = X}{Y}) (_==_ {X = Y}{Z})
-  Composable.rel Composable-==-== = _==_
-  Composable.compose Composable-==-== (Id.refl _) q = q
+
+Composable.rel Composable-==-== = _==_
+Composable.compose Composable-==-== (Id.refl _) q = q
 
 module MakeComposable (R : Rel 𝒲 X Y) where
   instance
     composable-R-== : Composable 𝒲 R _==_
-    Composable.rel composable-R-== = R
-    Composable.compose composable-R-== p (Id.refl x) = p
-  
     composable-==-R : Composable 𝒲 _==_ R
-    Composable.rel composable-==-R = R
-    Composable.compose composable-==-R (Id.refl x) q = q
+
+  Composable.rel composable-R-== = R
+  Composable.compose composable-R-== p (Id.refl x) = p
+  
+  Composable.rel composable-==-R = R
+  Composable.compose composable-==-R (Id.refl x) q = q
 
 module TransMakeComposable
     (R : Rel 𝒱 X X) ⦃ p : Transitive R ⦄
     where
   instance
     composable-trans : Composable 𝒱 R R
-    Composable.rel composable-trans = R
-    Composable.compose composable-trans = trans
+
+  Composable.rel composable-trans = R
+  Composable.compose composable-trans = trans
 
   open MakeComposable R public
 

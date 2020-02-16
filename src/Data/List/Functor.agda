@@ -130,7 +130,7 @@ naturality ⦃ ListApplicative ⦄ f g (u₀ ∷ u) v =
       :by: ap (λ — → — v ++ (fmap f u ⋆ fmap g v)) (
         proof fmap [ f × g ] ∘ fmap (u₀ ,_)
           === fmap ([ f × g ] ∘ (u₀ ,_))
-            :by: Id.sym $ fmap-∘ [ f × g ] (u₀ ,_)
+            :by: strong-sym $ fmap-∘ [ f × g ] (u₀ ,_)
           === fmap ((f u₀ ,_) ∘ g)
             :by: ap fmap $ fun-ext (λ v' → refl (f u₀ , g v'))
           === fmap (f u₀ ,_) ∘ fmap g
@@ -169,11 +169,11 @@ right-identity ⦃ ListApplicative ⦄ u =
            ⋆-assoc u v w
     === fmap (Σ-assoc ∘ (h ,_)) (v ⋆ w) ++ (u ⋆ v ⋆ w)
       :by: ap (λ — → — (v ⋆ w) ++ (u ⋆ v ⋆ w)) $
-           Id.sym $ fmap-∘ Σ-assoc (h ,_)
+           strong-sym $ fmap-∘ Σ-assoc (h ,_)
     === (fmap (h ,_) v ⋆ w) ++ (u ⋆ v ⋆ w)
       :by: ap (_++ (u ⋆ v ⋆ w)) $ go v
     === (fmap (h ,_) v ++ (u ⋆ v)) ⋆ w
-      :by: Id.sym $ ++-L⋆ (fmap (h ,_) v) (u ⋆ v) w 
+      :by: strong-sym $ ++-L⋆ (fmap (h ,_) v) (u ⋆ v) w 
   qed
   where go : {X : 𝒰 ˙}(v : List X)
           → --------------------------------------------------
@@ -189,7 +189,7 @@ right-identity ⦃ ListApplicative ⦄ u =
               :by: ap (_++ (fmap (h ,_) v L⋆ w)) (
                 proof fmap (Σ-assoc ∘ (h ,_)) (fmap (v₀ ,_) w)
                   === fmap (Σ-assoc ∘ (h ,_) ∘ (v₀ ,_)) w
-                    :by: ==→~ (Id.sym $ fmap-∘ (Σ-assoc ∘ (h ,_)) (v₀ ,_)) w
+                    :by: ==→~ (strong-sym $ fmap-∘ (Σ-assoc ∘ (h ,_)) (v₀ ,_)) w
                   === fmap (h , v₀ ,_) w
                     :by: ap (λ — → fmap — w) $ fun-ext (λ x → refl (h , v₀ , x))
                 qed)

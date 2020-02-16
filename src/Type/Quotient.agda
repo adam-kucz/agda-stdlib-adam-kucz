@@ -8,6 +8,7 @@ open import Proposition.Identity hiding (refl)
 open import Proposition.Sum
 open import Proposition.Function using (_$_)
 open import Logic
+open import Proof
 open import Function hiding (_$_)
 
 open import Axiom.PropositionExtensionality
@@ -35,6 +36,6 @@ module Quotient (X : 𝒰 ˙) (_≈_ : Rel 𝒱 X X) ⦃ _ : Equivalence _≈_ �
     (t : Type)
     → ----------------------------------------
     𝐴 t
-  elim 𝐴 f t@(p , (x , q)) = Id.subst 𝐴 (Id.sym h) (f x)
+  elim 𝐴 f t@(p , (x , q)) = Id.subst 𝐴 (strong-sym h) (f x)
     where h : t == class-of x
           h = Σₚ== (fun-ext q)

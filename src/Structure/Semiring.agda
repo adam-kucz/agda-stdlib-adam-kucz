@@ -28,4 +28,5 @@ instance
     ⦃ _ : one IsRightUnitOf times ⦄
     → -------------------
     FormSemiring plus times zero one
-  DefaultSemiring = record {}
+
+DefaultSemiring = record {}

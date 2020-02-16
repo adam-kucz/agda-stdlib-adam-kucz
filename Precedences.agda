@@ -16,11 +16,13 @@ infixr 115 _∷_ -- Data.List
 infixr 115 _∷_ -- Data.Vec
 infixr 110 _!_[_] -- Data.List
 infixr 110 _!_[_] -- Data.Vec
+infixr 108 ⋃_ -- Type.Subset.Operation
 infixl 105 _++_ -- Data.Collection
 infixl 105 _++_ -- Data.List
-infixl 105 _∪_ -- Type.Subset.Definition
+infixl 105 _∪_ _`_ _⁻¹`_ -- Type.Subset.Operation
 infixl 105 _∪_ -- Type.Subset.Decidable
 infixl 105 _[_,_]`_ -- Type.Subset.Decidable
+infixl 104 _∩_ -- Type.Subset.Operation
 
 infixr 104 _<$>_ -- Data.Functor
 infixl 103 _<*>_ -- Data.Applicative

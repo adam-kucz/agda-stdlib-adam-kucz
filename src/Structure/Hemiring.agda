@@ -20,8 +20,8 @@ record FormHemiring {X : 𝒰 ˙} (_+_ _*_ : Op X) (zero : X) : 𝒰 ᵖ where
     ⦃ monoid+ ⦄ : FormMonoid _+_ zero
     ⦃ commutative+ ⦄ : Commutative _+_
     ⦃ semigroup* ⦄ : FormSemigroup _*_
-    0* : ∀ a → zero * a == zero
-    *0 : ∀ a → a * zero == zero
+    ⦃ 0* ⦄ : zero IsLeftZeroOf _*_
+    ⦃ *0 ⦄ : zero IsRightZeroOf _*_
     *[+]==*+* : ∀ a b c → a * (b + c) == (a * b) + (a * c)
     [+]*==*+* : ∀ a b c → (a + b) * c  == (a * c) + (b * c)
 

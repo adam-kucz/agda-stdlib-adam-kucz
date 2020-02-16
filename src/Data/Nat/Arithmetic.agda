@@ -5,6 +5,7 @@ open import PropUniverses
 open import Data.Nat.Arithmetic.Definition public
 open import Data.Nat.Definition
 open import Data.Nat.Syntax
+open Pattern
 open import Proposition.Function using (_$_)
 
 open import Relation.Binary.Property
@@ -50,64 +51,67 @@ instance
       〉 _==_ 〉 a + (b + a * b) :by: swap b a (a * b)
   qed)
 
-*-0 : (a : ℕ) → a * zero == zero
-*-0 zero = refl zero
-*-0 (suc a) = *-0 a
-
 private
   *-+-distrib : (a b c : ℕ) → a * (b + c) == a * b + a * c
-  *-+-distrib zero _ _ = refl zero
-  *-+-distrib (suc a) b c =
-    proof b + c + a * (b + c)
-      〉 _==_ 〉 (b + c) + (a * b + a * c)
-        :by: ap (b + c +_) $ *-+-distrib a b c
-      〉 _==_ 〉 b + (c + (a * b + a * c))
-        :by: sym $ assoc b c _
-      〉 _==_ 〉 b + (a * b + (c + a * c))
-        :by: ap (b +_) $ swap c (a * b) _
-      〉 _==_ 〉 b + a * b + (c + a * c)
-        :by: assoc b _ _
-    qed
+
+*-+-distrib zero _ _ = refl zero
+*-+-distrib (suc a) b c =
+  proof b + c + a * (b + c)
+    〉 _==_ 〉 (b + c) + (a * b + a * c)
+      :by: ap (b + c +_) $ *-+-distrib a b c
+    〉 _==_ 〉 b + (c + (a * b + a * c))
+      :by: sym $ assoc b c _
+    〉 _==_ 〉 b + (a * b + (c + a * c))
+      :by: ap (b +_) $ swap c (a * b) _
+    〉 _==_ 〉 b + a * b + (c + a * c)
+      :by: assoc b _ _
+  qed
 
 instance
   Commutativeℕ* : Commutative _*_
-  comm ⦃ Commutativeℕ* ⦄ zero b = sym $ *-0 b
-  comm ⦃ Commutativeℕ* ⦄ (suc a) b = 
-    proof b + a * b
-      〉 _==_ 〉 b + b * a :by: ap (b +_) $ comm a b
-      〉 _==_ 〉 b * suc a :by: sym $ *-suc b a
-    qed
-
+  *-0 : 0 IsRightZeroOf _*_
+  0-* : 0 IsLeftZeroOf _*_
   assoc* : Associative _*_
-  assoc ⦃ assoc* ⦄ zero _ _ = refl zero
-  assoc ⦃ assoc* ⦄ (suc a) b c = 
-    proof
-      b * c + a * (b * c)
-        〉 _==_ 〉 b * c + (a * b) * c :by: ap (b * c +_) $ assoc a b c
-        〉 _==_ 〉 b * c + c * (a * b) :by: ap (b * c +_) $ comm (a * b) c
-        〉 _==_ 〉 c * b + c * (a * b) :by: ap (_+ c * (a * b)) $ comm b c
-        〉 _==_ 〉 c * (b + a * b)     :by: sym $ *-+-distrib c b (a * b)
-        〉 _==_ 〉 (b + a * b) * c     :by: comm c _
-    qed
-
   1-* : 1 IsLeftUnitOf _*_
-  left-unit ⦃ 1-* ⦄ = right-unit {_∙_ = _+_}
-
   *-1 : 1 IsRightUnitOf _*_
-  *-1 = right-unit-of-commutative-left-unit 1 _*_
-  
   Hemiringℕ+* : FormHemiring _+_ _*_ 0
-  0* ⦃ Hemiringℕ+* ⦄ _ = refl 0
-  *0 ⦃ Hemiringℕ+* ⦄ = *-0
-  *[+]==*+* ⦃ Hemiringℕ+* ⦄ = *-+-distrib
-  [+]*==*+* ⦃ Hemiringℕ+* ⦄ a b c = 
-    proof
-      (a + b) * c
-        〉 _==_ 〉 c * (a + b)   :by: comm (a + b) c
-        〉 _==_ 〉 c * a + c * b :by: *[+]==*+* c a b
-        〉 _==_ 〉 c * a + b * c :by: ap (c * a +_) $ comm c b
-        〉 _==_ 〉 a * c + b * c :by: ap (_+ b * c) $ comm c a
-    qed
+
+left-zero ⦃ 0-* ⦄ _ = refl 0
+
+right-zero ⦃ *-0 ⦄ zero = refl zero
+right-zero ⦃ *-0 ⦄ (a +1) = right-zero a
+
+comm ⦃ Commutativeℕ* ⦄ zero b = sym $ right-zero b
+comm ⦃ Commutativeℕ* ⦄ (suc a) b = 
+  proof b + a * b
+    〉 _==_ 〉 b + b * a :by: ap (b +_) $ comm a b
+    〉 _==_ 〉 b * suc a :by: sym $ *-suc b a
+  qed
+
+assoc ⦃ assoc* ⦄ zero _ _ = refl zero
+assoc ⦃ assoc* ⦄ (suc a) b c = 
+  proof
+    b * c + a * (b * c)
+      〉 _==_ 〉 b * c + (a * b) * c :by: ap (b * c +_) $ assoc a b c
+      〉 _==_ 〉 b * c + c * (a * b) :by: ap (b * c +_) $ comm (a * b) c
+      〉 _==_ 〉 c * b + c * (a * b) :by: ap (_+ c * (a * b)) $ comm b c
+      〉 _==_ 〉 c * (b + a * b)     :by: sym $ *-+-distrib c b (a * b)
+      〉 _==_ 〉 (b + a * b) * c     :by: comm c _
+  qed
+
+left-unit ⦃ 1-* ⦄ = right-unit {_∙_ = _+_}
+
+*-1 = right-unit-of-commutative-left-unit 1 _*_
+  
+*[+]==*+* ⦃ Hemiringℕ+* ⦄ = *-+-distrib
+[+]*==*+* ⦃ Hemiringℕ+* ⦄ a b c = 
+  proof
+    (a + b) * c
+      〉 _==_ 〉 c * (a + b)   :by: comm (a + b) c
+      〉 _==_ 〉 c * a + c * b :by: *[+]==*+* c a b
+      〉 _==_ 〉 c * a + b * c :by: ap (c * a +_) $ comm c b
+      〉 _==_ 〉 a * c + b * c :by: ap (_+ b * c) $ comm c a
+  qed
 
 Monoid+ : Monoid ℕ
 _∙_ ⦃ Monoid+ ⦄ = _+_

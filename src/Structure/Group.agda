@@ -33,8 +33,10 @@ instance
     ⦃ _ : FormSemigroup op ⦄
     ⦃ _ : e IsLeftUnitOf op ⦄
     ⦃ _ : e IsRightUnitOf op ⦄
-    ⦃ _ : Inverse _⁻¹ op ⦄
+    ⦃ _ : LeftInverse _⁻¹ op ⦄
+    ⦃ _ : RightInverse _⁻¹ op ⦄
     → -------------------
     FormGroup op e _⁻¹
-  DefaultGroup = record {}
+
+DefaultGroup = record {}
   

@@ -6,15 +6,6 @@ open import Proposition.Identity.Definition
 open import PropUniverses
 open import Function.Property
 
--- more general than Relation.Binary.Property.sym
--- it doesn't require the two sides
--- to be of the same type
-sym : {x : X} {y : Y}
-  (p : x == y)
-  → ----------
-  y == x
-sym (refl x) = refl x
-
 type== : {x : X} {y : Y}
   (p : x == y)
   → ----------

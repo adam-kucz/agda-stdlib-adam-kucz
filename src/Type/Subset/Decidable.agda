@@ -1,7 +1,8 @@
 {-# OPTIONS --exact-split --prop #-}
 module Type.Subset.Decidable where
 
-open import Type.Subset.Definition as Subset using (Subset)
+open import Type.Subset.Definition as Def using (Subset)
+import Type.Subset.Operation as Op
 
 open import PropUniverses
 open import Proposition.Decidable
@@ -21,13 +22,15 @@ _∈_ ⦃ DecSubsetCollection ⦄ x (dec-set c) = c x
 Decidable∈DecSubset : {x : X}{S : DecSubset 𝒰 X} → Decidable (x ∈ S)
 Decidable∈DecSubset {x = x}{S} = decide (x ∈ S) ⦃ DecSubset.dec S ⦄
 
+open import Logic
+
 infixl 105 _∪_
 _∪_ :
   (S₀ : DecSubset 𝒰 X)
   (S₁ : DecSubset 𝒱 X)
   → ------------------
   DecSubset (𝒰 ⊔ 𝒱) X
-dec-set set₀ ∪ dec-set set₁ = dec-set (set₀ Subset.∪ set₁)
+dec-set set₀ ∪ dec-set set₁ = dec-set (λ x → x ∈ set₀ ∨ x ∈ set₁)
 
 open import Type.Sum hiding (_,_)
 open import Proposition.Identity hiding (refl)
@@ -41,7 +44,6 @@ open import Data.List.Functor
 open import Structure.Monoid
 open import Operation.Binary hiding (Inverse)
 open import Function hiding (_$_)
-open import Logic
 open import Proof
 open import Proposition.Proof
 
@@ -55,9 +57,9 @@ _[_,_]`_ : {X : 𝒰 ˙}{Y : 𝒱 ˙}
   (S : DecSubset 𝒲 X)
   → ----------------
   DecSubset (𝒰 ⊔ 𝒱 ⊔ 𝒲) Y
-_[_,_]`_ {𝒲 = 𝒲}{X = X}{Y} f f⁻¹ p S@(dec-set set) = dec-set (f Subset.` set)
+_[_,_]`_ {𝒲 = 𝒲}{X = X}{Y} f f⁻¹ p S@(dec-set set) = dec-set (f Op.` set)
   where instance
-          d : {y : Y} → Decidable (y ∈ f Subset.` set)
+          d : {y : Y} → Decidable (y ∈ f Op.` set)
           mon = Monoid∨
         func = λ x → (x ∈ set) Σ., DecSubset.dec S
         ls : (y : Y) → List (Σ λ (𝑋 : 𝒲 ᵖ) → Decidable 𝑋)
@@ -68,7 +70,7 @@ _[_,_]`_ {𝒲 = 𝒲}{X = X}{Y} f f⁻¹ p S@(dec-set set) = dec-set (f Subset.
                 go with mconcat∨→elem (pr₁ <$> ls y) p'
                 go | 𝑋 , (p , 𝑋∈) with have3
                   where have1 : fmap pr₁ ∘ fmap func == fmap (pr₁ ∘ func)
-                        have1 = Id.sym $ fmap-∘ pr₁ func
+                        have1 = strong-sym $ fmap-∘ pr₁ func
                         have2 : 𝑋 ∈ fmap (_∈ set) (f⁻¹ y)
                         have2 = Id.coe (ap (λ — → 𝑋 ∈ — (f⁻¹ y)) have1) 𝑋∈
                         have3 : ∃ λ (x : X) → x ∈ set == 𝑋 ∧ x ∈ f⁻¹ y
