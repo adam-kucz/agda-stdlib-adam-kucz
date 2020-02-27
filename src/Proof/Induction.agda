@@ -39,7 +39,7 @@ record FiniteBoundedSubsets {X : 𝒰 ˙}(_≤_ : Rel 𝒱 X X): 𝒰 ⊔ 𝒱 �
 
 open FiniteBoundedSubsets ⦃ … ⦄ public
 
-open import Data.Collection
+open import Collection
 open import Data.Nat hiding (_≤_)
 open import Data.Vec
 open import Logic

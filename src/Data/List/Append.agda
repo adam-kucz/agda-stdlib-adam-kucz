@@ -13,7 +13,7 @@ open import Proposition.Decidable
 open import Data.Nat
 open import Data.Maybe
 open import Data.Functor
-open import Data.Collection hiding (_++_)
+open import Collection hiding (_++_)
 open import Logic hiding (⊥-recursion)
 open import Proof
 

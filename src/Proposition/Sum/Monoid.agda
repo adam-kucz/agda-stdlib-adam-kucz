@@ -71,7 +71,7 @@ Monoid∨ : Monoid (𝒰 ᵖ)
 _∙_ ⦃ Monoid∨ ⦄ = _∨_
 e ⦃ Monoid∨ ⦄ = Lift𝒰ᵖ ⊥
 
-open import Data.Collection
+open import Collection
 open import Data.List
 
 mconcat∨→elem :

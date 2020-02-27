@@ -56,6 +56,34 @@ _by-difₚ_then_else_ 𝐴 𝑋 ⦃ d ⦄ f g with decide 𝑋 ⦃ d ⦄
 _ by-difₚ 𝑋 then f else g | true p = f p
 _ by-difₚ 𝑋 then f else g | false ¬p = g ¬p
 
+_by-ddifₚ_then_else_ :
+  (𝐴 : (x : X) → 𝒱 ᵖ)
+  (𝑋 : 𝒰 ᵖ)
+  ⦃ d : Decidable 𝑋 ⦄
+  {x : (p : 𝑋) → X}
+  {y : (¬p : ¬ 𝑋) → X}
+  (f : (p : 𝑋) → 𝐴 (x p))
+  (g : (¬p : ¬ 𝑋) → 𝐴 (y ¬p))
+  → --------------------
+  𝐴 (dif 𝑋 then x else y)
+_by-ddifₚ_then_else_ 𝐴 𝑋 ⦃ d ⦄ f g with decide 𝑋 ⦃ d ⦄
+_ by-ddifₚ 𝑋 then f else g | true p = f p
+_ by-ddifₚ 𝑋 then f else g | false ¬p = g ¬p
+
+_by-ddif_then_else_ :
+  (A : (x : X) → 𝒱 ˙)
+  (𝑋 : 𝒰 ᵖ)
+  ⦃ d : Decidable 𝑋 ⦄
+  {x : (p : 𝑋) → X}
+  {y : (¬p : ¬ 𝑋) → X}
+  (f : (p : 𝑋) → A (x p))
+  (g : (¬p : ¬ 𝑋) → A (y ¬p))
+  → --------------------
+  A (dif 𝑋 then x else y)
+_by-ddif_then_else_ A 𝑋 ⦃ d ⦄ f g with decide 𝑋 ⦃ d ⦄
+_ by-ddif 𝑋 then f else g | true p = f p
+_ by-ddif 𝑋 then f else g | false ¬p = g ¬p
+
 instance
   ⊥Decidable : Decidable ⊥
   ⊤Decidable : Decidable ⊤

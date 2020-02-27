@@ -3,7 +3,7 @@ module Type.Finite where
 
 open import PropUniverses
 open import Data.Vec
-open import Data.Collection
+open import Collection
 open import Logic
 
 is-finite : (X : 𝒰 ˙) → 𝒰 ᵖ

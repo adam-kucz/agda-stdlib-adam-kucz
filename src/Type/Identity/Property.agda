@@ -4,7 +4,7 @@ module Type.Identity.Property where
 open import Type.Identity.Definition
 
 open import Universes
-open import Proposition.Identity.Definition
+open import Proposition.Identity.Definition renaming (_≡_ to _===_)
 
 ≡→== : {x : X} {y : Y}
   (id : x ≡ y)

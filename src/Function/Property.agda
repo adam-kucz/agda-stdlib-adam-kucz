@@ -77,7 +77,7 @@ instance
     ⦃ _ : RightInverse f f⁻¹ ⦄
     → ------------------------
     Inverse f f⁻¹
-  DefaultInverse = record {}
+DefaultInverse = record {}
 
 record Injective {X : 𝒰 ˙} {A : (x : X) → 𝒱 ˙} (f : (x : X) → A x) : 𝒰 ⊔ 𝒱 ᵖ where
   field
@@ -111,7 +111,8 @@ instance
     ⦃ _ : Surjective f ⦄
     → -------------------
     Bijective f
-  DefaultBijective = record {}
+
+DefaultBijective = record {}
 
 record Bijection (X : 𝒰 ˙) (Y : 𝒱 ˙) : 𝒰 ⊔ 𝒱 ˙ where
   field
@@ -123,12 +124,6 @@ open Bijection ⦃ … ⦄ public
 
 {-# DISPLAY Bijection.forw B = forw #-}
 {-# DISPLAY Bijection.back B = back #-}
-
-LeftInverse-id : LeftInverse (𝑖𝑑 X) (𝑖𝑑 X)
-left-inv ⦃ LeftInverse-id ⦄ x = refl x
-
-RightInverse-id : RightInverse (𝑖𝑑 X) (𝑖𝑑 X)
-right-inv ⦃ RightInverse-id ⦄ x = refl x
 
 Injective-id : Injective (𝑖𝑑 X)
 inj ⦃ Injective-id ⦄ (Id.refl x) = refl x
@@ -145,3 +140,12 @@ module mkInvolutive {f : X → X}(p : f ∘ f ~ id) where
     rght : RightInverse f f
   left-inv ⦃ lft ⦄ = p
   right-inv ⦃ rght ⦄ = p
+
+module IdInvolutive {𝒰}{X : 𝒰 ˙} where
+  open mkInvolutive {X = X}{f = id} refl
+
+record Idempotent {X : 𝒰 ˙}(f : (x : X) → X) : 𝒰 ᵖ where
+  field
+    idemp : ∀ x → f (f x) == f x 
+
+open Idempotent ⦃ … ⦄ public

@@ -1,5 +1,5 @@
 {-# OPTIONS --exact-split --prop --safe #-}
-module Data.Collection.Definition where
+module Collection.Definition where
 
 open import PropUniverses
 

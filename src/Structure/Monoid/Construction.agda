@@ -4,19 +4,32 @@ module Structure.Monoid.Construction where
 open import Structure.Monoid.Definition
 
 open import Universes
-open import Proposition.Decidable
-open import Structure.JoinSemilattice
--- open import Relation.Binary
+open import Proposition.Identity
+open import Function
+open import Operation.Binary
 
-JoinSemilatticeMonoid :
-  (lattice : JoinSemilattice 𝒰 X)
-  → let instance _ = lattice in
-  ⦃ d : ∀ {x y : X} → Decidable (x ⊑ y) ⦄
-  → -----------------------------------
-  Monoid X
-_∙_ ⦃ JoinSemilatticeMonoid lattice ⦄ =  ?
-e ⦃ JoinSemilatticeMonoid lattice ⦄ = {!!}
-def ⦃ JoinSemilatticeMonoid lattice ⦄ = {!!}
+instance
+  IdRightUnit : 𝑖𝑑 X IsRightUnitOf (_∘ₛ_ {Z = Z})
+  IdLeftUnit : 𝑖𝑑 Y IsLeftUnitOf (_∘ₛ_ {X = X})
+  Associative-∘ : Associative (_∘ₛ_ {X = X})
+
+right-unit ⦃ IdRightUnit ⦄ = refl
+left-unit ⦃ IdLeftUnit ⦄ = refl
+assoc ⦃ Associative-∘ ⦄ _ _ _ = refl _
+
+EndofunctionMonoid : {X : 𝒰 ˙} → Monoid (X → X)
+_∙_ ⦃ EndofunctionMonoid ⦄ = _∘ₛ_
+e ⦃ EndofunctionMonoid ⦄ = id
+
+-- JoinSemilatticeMonoid :
+--   (lattice : JoinSemilattice 𝒰 X)
+--   → let instance _ = lattice in
+--   ⦃ d : ∀ {x y : X} → Decidable (x ⊑ y) ⦄
+--   → -----------------------------------
+--   Monoid X
+-- _∙_ ⦃ JoinSemilatticeMonoid lattice ⦄ =  ?
+-- e ⦃ JoinSemilatticeMonoid lattice ⦄ = {!!}
+-- def ⦃ JoinSemilatticeMonoid lattice ⦄ = {!!}
 --           r-unit : min IsRightUnitOf gt
 --           right-unit ⦃ r-unit ⦄ y = (_== y) by-difₚ y ≤ min
 --             then (λ p₁ → sym $ minimality p₁)

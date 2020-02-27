@@ -41,3 +41,12 @@ record _∧_ (𝑋 : 𝒰 ᵖ) (𝑌 : 𝒱 ᵖ) : 𝒰 ⊔ 𝒱 ᵖ where
     right : 𝑌 
 
 open _∧_ public
+
+infixl 17 _∧ᵈ_
+record _∧ᵈ_ (𝑋 : 𝒰 ᵖ)(𝐴 : (p : 𝑋) → 𝒱 ᵖ) : 𝒰 ⊔ 𝒱 ᵖ where
+  constructor _,_
+  field
+    left : 𝑋
+    right : 𝐴 left
+
+open _∧ᵈ_ public

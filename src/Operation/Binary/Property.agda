@@ -47,6 +47,19 @@ swap {_∙_ = _∙_} x y z =
       〉 _==_ 〉 y ∙ (x ∙ z) :by: sym (assoc y x z)
   qed
 
+swap' : {_∙_ : ClosedOp X}
+  ⦃ _ : Associative _∙_ ⦄
+  ⦃ _ : Commutative _∙_ ⦄
+  (x y z : X)
+  → ------------------------
+  (x ∙ y) ∙ z == (x ∙ z) ∙ y
+swap' {_∙_ = _∙_} x y z =
+  proof (x ∙ y) ∙ z
+    === x ∙ (y ∙ z) :by: sym $ assoc x y z
+    === x ∙ (z ∙ y) :by: ap (x ∙_) $ comm y z
+    === (x ∙ z) ∙ y   :by: assoc x z y
+  qed
+
 record _IsLeftUnitOf_ {X : 𝒰 ˙} {Y : 𝒱 ˙} (e : X) (_∙_ : Op X Y Y) : 𝒱 ᵖ where
   field
     left-unit : ∀ y → e ∙ y == y

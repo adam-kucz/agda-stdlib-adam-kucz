@@ -35,31 +35,32 @@ s<s→-<- (s<s p) = p
 
 instance
   Irreflexive< : Irreflexive _<_
-  irrefl ⦃ Irreflexive< ⦄ 0 ()
-  irrefl ⦃ Irreflexive< ⦄ (suc n) sn<sn = irrefl n (s<s→-<- sn<sn)
-
   Asym< : Asymmetric _<_
-  asym ⦃ Asym< ⦄ z<s ()
-  asym ⦃ Asym< ⦄ (s<s a<b) (s<s b<a) = asym b<a a<b
-
   Transitive< : Transitive _<_
-  trans ⦃ Transitive< ⦄ z<s (s<s _) = z<s
-  trans ⦃ Transitive< ⦄ (s<s a<b) (s<s b<c) = s<s (trans a<b b<c)
-
   Decidable< : ∀ {m n} → Decidable (m < n)
-  Decidable< {zero} {zero} = false (λ ())
-  Decidable< {zero} {suc n} = true z<s
-  Decidable< {suc m} {zero} = false (λ ())
-  Decidable< {suc m} {suc n} with decide (m < n)
-  Decidable< {suc m} {suc n} | true n<m = true (s<s n<m)
-  Decidable< {suc m} {suc n} | false ¬n<m = false λ m<n → ¬n<m (s<s→-<- m<n)
-  
   Relating-suc-< : Relating suc _<_ _<_
-  rel-preserv ⦃ Relating-suc-< ⦄ = s<s
-
   Postfix-suc-< : UniversalPostfix suc _<_
-  UniversalPostfix.postfix Postfix-suc-< zero = z<s
-  UniversalPostfix.postfix Postfix-suc-< (suc x) = s<s $ postfix suc x
+
+irrefl ⦃ Irreflexive< ⦄ 0 ()
+irrefl ⦃ Irreflexive< ⦄ (suc n) sn<sn = irrefl n (s<s→-<- sn<sn)
+
+asym ⦃ Asym< ⦄ z<s ()
+asym ⦃ Asym< ⦄ (s<s a<b) (s<s b<a) = asym b<a a<b
+
+trans ⦃ Transitive< ⦄ z<s (s<s _) = z<s
+trans ⦃ Transitive< ⦄ (s<s a<b) (s<s b<c) = s<s (trans a<b b<c)
+
+Decidable< {zero} {zero} = false (λ ())
+Decidable< {zero} {suc n} = true z<s
+Decidable< {suc m} {zero} = false (λ ())
+Decidable< {suc m} {suc n} with decide (m < n)
+Decidable< {suc m} {suc n} | true n<m = true (s<s n<m)
+Decidable< {suc m} {suc n} | false ¬n<m = false λ m<n → ¬n<m (s<s→-<- m<n)
+  
+rel-preserv ⦃ Relating-suc-< ⦄ = s<s
+
+UniversalPostfix.postfix Postfix-suc-< zero = z<s
+UniversalPostfix.postfix Postfix-suc-< (suc x) = s<s $ postfix suc x
 
 infix 35 _≤_ _≥_
 _≤_ _≥_ : (m n : ℕ) → 𝒰₀ ᵖ
@@ -68,34 +69,36 @@ a ≥ b = b ≤ a
 
 instance
   Reflexive≤ : Reflexive _≤_
-  refl ⦃ Reflexive≤ ⦄ a = ∨left (refl a)
-  
   Transitive≤ : Transitive _≤_
-  trans ⦃ Transitive≤ ⦄ (∨left (Id.refl a)) a≤b = a≤b
-  trans ⦃ Transitive≤ ⦄ (∨right a<b) (∨left (Id.refl b)) = ∨right a<b
-  trans ⦃ Transitive≤ ⦄ (∨right a<b) (∨right b<c) = ∨right $ trans a<b b<c
-  
   Antisym≤ : Antisymmetric _≤_
-  antisym ⦃ Antisym≤ ⦄ (∨left a==b) _ = a==b
-  antisym ⦃ Antisym≤ ⦄ (∨right _) (∨left b==a) = sym b==a
-  antisym ⦃ Antisym≤ ⦄ (∨right a<b) (∨right b<a) = ⊥-recursion _ (asym a<b b<a)
-
+  Connex≤ : Connex _≤_
   Relating-suc-≤ : Relating suc _≤_ _≤_
-  rel-preserv ⦃ Relating-suc-≤ ⦄ (∨left (Id.refl x)) = refl (suc x)
-  rel-preserv ⦃ Relating-suc-≤ ⦄ (∨right a<b) = ∨right (ap suc a<b)
-
   Relating-pred-≤ : Relating pred _≤_ _≤_
-  rel-preserv ⦃ Relating-pred-≤ ⦄ (∨left (Id.refl x)) = refl (pred x)
-  rel-preserv ⦃ Relating-pred-≤ ⦄ (∨right (z<s {0})) = ∨left (refl 0)
-  rel-preserv ⦃ Relating-pred-≤ ⦄ (∨right (z<s {suc n})) = ∨right z<s
-  rel-preserv ⦃ Relating-pred-≤ ⦄ (∨right (s<s q)) = ∨right q
-
   Postfix-suc-≤ : UniversalPostfix suc _≤_
-  UniversalPostfix.postfix Postfix-suc-≤ x = ∨right $ postfix suc x
-
   Prefix-pred-≤ : UniversalPrefix pred _≤_
-  UniversalPrefix.prefix Prefix-pred-≤ 0 = ∨left (refl 0)
-  UniversalPrefix.prefix Prefix-pred-≤ (suc x) = postfix suc x
+
+refl ⦃ Reflexive≤ ⦄ a = ∨left (refl a)
+  
+trans ⦃ Transitive≤ ⦄ (∨left (Id.refl a)) a≤b = a≤b
+trans ⦃ Transitive≤ ⦄ (∨right a<b) (∨left (Id.refl b)) = ∨right a<b
+trans ⦃ Transitive≤ ⦄ (∨right a<b) (∨right b<c) = ∨right $ trans a<b b<c
+  
+antisym ⦃ Antisym≤ ⦄ (∨left a==b) _ = a==b
+antisym ⦃ Antisym≤ ⦄ (∨right _) (∨left b==a) = sym b==a
+antisym ⦃ Antisym≤ ⦄ (∨right a<b) (∨right b<a) = ⊥-recursion _ (asym a<b b<a)
+
+rel-preserv ⦃ Relating-suc-≤ ⦄ (∨left (Id.refl x)) = refl (suc x)
+rel-preserv ⦃ Relating-suc-≤ ⦄ (∨right a<b) = ∨right (ap suc a<b)
+
+rel-preserv ⦃ Relating-pred-≤ ⦄ (∨left (Id.refl x)) = refl (pred x)
+rel-preserv ⦃ Relating-pred-≤ ⦄ (∨right (z<s {0})) = ∨left (refl 0)
+rel-preserv ⦃ Relating-pred-≤ ⦄ (∨right (z<s {suc n})) = ∨right z<s
+rel-preserv ⦃ Relating-pred-≤ ⦄ (∨right (s<s q)) = ∨right q
+
+UniversalPostfix.postfix Postfix-suc-≤ x = ∨right $ postfix suc x
+
+UniversalPrefix.prefix Prefix-pred-≤ 0 = ∨left (refl 0)
+UniversalPrefix.prefix Prefix-pred-≤ (suc x) = postfix suc x
 
 -≤-↔-<s : ∀ {a b} → a ≤ b ↔ a < suc b
 ⟶ -≤-↔-<s (∨left (Id.refl x)) = postfix suc x
@@ -110,13 +113,19 @@ open import Proposition.Comparable
 
 instance
   Comparableℕ : {x y : ℕ} → Comparable _<_ x y
-  Comparableℕ {zero} {zero} = eq (refl 0)
-  Comparableℕ {zero} {suc y} = lt z<s
-  Comparableℕ {suc x} {zero} = gt z<s
-  Comparableℕ {suc x} {suc y} with compare x _<_ y
-  Comparableℕ {suc x} {suc y} | lt p = lt (ap suc p)
-  Comparableℕ {suc x} {suc y} | eq p = eq (ap suc p)
-  Comparableℕ {suc x} {suc y} | gt p = gt (ap suc p)
+
+Comparableℕ {zero} {zero} = eq (refl 0)
+Comparableℕ {zero} {suc y} = lt z<s
+Comparableℕ {suc x} {zero} = gt z<s
+Comparableℕ {suc x} {suc y} with compare x _<_ y
+Comparableℕ {suc x} {suc y} | lt p = lt (ap suc p)
+Comparableℕ {suc x} {suc y} | eq p = eq (ap suc p)
+Comparableℕ {suc x} {suc y} | gt p = gt (ap suc p)
+
+total ⦃ Connex≤ ⦄ x y with compare x _<_ y
+total Connex≤ x y | lt p = ∨left $ ∨right p
+total Connex≤ x y | eq p = ∨left $ ∨left p
+total Connex≤ x y | gt p = ∨right $ ∨right p
 
 -<s↔¬->- : ∀ {a b} → a < suc b ↔ ¬ a > b
 ⟶ (-<s↔¬->- {suc a} {zero}) (s<s ())

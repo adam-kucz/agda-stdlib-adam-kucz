@@ -20,13 +20,15 @@ data _~_ {X : 𝒰 ˙} : Rel 𝒰 (List X) (List X) where
 
 instance
   ReflexivePerm : Reflexive (_~_ {X = X})
-  refl' ⦃ ReflexivePerm ⦄ = refl
-
   TransitivePerm : Transitive (_~_ {X = X})
-  trans' ⦃ TransitivePerm ⦄ = trans
-
   SymmetricPerm : Symmetric (_~_ {X = X})
-  sym ⦃ SymmetricPerm ⦄ (refl l) = refl l
-  sym ⦃ SymmetricPerm ⦄ (trans p₁ p₂) = trans (sym p₂) (sym p₁)
-  sym ⦃ SymmetricPerm ⦄ (swap x y p) = swap y x (sym p)
-  sym ⦃ SymmetricPerm ⦄ (step x p) = step x (sym p)
+
+refl' ⦃ ReflexivePerm ⦄ = refl
+
+trans' ⦃ TransitivePerm ⦄ = trans
+
+sym ⦃ SymmetricPerm ⦄ (refl l) = refl l
+sym ⦃ SymmetricPerm ⦄ (trans p₁ p₂) = trans (sym p₂) (sym p₁)
+sym ⦃ SymmetricPerm ⦄ (swap x y p) = swap y x (sym p)
+sym ⦃ SymmetricPerm ⦄ (step x p) = step x (sym p)
+

@@ -23,7 +23,7 @@ singleton {X = X} x = ListQuot.class-of X [ x ]
 fromList : (l : List X) → FinSet X
 fromList {X = X} = ListQuot.class-of X
   
-open import Data.Collection
+open import Collection
 open import Proposition.Identity hiding (refl)
 open import Logic
 open import Axiom.PropositionExtensionality

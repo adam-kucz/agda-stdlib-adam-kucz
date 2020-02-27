@@ -7,7 +7,7 @@ open import Data.List.Operation
 open import Data.List.Monoid
 
 open import Universes
-open import Data.Collection.Definition
+open import Collection.Definition
 open import Data.Functor
 open import Data.Applicative
 open import Data.Monad
@@ -25,11 +25,6 @@ instance
 
 open import Function using (_~_)
 open import Axiom.FunctionExtensionality
-
-private
-  map : (f : X → Y)(l : List X) → List Y
-  map f [] = []
-  map f (h ∷ l) = f h ∷ map f l
 
 fmap ⦃ ListFunctor ⦄ = map
 fmap-id ⦃ ListFunctor ⦄ = fun-ext go
@@ -216,7 +211,7 @@ associativity ⦃ ListMonad ⦄ = fun-ext go
                   === mconcat t₁ ++ mconcat (mconcat t₂)
                     :by: ap (mconcat t₁ ++_) (go t₂)
                   === mconcat (t₁ ++ mconcat t₂)
-                    :by: sym $ mconcat-++ t₁ (mconcat t₂)
+                    :by: sym $ mconcat-∪ t₁ (mconcat t₂)
                 qed)
           qed)
 unit1 ⦃ ListMonad ⦄ = het==→== $ fun-ext go

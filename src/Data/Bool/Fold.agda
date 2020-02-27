@@ -10,8 +10,8 @@ open import Proposition.Decidable as Dec hiding (true; false)
 open import Type.Sum hiding (_,_) 
 open import Proposition.Sum.Monoid
 open import Structure.Monoid
-open import Data.Collection
-open import Data.Collection.Listable.Function
+open import Collection
+open import Collection.Listable.Function
 open import Data.Functor
 open import Data.List
 open import Data.List.Functor

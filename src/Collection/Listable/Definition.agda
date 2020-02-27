@@ -1,8 +1,8 @@
 {-# OPTIONS --exact-split --prop --safe #-}
-module Data.Collection.Listable.Definition where
+module Collection.Listable.Definition where
 
-open import Data.Collection.Definition
-open import Data.Collection.Insertable
+open import Collection.Definition
+open import Collection.Insertable
 
 open import PropUniverses
 open import Logic

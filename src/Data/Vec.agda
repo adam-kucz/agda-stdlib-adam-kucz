@@ -3,3 +3,4 @@ module Data.Vec where
 
 open import Data.Vec.Definition public
 open import Data.Vec.Property public
+open import Data.Vec.Function public

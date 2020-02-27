@@ -9,7 +9,7 @@ data member {X : 𝒰 ˙} (x : X) : (l : List X) → 𝒰₀ ᵖ where
   x∈x∷_ : (t : List X) → member x (x ∷ t)
   x∈tail : (h : X) {t : List X} (p : member x t) → member x (h ∷ t)
 
-open import Data.Collection.Definition
+open import Collection.Definition
 
 instance
   ListCollection : Collection 𝒰₀ (List X) X

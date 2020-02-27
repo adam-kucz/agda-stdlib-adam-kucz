@@ -7,8 +7,8 @@ open import Structure.Monoid.Definition
 open import PropUniverses
 open import Type.Sum
 open import Structure.Monoid.Function
-open import Data.Collection
-open import Data.Collection.Listable.Function
+open import Collection
+open import Collection.Listable.Function
 open import Data.Functor
 open import Data.List
 open import Data.List.Functor

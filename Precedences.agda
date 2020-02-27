@@ -1,9 +1,11 @@
 module Precedences where
 
--- Terms (150 - 100)
+-- Terms (200 - 100)
 
 infixl 150 _∘_ -- Type.Transport
 infixl 150 _∘_ -- Function
+
+infixl 145 _ᶜ -- Collection.Subset
 
 infixl 140 _*_ -- Data.Nat
 infixl 130 _*_ -- Structure.Monoid
@@ -16,11 +18,10 @@ infixr 115 _∷_ -- Data.List
 infixr 115 _∷_ -- Data.Vec
 infixr 110 _!_[_] -- Data.List
 infixr 110 _!_[_] -- Data.Vec
-infixr 108 ⋃_ -- Type.Subset.Operation
-infixl 105 _++_ -- Data.Collection
+infixr 108 ⋃_ ⋂_ -- Collection.Operation
+infixl 105 _++_ -- Collection
 infixl 105 _++_ -- Data.List
-infixl 105 _∪_ _`_ _⁻¹`_ -- Type.Subset.Operation
-infixl 105 _∪_ -- Type.Subset.Decidable
+infixl 105 _∪_ _`_ _⁻¹`_ -- Collection.Operation
 infixl 105 _[_,_]`_ -- Type.Subset.Decidable
 infixl 104 _∩_ -- Type.Subset.Operation
 
@@ -39,7 +40,7 @@ infix 50 _,_ -- Type.Transport
 -- Logic formers (40 - 30)
 
 infix 35 _∈_ -- Type.Subset
-infix 35 _∈_ -- Data.Collection
+infix 35 _∈_ -- Collection
 infix 35 _<_ -- Data.Nat.Order
 infix 35 _≤_ -- Data.Nat.Order
 infix 35 _<ₜ_ -- Data.Nat.Order
@@ -60,6 +61,7 @@ infix 19 _==_ -- Prop'.Identity.Definition
 infix 19 _≠_ -- Prop'.Identity
 infix 19 _~_ -- Function.Equivalence
 infix 19 _~_ -- Relation.Equivalence
+infix 19 _~_ -- Type.Quotient.Class
 
 -- Logic (18 - 10)
 

@@ -4,6 +4,8 @@ module Data.Nat.OrderArithmetic where
 open import Data.Nat.Order
 open import Data.Nat.Arithmetic
 open import Data.Nat.Property
+open import Data.Nat.Syntax
+open Pattern
 
 open import Proposition.Identity
   renaming (Idₚ to Id) hiding (refl)
@@ -36,5 +38,4 @@ open import Data.Nat.Proof
            〉 _==_ 〉 n         :by: inj q
          qed))
 ⟵ (<-add-def {m}) (k , (Id.refl _ , _)) = postfix (suc k +_) m
-
 

@@ -1,7 +1,7 @@
 {-# OPTIONS --exact-split --safe --prop #-}
 module Structure.Monoid.Definition where
 
-open import Structure.Semigroup hiding (_∙_)
+open import Structure.Semigroup.Definition hiding (_∙_)
 
 open import PropUniverses
 open import Operation.Binary

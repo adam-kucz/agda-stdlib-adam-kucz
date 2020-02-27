@@ -11,10 +11,9 @@ open import Relation.Binary.Property using (Transitive; trans)
 open import Proposition.Identity.Definition
   renaming (Idₚ to Id) hiding (refl) public
 open import Proposition.Identity.Property public
-open import Proposition.Identity.Function using (ap2) public
 open import Proposition.Function using (_$_) public
 open import Function.Proof
-  using (ap; Relating-all-==; ap'; RRelating-all-==) public
+  using (ap; ap2; Relating-2-all-==; Relating-all-==; ap'; RRelating-all-==) public
 open Relation.Binary.Property using (sym; refl) public
 
 -- generalisation of symmetry

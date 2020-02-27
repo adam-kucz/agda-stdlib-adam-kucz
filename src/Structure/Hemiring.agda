@@ -34,3 +34,28 @@ record Hemiring (X : 𝒰 ˙) : 𝒰 ˙  where
     ⦃ def ⦄ : FormHemiring _+_ _*_ zero
 
 open Hemiring ⦃ ... ⦄ public
+
+open import Proof
+
+binomial-sq : ∀
+  {_+_ _*_ : Op X}
+  {zero : X}
+  ⦃ hemr : FormHemiring _+_ _*_ zero ⦄
+  a b c d
+  → ------------------------------------------------------------
+  (a + b) * (c + d) == (((a * c) + (a * d)) + (b * c)) + (b * d)
+binomial-sq {_+_ = _⊕_}{_⊗_} a b c d =
+  let infixl 140 _*_; _*_ = _⊗_
+      infixl 130 _+_; _+_ = _⊕_
+  in
+  proof (a + b) * (c + d)
+    === a * (c + d) + b * (c + d)
+      :by: [+]*==*+* a b (c + d)
+    === a * c + a * d + b * (c + d)
+      :by: ap (_+ b * (c + d)) $ *[+]==*+* a c d
+    === a * c + a * d + (b * c + b * d)
+      :by: ap (a * c + a * d +_) $ *[+]==*+* b c d
+    === a * c + a * d + b * c + b * d
+      :by: assoc _ (b * c) (b * d)
+  qed
+        

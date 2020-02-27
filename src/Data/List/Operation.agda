@@ -12,7 +12,7 @@ open import Proposition.Decidable.Definition
 open import Data.Nat.Definition
 open import Data.Maybe.Definition
 open import Data.Functor
-open import Data.Collection.Definition
+open import Collection.Definition
 open import Logic hiding (⊥-recursion)
 open import Proof
 
@@ -33,30 +33,28 @@ open import Operation.Binary
 
 instance
   ++-assoc : Associative (_++_ {X = X})
-  assoc ⦃ ++-assoc ⦄ [] y z = refl (y ++ z)
-  assoc ⦃ ++-assoc ⦄ (h ∷ x) y z =
-    List== (refl h) (assoc x y z)
-
   []-++ : [] IsLeftUnitOf (_++_ {X = X})
-  left-unit ⦃ []-++ ⦄ = refl
-
   ++-[] : [] IsRightUnitOf (_++_ {X = X})
-  right-unit ⦃ ++-[] ⦄ [] = refl []
-  right-unit ⦃ ++-[] ⦄ (h ∷ t) =
-    List== (refl h) (right-unit t)
+  
+assoc ⦃ ++-assoc ⦄ [] y z = refl (y ++ z)
+assoc ⦃ ++-assoc ⦄ (h ∷ x) y z =
+  List== (refl h) (assoc x y z)
 
-∈++ : ∀ (x : X) l l'
-  → ------------------------------
-  x ∈ l ++ l' ↔ x ∈ l ∨ x ∈ l'
-⟶ (∈++ x [] l') p = ∨right p
-⟶ (∈++ x (x ∷ l) l') (x∈x∷ .(l ++ l')) = ∨left (x∈x∷ l)
-⟶ (∈++ x (h ∷ l) l') (x∈tail h p) with ⟶ (∈++ x l l') p
-⟶ (∈++ x (h ∷ l) l') (x∈tail h p) | ∨left p₁ = ∨left (x∈tail h p₁)
-⟶ (∈++ x (h ∷ l) l') (x∈tail h p) | ∨right q = ∨right q
-⟵ (∈++ x [] l') (∨right q) = q
-⟵ (∈++ x (x ∷ l) l') (∨left (x∈x∷ l)) = x∈x∷ (l ++ l')
-⟵ (∈++ x (h ∷ l) l') (∨left (x∈tail h p)) = x∈tail h (⟵ (∈++ x l l') (∨left p))
-⟵ (∈++ x (h ∷ l) l') (∨right q) = x∈tail h (⟵ (∈++ x l l') (∨right q))
+left-unit ⦃ []-++ ⦄ = refl
+
+right-unit ⦃ ++-[] ⦄ [] = refl []
+right-unit ⦃ ++-[] ⦄ (h ∷ t) =
+  List== (refl h) (right-unit t)
+
+open import Data.Nat.Arithmetic.Definition
+
+len++ : (l l' : List X) → len (l ++ l') == len l + len l'
+len++ [] l' = refl (len l')
+len++ (h ∷ l) l' = ap suc $ len++ l l'
+
+map : (f : X → Y)(l : List X) → List Y
+map f [] = []
+map f (h ∷ l) = f h ∷ map f l
 
 filter :
   (p : X → 𝒰 ᵖ)

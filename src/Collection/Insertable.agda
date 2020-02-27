@@ -1,7 +1,7 @@
 {-# OPTIONS --exact-split --prop --safe #-}
-module Data.Collection.Insertable where
+module Collection.Insertable where
 
-open import Data.Collection.Definition
+open import Collection.Definition
 
 open import PropUniverses
 open import Data.List.Definition
@@ -48,7 +48,7 @@ record Insertable
   ⟵ (extend-prop {l = _ ∷ l}) (∨right q) =
     ⟵ insert-valid (∨left (⟵ (extend-prop {l = l}) (∨right q)))
 
-  open import Data.Collection.Empty
+  open import Collection.Basic
 
   from-list :
     ⦃ e : Empty Col Elem ⦄

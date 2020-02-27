@@ -1,11 +1,11 @@
-{-# OPTIONS --exact-split --prop #-}
-module Data.Collection.Listable.Function where
+{-# OPTIONS --exact-split --prop --safe #-}
+module Collection.Listable.Function where
 
-open import Data.Collection.Listable.Definition
+open import Collection.Listable.Definition
 
 open import Universes
-open import Data.Collection.Insertable
-open import Data.Collection.Definition
+open import Collection.Insertable
+open import Collection.Definition
 
 infixl 105 _++_
 _++_ :
@@ -16,7 +16,7 @@ _++_ :
   (l l' : Col) → Col
 l ++ l' = extend (to-list l') l
 
-open import Logic
+open import Logic hiding (⊥-recursion)
 
 ++-prop : 
   {Elem : 𝒰 ˙} {Col : 𝒱 ˙}
@@ -34,8 +34,7 @@ open import Logic
 ⟵ ++-prop (∨right q) = ⟵ extend-prop (∨left (⟶ to-list-valid q))
 
 open import Structure.Monoid
-open import Data.Functor
-open import Data.List.Functor
+open import Data.List
 
 fold-map : {Col : 𝒰 ˙}{Elem : 𝒱 ˙}
   ⦃ list : Listable 𝒲 Col Elem ⦄
@@ -44,7 +43,7 @@ fold-map : {Col : 𝒰 ˙}{Elem : 𝒱 ˙}
   (S : Col)
   → ---------------------------
   X
-fold-map f S = mconcat (fmap f (to-list S))
+fold-map f S = mconcat (map f (to-list S))
 
 open import Function
 
@@ -55,3 +54,23 @@ fold : {Col : 𝒰 ˙}{Elem : 𝒱 ˙}
   → ---------------------------
   Elem
 fold = fold-map id
+
+foldr : {Col : 𝒰 ˙}{Elem : 𝒱 ˙}
+  ⦃ list : Listable 𝒲 Col Elem ⦄
+  (f : (e : Elem)(rest : X) → X)
+  (z : X)
+  (S : Col)
+  → ---------------------------
+  X
+foldr f = flip (fold-map f)
+  where instance _ = EndofunctionMonoid
+
+foldl : {Col : 𝒰 ˙}{Elem : 𝒱 ˙}
+  ⦃ list : Listable 𝒲 Col Elem ⦄
+  (f : (sofar : X)(e : Elem) → X)
+  (z : X)
+  (S : Col)
+  → ---------------------------
+  X
+foldl f = flip (fold-map (flip f))
+  where instance _ = dual EndofunctionMonoid

@@ -27,9 +27,11 @@ zero - suc n [ p ] = ⊥-recursion ℕ (f p)
         f (∨right ())
 suc m - suc n [ p ] = m - n [ ap pred p ]
 
--== : ∀ {m m' n n' p p'}
+open import Proposition.Identity hiding (refl)
+
+-== : ∀ {m m' n n' p}
   (q₀ : m == m')
   (q₁ : n == n')
   → -----------------
-  m - n [ p ] == m' - n' [ p' ]
+  m - n [ p ] == m' - n' [ Id.coe (ap2 _≤_ q₁ q₀) p ]
 -== (Id.refl m) (Id.refl n) = Id.refl (m - n [ _ ])

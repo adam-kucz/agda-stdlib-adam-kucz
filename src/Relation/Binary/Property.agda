@@ -4,11 +4,11 @@ module Relation.Binary.Property where
 open import PropUniverses
 open import Relation.Binary.Definition
 open import Proposition.Identity.Definition using (_==_; _≠_)
-open import Logic.Basic using (¬_; _∨_; _∧_; ⊥)
+open import Logic
 
 private
   module RelProp (property : RelProperty) where
-    record Property {X : 𝒰 ˙} (R : Rel 𝒱 X X) : 𝒰 ⊔ 𝒱 ᵖ where
+    record Property {X : 𝒰 ˙} (R : BinRel 𝒱 X) : 𝒰 ⊔ 𝒱 ᵖ where
       field
         prop-name : property R
 
@@ -37,13 +37,13 @@ open RelProp (λ _R_ → ∀ {x y} (p : x R y) → y R y) public
 
 instance
   DefaultSemiconnex :
-    {R : Rel 𝒰 X X}
+    {R : BinRel 𝒰 X}
     ⦃ _ : Connex R ⦄
     → -------------------------
     Semiconnex R
   semicon ⦃ DefaultSemiconnex ⦄ {x} {y} _ = total x y
 
-record Equivalence {X : 𝒱 ˙} (R : Rel 𝒰 X X) : 𝒰 ⊔ 𝒱 ᵖ where
+record Equivalence {X : 𝒱 ˙} (R : BinRel 𝒰 X) : 𝒰 ⊔ 𝒱 ᵖ where
   field
     ⦃ equiv-reflexive ⦄ : Reflexive R
     ⦃ equiv-symmetric ⦄ : Symmetric R
@@ -51,7 +51,7 @@ record Equivalence {X : 𝒱 ˙} (R : Rel 𝒰 X X) : 𝒰 ⊔ 𝒱 ᵖ where
 
 open Equivalence ⦃ … ⦄ public
 
-record QuasiReflexive {X : 𝒱 ˙} (R : Rel 𝒰 X X) : 𝒰 ⊔ 𝒱 ᵖ where
+record QuasiReflexive {X : 𝒱 ˙} (R : BinRel 𝒰 X) : 𝒰 ⊔ 𝒱 ᵖ where
   field
     ⦃ qr-left ⦄ : LeftQuasiReflexive R
     ⦃ qr-right ⦄ : RightQuasiReflexive R
@@ -60,23 +60,35 @@ open QuasiReflexive ⦃ … ⦄ public
 
 instance
   DefaultEquivalence :
-    {R : Rel 𝒰 X X}
+    {R : BinRel 𝒰 X}
     ⦃ _ : Reflexive R ⦄
     ⦃ _ : Symmetric R ⦄
     ⦃ _ : Transitive R ⦄
     → -------------------------
     Equivalence R
-  DefaultEquivalence = record {}
-
   DefaultQuasiReflexive :
-    {R : Rel 𝒰 X X}
+    {R : BinRel 𝒰 X}
     ⦃ _ : LeftQuasiReflexive R ⦄
     ⦃ _ : RightQuasiReflexive R ⦄
     → -------------------------
     QuasiReflexive R
-  DefaultQuasiReflexive = record {}
 
-record Minimal {X : 𝒰 ˙} (_≼_ : Rel 𝒱 X X) (⊥ : X) : 𝒰 ⊔ 𝒱 ᵖ where
+DefaultEquivalence = record {}
+DefaultQuasiReflexive = record {}
+
+total-other :
+  {_R_ : BinRel 𝒰 X}
+  ⦃ _ : Connex _R_ ⦄
+  {x y : X}
+  (p : ¬ x R y)
+  → -------------------
+  y R x
+total-other {x = x}{y} p with total x y
+total-other {_R_ = _R_}{x = x} {y} p | ∨left q =
+  ⊥-recursion (y R x) (p q)
+total-other {x = x} {y} p | ∨right q = q
+
+record Minimal {X : 𝒰 ˙} (_≼_ : BinRel 𝒱 X) (⊥ : X) : 𝒰 ⊔ 𝒱 ᵖ where
   field
     minimality : ∀ {x} (p : x ≼ ⊥) → x == ⊥
 

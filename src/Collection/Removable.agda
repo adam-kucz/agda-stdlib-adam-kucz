@@ -1,7 +1,7 @@
 {-# OPTIONS --exact-split --prop --safe #-}
-module Data.Collection.Removable where
+module Collection.Removable where
 
-open import Data.Collection.Definition
+open import Collection.Definition
 
 open import Universes
 open import Proposition.Identity

@@ -18,16 +18,3 @@ f ~ g = ∀ x → f x == g x
   → -----------------
   f ~ g
 ==→~ (refl f) x = refl (f x)
-
-left-unit : {X : 𝒰 ˙} {A : (x : X) → 𝒱 ˙}
-  (f : Π A)
-  → -----------------
-  id ∘ f == f
-left-unit = refl
-
-right-unit : {X : 𝒰 ˙} {A : (x : X) → 𝒱 ˙}
-  (f : Π A)
-  → -----------------
-  f ∘ id == f
-right-unit = refl
-

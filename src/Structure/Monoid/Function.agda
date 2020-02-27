@@ -4,9 +4,11 @@ module Structure.Monoid.Function where
 open import Structure.Monoid.Definition
 
 open import Universes
-open import Data.Collection
+open import Collection.Definition
+open import Collection.Operation.Definition
 open import Data.List.Definition
 open import Data.List.Collection
+open import Data.List.Property
 
 module WithMonoid {X : 𝒰 ˙}⦃ M : Monoid X ⦄ where
 
@@ -18,14 +20,14 @@ module WithMonoid {X : 𝒰 ˙}⦃ M : Monoid X ⦄ where
   mconcat [] = e
   mconcat (h ∷ l) = h ∙ mconcat l
   
-  mconcat-++ : ∀ l l'
+  mconcat-∪ : (l l' : List X)
     → ----------------------------------------
-    mconcat (l ++ l') == mconcat l ∙ mconcat l'
-  mconcat-++ [] l' = sym $ left-unit (mconcat l')
-  mconcat-++ (h ∷ l) l' =
+    mconcat (l ∪ l') == mconcat l ∙ mconcat l'
+  mconcat-∪ [] l' = sym $ left-unit (mconcat l')
+  mconcat-∪ (h ∷ l) l' =
     proof h ∙ mconcat (l ++ l')
       === h ∙ (mconcat l ∙ mconcat l')
-        :by: ap (h ∙_) $ mconcat-++ l l'
+        :by: ap (h ∙_) $ mconcat-∪ l l'
       === h ∙ mconcat l ∙ mconcat l'
         :by: assoc h _ _
     qed
@@ -50,3 +52,4 @@ module WithMonoid {X : 𝒰 ˙}⦃ M : Monoid X ⦄ where
     where open TransMakeComposable _≤_
 
 open WithMonoid public
+

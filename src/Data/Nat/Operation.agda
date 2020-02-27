@@ -19,7 +19,7 @@ freshℕ = suc ∘ mconcat
 open import Data.Nat.Syntax
 open Pattern
 open import Data.Nat.Proof
-open import Data.Collection
+open import Collection
 open import Data.Functor
 open import Data.List.Functor
 open import Relation.Binary

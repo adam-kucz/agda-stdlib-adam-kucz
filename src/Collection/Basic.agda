@@ -1,7 +1,7 @@
 {-# OPTIONS --exact-split --prop --safe #-}
-module Data.Collection.Empty where
+module Collection.Basic where
 
-open import Data.Collection.Definition
+open import Collection.Definition
 
 open import PropUniverses
 open import Logic
@@ -18,3 +18,16 @@ record Empty
     _∉∅ : (x : Elem) → x ∉ ∅
 
 open Empty ⦃ … ⦄ public
+
+record Universal
+    (Col : 𝒱 ˙)
+    (Elem : 𝒰 ˙)
+    ⦃ col : Collection 𝒲 Col Elem ⦄
+    : ------------------------
+    𝒰 ⊔ 𝒱 ⊔ 𝒲 ˙
+    where
+  field
+    Univ : Col
+    _∈Univ : (x : Elem) → x ∈ Univ
+
+open Universal ⦃ … ⦄ public

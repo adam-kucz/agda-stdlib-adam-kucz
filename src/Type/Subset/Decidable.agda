@@ -6,7 +6,7 @@ import Type.Subset.Operation as Op
 
 open import PropUniverses
 open import Proposition.Decidable
-open import Data.Collection
+open import Collection
 
 record DecSubset 𝒰 (X : 𝒱 ˙) : 𝒱 ⊔ 𝒰 ⁺ ˙ where
   constructor dec-set
@@ -37,7 +37,7 @@ open import Proposition.Identity hiding (refl)
 open import Proposition.Sum.Monoid
 open import Proposition.Sum.Property
 open import Proposition.Decidable.Monoid
-open import Data.Collection.Listable.Function
+open import Collection.Listable.Function
 open import Data.Functor
 open import Data.List
 open import Data.List.Functor

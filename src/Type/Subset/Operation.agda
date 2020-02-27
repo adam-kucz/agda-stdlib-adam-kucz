@@ -31,6 +31,10 @@ infixl 104 _∩_
 _∩_ : (A : Subset 𝒰 X)(B : Subset 𝒱 X) → Subset (𝒰 ⊔ 𝒱) X
 (A ∩ B) x = x ∈ A ∧ x ∈ B
 
+infixl 108 ⋂_
+⋂_ : {X : 𝒰 ˙}(U : Subset 𝒱 (Subset 𝒲 X)) → Subset (𝒰 ⊔ 𝒱 ⊔ 𝒲 ⁺) X
+⋂_ {𝒲 = 𝒲}{X = X} U x = ∀ (S : Subset 𝒲 X)(p : S ∈ U) → x ∈ S
+
 infixr 105 _`_
 _`_ : {X : 𝒰 ˙}{Y : 𝒱 ˙}
   (f : X → Y)

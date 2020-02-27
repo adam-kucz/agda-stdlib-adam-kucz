@@ -6,7 +6,7 @@ module Data.List.Insertable {𝒰 : Universe} where
 open import Data.List.Definition {𝒰}
 open import Data.List.Collection {𝒰}
 
-open import Data.Collection.Insertable public
+open import Collection.Insertable public
 open import Proposition.Identity renaming (Idₚ to Id) hiding (refl)
 open import Proof
 open import Logic
