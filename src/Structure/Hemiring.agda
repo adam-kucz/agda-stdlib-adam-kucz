@@ -1,7 +1,7 @@
 {-# OPTIONS --exact-split --safe --prop #-}
 module Structure.Hemiring where
 
-open import Structure.Semigroup
+open import Structure.Semigroup.Definition
 open import Structure.Monoid
 open import Operation.Binary.Property using (Commutative)
 

@@ -4,7 +4,7 @@ module Operation.Binary.Property where
 open import PropUniverses as Univ
 open import Operation.Binary.Definition
 
-open import Proposition.Identity.Definition using (_==_)
+open import Proposition.Identity
 
 record Commutative {X : 𝒰 ˙} {Y : 𝒱 ˙} (_∙_ : Op X X Y) : 𝒰 ⊔ 𝒱 ᵖ where
   field
@@ -28,7 +28,7 @@ open import Function.Basic using (flip)
 open import Proof
 
 assoc-of-flip :
-  (op : Op X X X)
+  (op : ClosedOp X)
   ⦃ _ : Associative op ⦄
   → --------------------------
   Associative (flip op)
@@ -43,8 +43,8 @@ swap : {_∙_ : ClosedOp X}
 swap {_∙_ = _∙_} x y z =
   proof x ∙ (y ∙ z)
       〉 _==_ 〉 (x ∙ y) ∙ z :by: assoc x y z
-      〉 _==_ 〉 (y ∙ x) ∙ z :by: ap (_∙ z) (comm x y)
-      〉 _==_ 〉 y ∙ (x ∙ z) :by: sym (assoc y x z)
+      〉 _==_ 〉 (y ∙ x) ∙ z :by: ap (_∙ z) $ comm x y
+      〉 _==_ 〉 y ∙ (x ∙ z) :by: sym $ assoc y x z
   qed
 
 swap' : {_∙_ : ClosedOp X}

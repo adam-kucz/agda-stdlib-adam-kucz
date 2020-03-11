@@ -16,7 +16,7 @@ private
 
 instance
   ~⊆~~ : _⊆_ (_~_ {X = X}) _~~_ 
-subrel ⦃ ~⊆~~ ⦄ (refl l) = refl l
+subrel ⦃ ~⊆~~ ⦄ empty = refl []
 subrel ⦃ ~⊆~~ ⦄ (trans p q) = trans (subrel p) (subrel q) 
 subrel ⦃ ~⊆~~ ⦄ (swap x y p) = swap x y (subrel p)
 subrel ⦃ ~⊆~~ ⦄ (step x p) = step x (subrel p)

@@ -35,21 +35,22 @@ module WithMonoid {X : 𝒰 ˙}⦃ M : Monoid X ⦄ where
   open import Relation.Binary
   
   mconcat-preserv :
-    {_≤_ : Rel 𝒰 X X}
+    {R : Rel 𝒰 X X}
+    → let _≤_ = R in
     ⦃ _ : Transitive _≤_ ⦄
     (p₀ : ∀ x y → x ≤ x ∙ y)
     (p₁ : ∀ x y → y ≤ x ∙ y)
     → --------------------------------
     ∀ l x (p : x ∈ l) → x ≤ mconcat l
   mconcat-preserv p₀ p₁ (x ∷ t) x (x∈x∷ t) = p₀ x (mconcat t)
-  mconcat-preserv {_≤_ = _≤_} p₀ p₁ (h ∷ t) x (x∈tail h p) =
+  mconcat-preserv {R = _≤_} p₀ p₁ (h ∷ t) x (x∈tail h p) =
     proof x
       〉 _≤_ 〉 mconcat t
         :by: mconcat-preserv p₀ p₁ t x p
       〉 _≤_ 〉 h ∙ mconcat t
         :by: p₁ h (mconcat t)
     qed
-    where open TransMakeComposable _≤_
+    where open MakeTransComposable _≤_
 
 open WithMonoid public
 

@@ -8,8 +8,6 @@ open import Data.List.Operation
 open import PropUniverses
 open import Proposition.Identity hiding (refl)
 open import Proposition.Decidable.Definition
-open import Data.Nat.Definition
-open import Data.Nat.Order
 open import Collection.Definition
 open import Collection.Basic
 open import Collection.Removable
@@ -124,83 +122,77 @@ ListDecidable∈ {x = x} {h ∷ l} | true p =
 ListDecidable∈ {x = x} {h ∷ l} | false ¬p with decide (x ∈ l)
 ListDecidable∈ {x = x} {h ∷ l} | false ¬p | true p = true (x∈tail h p)
 ListDecidable∈ {x = x} {h ∷ l} | false ¬p | false ¬p₁ =
-  false (λ { (x∈x∷ t) → ¬p (refl x) ; (x∈tail h q) → ¬p₁ q })
+  false (λ { (x∈x∷ t) → ¬p (Id-refl x) ; (x∈tail h q) → ¬p₁ q })
 
-remove-at : (n : ℕ) (l : List X) (p : n < len l) → List X
-remove-at zero    (h ∷ l) p = l
-remove-at (suc n) (h ∷ l) p = remove-at n l (s<s→-<- p)
+-- remove-at : (n : ℕ) (l : List X) (p : n < len l) → List X
+-- remove-at zero    (h ∷ l) p = l
+-- remove-at (suc n) (h ∷ l) p = remove-at n l (s<s→-<- p)
 
-open import Data.Nat.Syntax
-open Pattern
-open import Data.Nat.Order
-open import Data.Nat.Proof
-open import Function.Proof
+-- private
+--   remove-duplicates' :
+--     ⦃ d : ∀ {x y : X} → Decidable (x == y) ⦄
+--     (l : List X)
+--     (n : ℕ)
+--     (p : len l < n)
+--     → -----------------------------------------
+--     List X
 
-private
-  remove-duplicates' :
-    ⦃ d : ∀ {x y : X} → Decidable (x == y) ⦄
-    (l : List X)
-    (n : ℕ)
-    (p : len l < n)
-    → -----------------------------------------
-    List X
+-- remove-duplicates' [] n p = []
+-- remove-duplicates' (_ ∷ _) zero ()
+-- remove-duplicates' {X = X} ⦃ d ⦄ (h ∷ t) (n +1) p =
+--   h ∷ remove-duplicates' (remove h t) n (
+--     proof len (remove h t)
+--       〉 _≤_ 〉 len t         :by: len-remove-≤ h t
+--       〉 _<_ 〉 n             :by: s<s→-<- p
+--     qed)
+--   where len-remove-≤ : (x : X)(l : List X) → len (remove x l) ≤ len l
+--         len-remove-≤ x [] = refl 0
+--         len-remove-≤ x (h ∷ l) with decide (h == x) ⦃ d ⦄
+--         len-remove-≤ x (h ∷ l) | true _ = ∨right (
+--           proof len (remove x l)
+--             〉 _≤_ 〉 len l         :by: len-remove-≤ x l
+--             〉 _<_ 〉 len l +1      :by: postfix suc (len l)
+--           qed)
+--         len-remove-≤ x (h ∷ l) | false _ = ap suc $ len-remove-≤ x l
 
-remove-duplicates' [] n p = []
-remove-duplicates' (_ ∷ _) zero ()
-remove-duplicates' {X = X} ⦃ d ⦄ (h ∷ t) (n +1) p =
-  h ∷ remove-duplicates' (remove h t) n (
-    proof len (remove h t)
-      〉 _≤_ 〉 len t         :by: len-remove-≤ h t
-      〉 _<_ 〉 n             :by: s<s→-<- p
-    qed)
-  where len-remove-≤ : (x : X)(l : List X) → len (remove x l) ≤ len l
-        len-remove-≤ x [] = refl 0
-        len-remove-≤ x (h ∷ l) with decide (h == x) ⦃ d ⦄
-        len-remove-≤ x (h ∷ l) | true _ = ∨right (
-          proof len (remove x l)
-            〉 _≤_ 〉 len l         :by: len-remove-≤ x l
-            〉 _<_ 〉 len l +1      :by: postfix suc (len l)
-          qed)
-        len-remove-≤ x (h ∷ l) | false _ = ap suc $ len-remove-≤ x l
+-- remove-duplicates :
+--   ⦃ d : ∀ {x y : X} → Decidable (x == y) ⦄
+--   → -----------------------------------
+--   (l : List X) → List X
+-- remove-duplicates {X = X} ⦃ d ⦄ l =
+--   remove-duplicates' l (len l +1) (postfix suc (len l))
 
-remove-duplicates :
-  ⦃ d : ∀ {x y : X} → Decidable (x == y) ⦄
-  → -----------------------------------
-  (l : List X) → List X
-remove-duplicates {X = X} ⦃ d ⦄ l =
-  remove-duplicates' l (len l +1) (postfix suc (len l))
+-- private
+--   ∈remove-duplicates' :
+--     ⦃ d : ∀ {x y : X} → Decidable (x == y) ⦄
+--     {l : List X}
+--     {n : ℕ}
+--     {p : len l < n}
+--     {x : X}
+--     → ------------------------------------------
+--     x ∈ remove-duplicates' l n p ↔ x ∈ l
 
-private
-  ∈remove-duplicates' :
-    ⦃ d : ∀ {x y : X} → Decidable (x == y) ⦄
-    {l : List X}
-    {n : ℕ}
-    {p : len l < n}
-    {x : X}
-    → ------------------------------------------
-    x ∈ remove-duplicates' l n p ↔ x ∈ l
+-- ⟶ (∈remove-duplicates' {l = h ∷ l} {n +1}) (x∈x∷ _) = x∈x∷ l
+-- ⟶ (∈remove-duplicates' {l = h ∷ l} {n +1}) (x∈tail .h p) =
+--   x∈tail h $
+--   ∧left $
+--   ⟶ remove-valid $
+--   ⟶ ∈remove-duplicates' p
+-- ⟵ (∈remove-duplicates' {l = h ∷ t}{n +1}{x = x}) q with decide (x == h)
+-- ⟵ (∈remove-duplicates' {l = h ∷ t} {n +1} {x = .h}) q
+--   | true (Id.refl .h) = x∈x∷ _
+-- ⟵ (∈remove-duplicates' {l = h ∷ t}{n +1}{x = x}) (x∈x∷ .t)
+--   | false ¬p = x∈x∷ _
+-- ⟵ (∈remove-duplicates' {l = h ∷ t}{n +1}{x = x}) (x∈tail h q)
+--   | false ¬p =
+--   x∈tail h $
+--   ⟵ (∈remove-duplicates' {l = remove h t}) $
+--   ⟵ remove-valid (q , ¬p)
 
-⟶ (∈remove-duplicates' {l = h ∷ l} {n +1}) (x∈x∷ _) = x∈x∷ l
-⟶ (∈remove-duplicates' {l = h ∷ l} {n +1}) (x∈tail .h p) =
-  x∈tail h $
-  ∧left $
-  ⟶ remove-valid $
-  ⟶ ∈remove-duplicates' p
-⟵ (∈remove-duplicates' {l = h ∷ t}{n +1}{x = x}) q with decide (x == h)
-⟵ (∈remove-duplicates' {l = h ∷ t} {n +1} {x = .h}) q
-  | true (Id.refl .h) = x∈x∷ _
-⟵ (∈remove-duplicates' {l = h ∷ t}{n +1}{x = x}) (x∈x∷ .t)
-  | false ¬p = x∈x∷ _
-⟵ (∈remove-duplicates' {l = h ∷ t}{n +1}{x = x}) (x∈tail h q)
-  | false ¬p =
-  x∈tail h $
-  ⟵ (∈remove-duplicates' {l = remove h t}) $
-  ⟵ remove-valid (q , ¬p)
-
-∈remove-duplicates :
-  ⦃ d : ∀ {x y : X} → Decidable (x == y) ⦄
-  {l : List X}
-  {x : X}
-  → ------------------------------------------
-  x ∈ remove-duplicates l ↔ x ∈ l
-∈remove-duplicates = ∈remove-duplicates'
+-- ∈remove-duplicates :
+--   ⦃ d : ∀ {x y : X} → Decidable (x == y) ⦄
+--   {l : List X}
+--   {x : X}
+--   → ------------------------------------------
+--   x ∈ remove-duplicates l ↔ x ∈ l
+-- ∈remove-duplicates = ∈remove-duplicates'

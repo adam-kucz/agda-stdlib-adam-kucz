@@ -20,15 +20,16 @@ mk-Σ-implicit : {x : X}(y : A x) → Σ A
 mk-Σ-implicit {x = x} y = x , y
 
 open import Proposition.Identity.Definition
+import Proposition.Identity.Heterogeneous as Het
 
 Σ== :
   {A : (x : X) → 𝒰 ˙}
   {σ ρ : Σ A}
   (p : pr₁ σ == pr₁ ρ)
-  (q : pr₂ σ == pr₂ ρ)
+  (q : pr₂ σ Het.== pr₂ ρ)
   → ------------------
   σ == ρ
-Σ== {σ = σ} (refl _) (refl _) = refl σ
+Σ== {σ = σ} (refl _) (Het.refl _) = refl σ
 
 open import Proposition.Sum renaming (_,_ to _,,_)
 
@@ -36,8 +37,8 @@ from-Σ== :
   {σ ρ : Σ A}
   (p : σ == ρ)
   → ------------------
-  pr₁ σ == pr₁ ρ ∧ pr₂ σ == pr₂ ρ
-from-Σ== (refl σ) = refl (pr₁ σ) ,, refl (pr₂ σ)
+  pr₁ σ == pr₁ ρ ∧ pr₂ σ Het.== pr₂ ρ
+from-Σ== (refl σ) = refl (pr₁ σ) ,, Het.refl (pr₂ σ)
 
 Σ-assoc : 
   {K : (x : X)(y : A x) → 𝒰 ˙}

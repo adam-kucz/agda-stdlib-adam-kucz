@@ -10,7 +10,9 @@ open import Proposition.Empty
 open import Proposition.Sum
   using (∃; _∧_; _,_) renaming (left to ∧left; right to ∧right) public
 open import Proposition.BinarySum
-  using (_∨_; ∨-contract) renaming (left to ∨left; right to ∨right) public
+  using (_∨_; ∨-contract)
+  renaming (left to ∨left; right to ∨right; [_⸴_] to ∨[_⸴_])
+  public
 
 ∃! : {X : 𝒰 ˙} (𝐴 : (x : X) → 𝒱 ᵖ) → 𝒰 ⊔ 𝒱 ᵖ
 ∃! {X = X} 𝐴 = ∃ λ (x : X) → 𝐴 x ∧ ∀ y (p : 𝐴 y) → y == x

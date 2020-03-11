@@ -104,9 +104,77 @@ record _⊆_ {X : 𝒰 ˙} {Y : 𝒱 ˙} (_R_ : Rel 𝒲 X Y) (_P_ : Rel 𝒯 X 
 
 open _⊆_ ⦃ … ⦄ public
 
+instance
+  Reflexive⊆ : Reflexive (_⊆_ {𝒲 = 𝒰}{X = X}{Y})
+  Transitive⊆ : Transitive (_⊆_ {𝒲 = 𝒰}{X = X}{Y})
+
+open import Proposition.Function using (_$_; _∘_; id)
+
+subrel ⦃ refl ⦃ Reflexive⊆ ⦄ R ⦄ = id
+subrel ⦃ trans ⦃ Transitive⊆ ⦄ P⊆Q Q⊆R ⦄ = subrel ∘ subrel
+  where instance
+          _ = P⊆Q
+          _ = Q⊆R
+
 infix 19 _~_
 record _~_ {X : 𝒰 ˙} {Y : 𝒱 ˙} (R : Rel 𝒲 X Y) (P : Rel 𝒯 X Y) : 𝒰 ⊔ 𝒱 ⊔ 𝒲 ⊔ 𝒯 ᵖ
   where
   field
     ⦃ ~-⊆ ⦄ : R ⊆ P
     ⦃ ~-⊇ ⦄ : P ⊆ R
+
+open _~_ ⦃ … ⦄ public
+
+instance
+  Default-~ : {R : Rel 𝒰 X Y}{P : Rel 𝒱 X Y}
+    ⦃ R⊆P : R ⊆ P ⦄
+    ⦃ P⊆R : P ⊆ R ⦄
+    → --------------
+    R ~ P
+Default-~ = record {}
+
+open import Logic
+
+↔-→-⊆ :
+  {_R_ : Rel 𝒰 X Y}
+  {_P_ : Rel 𝒱 X Y}
+  (equiv : ∀ {x y} → x R y ↔ x P y)
+  → --------------------------------
+  _R_ ⊆ _P_
+↔-→-⊇ :
+  {_R_ : Rel 𝒰 X Y}
+  {_P_ : Rel 𝒱 X Y}
+  (equiv : ∀ {x y} → x R y ↔ x P y)
+  → --------------------------------
+  _P_ ⊆ _R_
+
+subrel ⦃ ↔-→-⊆ equiv ⦄ = ⟶ equiv
+subrel ⦃ ↔-→-⊇ equiv ⦄ = ⟵ equiv
+
+instance
+  Reflexive~ : Reflexive (_~_ {𝒲 = 𝒰}{X = X}{Y})
+  Symmetric~ : Symmetric (_~_ {𝒲 = 𝒰}{X = X}{Y})
+  Transitive~ : Transitive (_~_ {𝒲 = 𝒰}{X = X}{Y})
+
+refl ⦃ Reflexive~ ⦄ R = record {}
+  where instance _ = refl ⦃ Reflexive⊆ ⦄ R
+sym ⦃ Symmetric~ ⦄ P~R = record {}
+trans ⦃ Transitive~ ⦄ {P}{Q}{R} P~Q Q~R = record {}
+  where instance _ = P~Q; _ = Q~R; P⊆R : P ⊆ R; R⊆P : R ⊆ P
+        P⊆R = trans (_~_.~-⊆ P~Q) (_~_.~-⊆ Q~R)
+        R⊆P = trans (_~_.~-⊇ Q~R) (_~_.~-⊇ P~Q)
+
+instance
+  Irreflexive¬Reflexive :
+    {_R_ : BinRel 𝒰 X}
+    ⦃ reflexive : Reflexive _R_ ⦄
+    → -----------------------------
+    Irreflexive (λ x y → ¬ x R y)
+  Symmetric¬Symmetric :
+    {_R_ : BinRel 𝒰 X}
+    ⦃ symmetric : Symmetric _R_ ⦄
+    → -----------------------------
+    Symmetric (λ x y → ¬ x R y)
+
+irrefl ⦃ Irreflexive¬Reflexive ⦄ x ¬xRx = ¬xRx $ refl x
+sym ⦃ Symmetric¬Symmetric ⦄ ¬xRy yRx = ¬xRy $ sym yRx

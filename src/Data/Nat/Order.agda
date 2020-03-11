@@ -6,149 +6,191 @@ open import Data.Nat.Definition
 open import Data.Nat.Syntax
 open Pattern
 
-open import Proposition.Identity renaming (Idₚ to Id) using (_==_; ap)
+open import Proposition.Identity
+  renaming (refl to Id-refl) using (_==_; ap)
 open import Proposition.Decidable.Definition
-open import Relation.Binary.Property
+open import Function hiding (_$_; _~_)
+open import Relation.Binary
 open import Operation.Binary
 open import Logic
+open import Proof
 open import Function.Proof
 
-open import Proposition.Function using (_$_; _∘_)
+data _≤_ : BinRel 𝒰₀ ℕ where
+  z≤_ : ∀ m → 0 ≤ m
+  s≤s : (p : n ≤ m) → n +1 ≤ m +1
 
-infix 35 _<_ _>_
-data _<_ : (m n : ℕ) → 𝒰₀ ᵖ where
-  z<s : ∀ {n} → 0 < suc n
-  s<s : ∀ {m n} → n < m → suc n < suc m
+infix 35 _≤_ _<_ _≥_ _>_
+_<_ _≥_ _>_ suc_==_ : BinRel 𝒰₀ ℕ
 
-_>_ : (m n : ℕ) → 𝒰₀ ᵖ
-a > b = b < a
+_≥_ = flip _≤_
+m < n = m ≤ n ∧ m ≠ n
+_>_ = flip _<_
 
--<s : ∀ {m n} → (n<m : n < m) → n < suc m
--<s z<s = z<s
--<s (s<s n<m) = s<s (-<s n<m)
+z<s_ : ∀ m → 0 < m +1
+z<s m = z≤ (m +1) , λ ()
 
-s<s→-<- : ∀ {m n} → (p : suc n < suc m) → n < m
-s<s→-<- (s<s p) = p
+suc m == n = m +1 == n
+_rtc-≤_ = refl-trans-close suc_==_
 
--≮0 : ∀ {n} → ¬ n < 0
--≮0 ()
+instance
+  Relating-suc-≤-single : Relating suc suc_==_ suc_==_
+
+rel-preserv ⦃ Relating-suc-≤-single ⦄ (Id-refl (m +1)) = refl (m +2)
+
+open import Data.Nat.Arithmetic
+
+private
+  ∃+ : BinRel 𝒰₀ ℕ
+
+∃+ n m = ∃ λ k → k + n == m
+
+rtc-≤-↔-∃+ : m rtc-≤ n ↔ ∃+ m n
+rtc-≤-↔-∃+ = forw-dir , λ { (k , p) → back-dir k p}
+  where open MakeComposable _rtc-≤_
+        forw-dir : (p : m rtc-≤ n) → ∃ λ k → k + m == n
+        forw-dir (rfl m) = 0 , refl m
+        forw-dir (step {b = b +1} (Id-refl _) b+1≤n) with forw-dir b+1≤n
+        forw-dir (step {_} {b +1} (Id-refl _) b+1≤n) | k , Id-refl _ =
+          k +1 , sym $ +-suc k b
+        back-dir : ∀ k (p : k + m == n) → m rtc-≤ n
+        back-dir zero (Id-refl m) = refl m
+        back-dir {m = m}{n} (k +1) p =
+          proof m
+            〉 _rtc-≤_ 〉 k + m    :by: back-dir k $ refl (k + m)
+            〉 suc_==_ 〉 k + m +1 :by: refl (k + m +1) 
+            〉 _==_ 〉 n       :by: p
+          qed
+
+open import Logic.Proof
+
+≤-↔-∃+ : ∀ {n m} → n ≤ m ↔ ∃+ n m
+⟶ ≤-↔-∃+ (z≤ m) = m , left-unit m
+⟶ ≤-↔-∃+ (s≤s p) with ⟶ ≤-↔-∃+ p
+⟶ ≤-↔-∃+ (s≤s p) | k , Id-refl .(k + _) = k , +-suc k _
+⟵ ≤-↔-∃+ (zero , Id-refl zero) = z≤ 0
+⟵ ≤-↔-∃+ (zero , Id-refl (m +1)) =
+  s≤s $ ⟵ (≤-↔-∃+ {m}{m}) (0 , refl m)
+⟵ (≤-↔-∃+ {zero}) (k +1 , Id-refl .(k + 0 +1)) = z≤ k + 0 +1
+⟵ (≤-↔-∃+ {n +1}) (k +1 , Id-refl .(k + (n +1) +1)) =
+  s≤s $ ⟵ (≤-↔-∃+ {n}) (k +1 , sym $ +-suc k n)
+
+instance
+  ≤-⊆-rtc-≤ : _≤_ ⊆ _rtc-≤_
+  rtc-≤-⊆-≤ : _rtc-≤_ ⊆ _≤_
+
+≤-↔-rtc-≤ : ∀ {n m} → n ≤ m ↔ n rtc-≤ m
+≤-↔-rtc-≤ {n} {m} =
+  proof n ≤ m
+    〉 _↔_ 〉 ∃+ n m    :by: ≤-↔-∃+
+    〉 _↔_ 〉 n rtc-≤ m :by: sym rtc-≤-↔-∃+
+  qed
+
+≤-⊆-rtc-≤ = ↔-→-⊆ ≤-↔-rtc-≤
+rtc-≤-⊆-≤ = ↔-→-⊇ ≤-↔-rtc-≤
+
+open import
+  Relation.Binary.ReflexiveTransitiveClosure.Transfer _≤_ suc_==_
+  public
+
+module Composable-≤ where
+  open MakeTransComposable _≤_ public
+
+instance
+  Antisym≤ : Antisymmetric _≤_
+  Connex≤ : Connex _≤_
+  Prefix-pred-≤ : UniversalPrefix pred _≤_
+  Relating-pred-≤ : Relating pred _≤_ _≤_
+  Decidable≤ : ∀ {m n} → Decidable (m ≤ n)
+
+antisym ⦃ Antisym≤ ⦄ (z≤ 0) (z≤ 0) = refl 0
+antisym ⦃ Antisym≤ ⦄ (s≤s p) (s≤s q) = ap suc $ antisym p q
+
+total ⦃ Connex≤ ⦄ zero y = ∨left $ z≤ y
+total ⦃ Connex≤ ⦄ (x +1) zero = ∨right $ z≤ x +1
+total ⦃ Connex≤ ⦄ (x +1) (y +1) = ∨[ s≤s ⸴ s≤s ] (total x y)
+
+UniversalPrefix.prefix Prefix-pred-≤ zero = refl 0
+UniversalPrefix.prefix Prefix-pred-≤ (x +1) =
+  subrel ⦃ ~-⊇ ⦄ $ subrel $ Id-refl (x +1)
+
+rel-preserv ⦃ Relating-pred-≤ ⦄ {zero} {zero} rab = refl 0
+rel-preserv ⦃ Relating-pred-≤ ⦄ {zero} {b +1} rab = z≤ b
+rel-preserv ⦃ Relating-pred-≤ ⦄ {a +1} {b +1} (s≤s a≤b) = a≤b
+
+Decidable≤ {zero} {n} = true (z≤ n)
+Decidable≤ {m +1} {zero} = false λ ()
+Decidable≤ {m +1} {n +1} with Decidable≤ {m} {n}
+Decidable≤ {m +1} {n +1} | true p = true (s≤s p)
+Decidable≤ {m +1} {n +1} | false ¬p = false (λ p' → ¬p $ ap pred p')
+
+-≤s : (n≤m : n ≤ m) → n ≤ m +1
+-≤s (z≤ m) = z≤ m +1
+-≤s (s≤s n≤m) = s≤s $ -≤s n≤m
+
+-≤self+1 : ∀ m → m ≤ m +1
+-≤self+1 m = -≤s $ refl m
 
 instance
   Irreflexive< : Irreflexive _<_
   Asym< : Asymmetric _<_
   Transitive< : Transitive _<_
-  Decidable< : ∀ {m n} → Decidable (m < n)
-  Relating-suc-< : Relating suc _<_ _<_
-  Postfix-suc-< : UniversalPostfix suc _<_
 
-irrefl ⦃ Irreflexive< ⦄ 0 ()
-irrefl ⦃ Irreflexive< ⦄ (suc n) sn<sn = irrefl n (s<s→-<- sn<sn)
+irrefl ⦃ Irreflexive< ⦄ m (_ , m≠m) = m≠m $ refl m
 
-asym ⦃ Asym< ⦄ z<s ()
-asym ⦃ Asym< ⦄ (s<s a<b) (s<s b<a) = asym b<a a<b
+asym ⦃ Asym< ⦄ (x≤y , x≠y) (y≤x , _) = x≠y $ antisym x≤y y≤x
 
-trans ⦃ Transitive< ⦄ z<s (s<s _) = z<s
-trans ⦃ Transitive< ⦄ (s<s a<b) (s<s b<c) = s<s (trans a<b b<c)
+trans ⦃ Transitive< ⦄ (x≤y , x≠y) (y≤z , y≠z) =
+  trans x≤y y≤z , trans≠ (x≤y , x≠y) y≤z
+  where trans≠ : (p : n < m)(q : m ≤ k) → n ≠ k
+        trans≠ (z≤ 0 , 0≠0) (z≤ m) _ = 0≠0 $ refl 0
+        trans≠ (s≤s n≤m , n+1≠m+1) (s≤s q) r =
+          trans≠ (n≤m , λ n==m → n+1≠m+1 $ ap suc n==m) q $ ap pred r
 
-Decidable< {zero} {zero} = false (λ ())
-Decidable< {zero} {suc n} = true z<s
-Decidable< {suc m} {zero} = false (λ ())
-Decidable< {suc m} {suc n} with decide (m < n)
-Decidable< {suc m} {suc n} | true n<m = true (s<s n<m)
-Decidable< {suc m} {suc n} | false ¬n<m = false λ m<n → ¬n<m (s<s→-<- m<n)
-  
-rel-preserv ⦃ Relating-suc-< ⦄ = s<s
+s<s : (n<m : n < m) → n +1 < m +1
+s<s (n≤m , n≠m) = s≤s n≤m , ap suc n≠m
 
-UniversalPostfix.postfix Postfix-suc-< zero = z<s
-UniversalPostfix.postfix Postfix-suc-< (suc x) = s<s $ postfix suc x
+-<-↔s≤- : n < m ↔ n +1 ≤ m
+⟶ -<-↔s≤- (z≤ zero , 0≠0) = ⊥-recursion _ $ 0≠0 $ refl 0
+⟶ -<-↔s≤- (z≤ (m +1) , _) = s≤s $ z≤ m
+⟶ -<-↔s≤- (s≤s p , n+1≠m+1) =
+  s≤s $ ⟶ -<-↔s≤- (p , λ n==m → n+1≠m+1 $ ap suc n==m)
+⟵ -<-↔s≤- (s≤s (z≤ m)) = z≤ m +1 , λ ()
+⟵ -<-↔s≤- (s≤s (s≤s q)) = s<s $ ⟵ -<-↔s≤- (s≤s q)
 
-infix 35 _≤_ _≥_
-_≤_ _≥_ : (m n : ℕ) → 𝒰₀ ᵖ
-a ≤ b = a == b ∨ a < b
-a ≥ b = b ≤ a
+-<s : (n<m : n < m) → n < m +1
+-<s n<m = ⟵ -<-↔s≤- $ -≤s $ ⟶ -<-↔s≤- n<m
 
-instance
-  Reflexive≤ : Reflexive _≤_
-  Transitive≤ : Transitive _≤_
-  Antisym≤ : Antisymmetric _≤_
-  Connex≤ : Connex _≤_
-  Relating-suc-≤ : Relating suc _≤_ _≤_
-  Relating-pred-≤ : Relating pred _≤_ _≤_
-  Postfix-suc-≤ : UniversalPostfix suc _≤_
-  Prefix-pred-≤ : UniversalPrefix pred _≤_
+-<self+1 : ∀ m → m < m +1
+-<self+1 m = ⟵ -<-↔s≤- $ refl (m +1)
 
-refl ⦃ Reflexive≤ ⦄ a = ∨left (refl a)
-  
-trans ⦃ Transitive≤ ⦄ (∨left (Id.refl a)) a≤b = a≤b
-trans ⦃ Transitive≤ ⦄ (∨right a<b) (∨left (Id.refl b)) = ∨right a<b
-trans ⦃ Transitive≤ ⦄ (∨right a<b) (∨right b<c) = ∨right $ trans a<b b<c
-  
-antisym ⦃ Antisym≤ ⦄ (∨left a==b) _ = a==b
-antisym ⦃ Antisym≤ ⦄ (∨right _) (∨left b==a) = sym b==a
-antisym ⦃ Antisym≤ ⦄ (∨right a<b) (∨right b<a) = ⊥-recursion _ (asym a<b b<a)
+s<s→-<- : (n+1<m+1 : n +1 < m +1) → n < m
+s<s→-<- n+1<m+1 = ⟵ -<-↔s≤- $ ap pred $ ⟶ -<-↔s≤- n+1<m+1
 
-rel-preserv ⦃ Relating-suc-≤ ⦄ (∨left (Id.refl x)) = refl (suc x)
-rel-preserv ⦃ Relating-suc-≤ ⦄ (∨right a<b) = ∨right (ap suc a<b)
+-- -<s↔¬->- : ∀ {a b} → a < suc b ↔ ¬ a > b
+-- ⟶ (-<s↔¬->- {suc a} {zero}) (s<s ())
+-- ⟶ -<s↔¬->- (s<s a<sb) (s<s b<a) = ⟶ -<s↔¬->- a<sb b<a
+-- ⟵ (-<s↔¬->- {zero}) q = z<s
+-- ⟵ (-<s↔¬->- {suc a} {zero}) q = ⊥-recursion (suc a < 1) (q z<s)
+-- ⟵ (-<s↔¬->- {suc a} {suc b}) q = ap suc $ ⟵ -<s↔¬->- $ λ a>b → q (s<s a>b )
 
-rel-preserv ⦃ Relating-pred-≤ ⦄ (∨left (Id.refl x)) = refl (pred x)
-rel-preserv ⦃ Relating-pred-≤ ⦄ (∨right (z<s {0})) = ∨left (refl 0)
-rel-preserv ⦃ Relating-pred-≤ ⦄ (∨right (z<s {suc n})) = ∨right z<s
-rel-preserv ⦃ Relating-pred-≤ ⦄ (∨right (s<s q)) = ∨right q
+-- <→== : ∀ {n m}
+--   (p : n < suc m)
+--   (q : ¬ n < m)
+--   → ---------------
+--   n == m
+-- <→== {n} {m} p q with compare n _<_ m
+-- <→== {n} {m} p q | lt p₁ = ⊥-recursion (n == m) (q p₁)
+-- <→== {n} {m} p q | eq p₁ = p₁
+-- <→== {n} {m} p q | gt p₁ = ⊥-recursion (n == m) (⟶ -<s↔¬->- p p₁)
 
-UniversalPostfix.postfix Postfix-suc-≤ x = ∨right $ postfix suc x
+infix 35 _≤ₜ_ _<ₜ_
+_≤ₜ_ _<ₜ_ : BinRel 𝒰₀ ℕ
+0 ≤ₜ _ = ⊤
+_ +1 ≤ₜ 0 = ⊥
+n +1 ≤ₜ m +1 = n ≤ₜ m
 
-UniversalPrefix.prefix Prefix-pred-≤ 0 = ∨left (refl 0)
-UniversalPrefix.prefix Prefix-pred-≤ (suc x) = postfix suc x
-
--≤-↔-<s : ∀ {a b} → a ≤ b ↔ a < suc b
-⟶ -≤-↔-<s (∨left (Id.refl x)) = postfix suc x
-⟶ -≤-↔-<s (∨right a<b) = -<s a<b
-⟵ -≤-↔-<s (s<s (s<s a<b)) = ap suc $ ⟵ -≤-↔-<s $ s<s a<b
-⟵ -≤-↔-<s (s<s (z<s {0})) = ap suc $ refl 0
-⟵ -≤-↔-<s (s<s (z<s {suc n})) = ap suc $ ∨right z<s
-⟵ -≤-↔-<s (z<s {0}) = refl 0
-⟵ -≤-↔-<s (z<s {suc n}) = ∨right z<s
-
-open import Proposition.Comparable
-
-instance
-  Comparableℕ : {x y : ℕ} → Comparable _<_ x y
-
-Comparableℕ {zero} {zero} = eq (refl 0)
-Comparableℕ {zero} {suc y} = lt z<s
-Comparableℕ {suc x} {zero} = gt z<s
-Comparableℕ {suc x} {suc y} with compare x _<_ y
-Comparableℕ {suc x} {suc y} | lt p = lt (ap suc p)
-Comparableℕ {suc x} {suc y} | eq p = eq (ap suc p)
-Comparableℕ {suc x} {suc y} | gt p = gt (ap suc p)
-
-total ⦃ Connex≤ ⦄ x y with compare x _<_ y
-total Connex≤ x y | lt p = ∨left $ ∨right p
-total Connex≤ x y | eq p = ∨left $ ∨left p
-total Connex≤ x y | gt p = ∨right $ ∨right p
-
--<s↔¬->- : ∀ {a b} → a < suc b ↔ ¬ a > b
-⟶ (-<s↔¬->- {suc a} {zero}) (s<s ())
-⟶ -<s↔¬->- (s<s a<sb) (s<s b<a) = ⟶ -<s↔¬->- a<sb b<a
-⟵ (-<s↔¬->- {zero}) q = z<s
-⟵ (-<s↔¬->- {suc a} {zero}) q = ⊥-recursion (suc a < 1) (q z<s)
-⟵ (-<s↔¬->- {suc a} {suc b}) q = ap suc $ ⟵ -<s↔¬->- $ λ a>b → q (s<s a>b )
-
-<→== : ∀ {n m}
-  (p : n < suc m)
-  (q : ¬ n < m)
-  → ---------------
-  n == m
-<→== {n} {m} p q with compare n _<_ m
-<→== {n} {m} p q | lt p₁ = ⊥-recursion (n == m) (q p₁)
-<→== {n} {m} p q | eq p₁ = p₁
-<→== {n} {m} p q | gt p₁ = ⊥-recursion (n == m) (⟶ -<s↔¬->- p p₁)
-
-infix 35 _<ₜ_
-_<ₜ_ : (n m : ℕ) → 𝒰₀ ᵖ
-_ <ₜ 0 = ⊥
-0 <ₜ suc _ = ⊤
-suc n <ₜ suc m = n <ₜ m
+n <ₜ m = n +1 ≤ₜ m
 
 infixl 120 _⊓_ _⊔_
 _⊓_ min : (x y : ℕ) → ℕ
@@ -207,19 +249,17 @@ min== (suc m) (suc n) | ∨right min-m-n==n = ∨right $ ap suc min-m-n==n
 
 min≤ : ∀ m n → m ⊓ n ≤ m
 min≤ zero n = refl 0
-min≤ (m +1) zero = ∨right z<s
-min≤ (m +1) (n +1) = ap suc (min≤ m n)
+min≤ (m +1) zero = z≤ (m +1)
+min≤ (m +1) (n +1) = s≤s $ min≤ m n
 
 ≤max : ∀ m n → m ≤ m ⊔ n
-≤max zero zero = refl 0
-≤max zero (n +1) = ∨right z<s
+≤max zero n = z≤ n
 ≤max (m +1) zero = refl (m +1)
-≤max (m +1) (n +1) = ap suc (≤max m n)
+≤max (m +1) (n +1) = s≤s $ ≤max m n 
 
-≤→min== : ∀ {m n} → (p : n ≤ m) → n ⊓ m == n
-≤→min== (∨left (Id.refl n)) = ∨-contract (min== n n)
-≤→min== (∨right z<s) = refl 0
-≤→min== (∨right (s<s n<m)) = ap suc $ ≤→min== $ ∨right n<m
+≤→min== : (p : n ≤ m) → n ⊓ m == n
+≤→min== (z≤ m) = refl 0
+≤→min== (s≤s p) = ap suc $ ≤→min== p
 
 -- <induction :
 --   {A : (n : ℕ) → 𝒰 ᵖ}
@@ -254,6 +294,6 @@ min≤ (m +1) (n +1) = ap suc (min≤ m n)
 --   WellFounded≤ : WellFounded _≤_ least-elem
 --   well-founded ⦃ WellFounded≤ ⦄ 𝐴 (elem , prop) = minimal
 --     where minimal : Minimal (on-elems _≤_) (least-elem 𝐴 (elem , prop))
---           minimality ⦃ minimal ⦄ {x} (∨left (Id.refl y)) = {!!}
+--           minimality ⦃ minimal ⦄ {x} (∨left (Id-refl y)) = {!!}
 --           minimality ⦃ minimal ⦄ {x} (∨right q) = {!!}
 

@@ -74,3 +74,13 @@ foldl : {Col : 𝒰 ˙}{Elem : 𝒱 ˙}
   X
 foldl f = flip (fold-map (flip f))
   where instance _ = dual EndofunctionMonoid
+
+open import Data.Nat
+
+len :
+  {Col : 𝒰 ˙}{Elem : 𝒱 ˙}
+  ⦃ list : Listable 𝒲 Col Elem ⦄
+  (S : Col)
+  → ---------------------------
+  ℕ
+len = fold-map (λ _ → 1) ⦃ Monoid+ ⦄

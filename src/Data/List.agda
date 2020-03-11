@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --exact-split --prop  #-}
+{-# OPTIONS --safe --exact-split --prop #-}
 module Data.List where
 
 open import Data.List.Definition public

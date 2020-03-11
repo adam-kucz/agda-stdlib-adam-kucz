@@ -19,6 +19,6 @@ apd :
   (x y : X)
   ⦃ d : Decidable (x == y) ⦄
   → ----------
-  Decidable (f x == f y)
+  Decidable (f x Het.== f y)
 apd f x y ⦃ true p ⦄ = true (ap f p)
 apd f x y ⦃ false ¬p ⦄ = false λ q → ¬p $ inj q

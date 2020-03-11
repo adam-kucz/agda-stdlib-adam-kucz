@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe --prop #-}
 module Proposition.BinarySum where
 
 open import PropUniverses
@@ -20,3 +20,13 @@ data _∨_ (𝑋 : 𝒰 ᵖ) (𝑌 : 𝒱 ᵖ) : 𝒰 ⊔ 𝒱 ᵖ where
   𝐴 x∨y
 ∨-recursion p q (left x) = p x
 ∨-recursion p q (right y) = q y
+
+open import Proposition.Function
+
+[_⸴_] :
+  (f : 𝑋 → 𝑍)
+  (g : 𝑌 → 𝑊)
+  (x∨y : 𝑋 ∨ 𝑌)
+  → ------------------------------
+  𝑍 ∨ 𝑊
+[ f ⸴ g ] = ∨-recursion (left ∘ f) (right ∘ g)

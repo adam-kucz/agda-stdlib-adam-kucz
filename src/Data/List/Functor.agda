@@ -15,7 +15,7 @@ open import Operation.Binary
 open import Structure.Monoid
 open import Function
   renaming (_∘ₛ_ to _∘_; _$_ to _$'_)
-  using (universe-of; uncurry; id; ==→~)
+  using (universe-of; uncurry; id; 𝑖𝑑; ==→~)
 open import Proof
 
 instance
@@ -23,15 +23,16 @@ instance
   ListApplicative : Applicative {U = universe-of}(λ X → List X)
   ListMonad : Monad {U = universe-of}(λ X → List X)
 
+open import Relation.Binary hiding (_~_)
 open import Function using (_~_)
 open import Axiom.FunctionExtensionality
 
 fmap ⦃ ListFunctor ⦄ = map
-fmap-id ⦃ ListFunctor ⦄ = fun-ext go
-  where go : map id ~ id
+fmap-id ⦃ ListFunctor ⦄ = subrel $ fun-ext go
+  where go : map (𝑖𝑑 X) ~ 𝑖𝑑 (List X)
         go [] = refl []
         go (h ∷ t) = ap (h ∷_) (go t)
-fmap-∘ ⦃ ListFunctor ⦄ g f = fun-ext go
+fmap-∘ ⦃ ListFunctor ⦄ g f = subrel {_P_ = _==_} $ fun-ext go
   where go : map (g ∘ f) ~ map g ∘ map f
         go [] = refl []
         go (h ∷ t) = ap (g (f h) ∷_) $ go t
@@ -107,9 +108,9 @@ _⋆_ ⦃ ListApplicative ⦄ = _L⋆_
 fmap-def ⦃ ListApplicative ⦄ f x =
   proof fmap f x
     === fmap (uncurry _$'_ ∘ (f ,_)) x
-      :by: ap (λ — → fmap — x) $ fun-ext (λ x₁ → refl (f x₁))
+      :by: ap (λ — → fmap — x) $ subrel $ fun-ext (λ x₁ → refl (f x₁))
     === fmap (uncurry _$'_) (fmap (f ,_) x)
-      :by: ==→~ (fmap-∘ (uncurry _$'_) (f ,_)) x
+      :by: subrel $ ==→~ (fmap-∘ (uncurry _$'_) (f ,_)) x
     === fmap (uncurry _$'_) (fmap (f ,_) x ++ [])
       :by: ap (fmap (uncurry _$'_)) $ sym $ right-unit (fmap (f ,_) x)
   qed
@@ -125,9 +126,11 @@ naturality ⦃ ListApplicative ⦄ f g (u₀ ∷ u) v =
       :by: ap (λ — → — v ++ (fmap f u ⋆ fmap g v)) (
         proof fmap [ f × g ] ∘ fmap (u₀ ,_)
           === fmap ([ f × g ] ∘ (u₀ ,_))
-            :by: strong-sym $ fmap-∘ [ f × g ] (u₀ ,_)
+            :by: sym {R = _==_} $ fmap-∘ [ f × g ] (u₀ ,_)
           === fmap ((f u₀ ,_) ∘ g)
-            :by: ap fmap $ fun-ext (λ v' → refl (f u₀ , g v'))
+            :by: ap fmap $
+                 subrel {_P_ = _==_} $
+                 fun-ext (λ v' → refl (f u₀ , g v'))
           === fmap (f u₀ ,_) ∘ fmap g
             :by: fmap-∘ (f u₀ ,_) g 
         qed)
@@ -137,22 +140,22 @@ left-identity ⦃ ListApplicative ⦄ v =
     === fmap pr₂ (fmap (<⋆> ,_) v)
       :by: ap (fmap pr₂) $ right-unit (fmap (<⋆> ,_) v)
     === fmap (pr₂ ∘ (<⋆> ,_)) v
-      :by: ==→~ (sym $ fmap-∘ pr₂ (<⋆> ,_)) v
+      :by: subrel $ ==→~ (sym $ fmap-∘ pr₂ (<⋆> ,_)) v
     === fmap id v
-      :by: ap (λ — → fmap — v) $ fun-ext refl
+      :by: ap (λ — → fmap — v) $ subrel $ fun-ext refl
     === v
-      :by: ==→~ fmap-id v
+      :by: subrel $ ==→~ fmap-id v
   qed
 right-identity ⦃ ListApplicative ⦄ u =
   proof fmap pr₁ (u ⋆ [ <⋆> ])
     === fmap pr₁ (fmap (_, <⋆>) u)
       :by: ap (fmap pr₁) (u ⋆[ <⋆> ])
     === fmap (pr₁ ∘ (_, <⋆>)) u
-      :by: ==→~ (sym $ fmap-∘ pr₁ (_, <⋆>)) u
+      :by: subrel $ ==→~ (sym $ fmap-∘ pr₁ (_, <⋆>)) u
     === fmap id u
-      :by: ap (λ — → fmap — u) $ fun-ext refl
+      :by: ap (λ — → fmap — u) $ subrel $ fun-ext refl
     === u
-      :by: ==→~ fmap-id u
+      :by: subrel $ ==→~ fmap-id u
   qed
 ⋆-assoc ⦃ ListApplicative ⦄ [] v w = refl []
 ⋆-assoc ⦃ ListApplicative ⦄ (h ∷ u) v w =
@@ -164,11 +167,12 @@ right-identity ⦃ ListApplicative ⦄ u =
            ⋆-assoc u v w
     === fmap (Σ-assoc ∘ (h ,_)) (v ⋆ w) ++ (u ⋆ v ⋆ w)
       :by: ap (λ — → — (v ⋆ w) ++ (u ⋆ v ⋆ w)) $
-           strong-sym $ fmap-∘ Σ-assoc (h ,_)
+           sym {R = _==_} $
+           fmap-∘ Σ-assoc (h ,_)
     === (fmap (h ,_) v ⋆ w) ++ (u ⋆ v ⋆ w)
       :by: ap (_++ (u ⋆ v ⋆ w)) $ go v
     === (fmap (h ,_) v ++ (u ⋆ v)) ⋆ w
-      :by: strong-sym $ ++-L⋆ (fmap (h ,_) v) (u ⋆ v) w 
+      :by: sym {R = _==_} $ ++-L⋆ (fmap (h ,_) v) (u ⋆ v) w 
   qed
   where go : {X : 𝒰 ˙}(v : List X)
           → --------------------------------------------------
@@ -184,24 +188,27 @@ right-identity ⦃ ListApplicative ⦄ u =
               :by: ap (_++ (fmap (h ,_) v L⋆ w)) (
                 proof fmap (Σ-assoc ∘ (h ,_)) (fmap (v₀ ,_) w)
                   === fmap (Σ-assoc ∘ (h ,_) ∘ (v₀ ,_)) w
-                    :by: ==→~ (strong-sym $ fmap-∘ (Σ-assoc ∘ (h ,_)) (v₀ ,_)) w
+                    :by: subrel {_P_ = _==_} $
+                         ==→~ (sym {R = _==_} $ fmap-∘ (Σ-assoc ∘ (h ,_)) (v₀ ,_)) w
                   === fmap (h , v₀ ,_) w
-                    :by: ap (λ — → fmap — w) $ fun-ext (λ x → refl (h , v₀ , x))
+                    :by: ap (λ — → fmap — w) $
+                         subrel {_P_ = _==_} $
+                         fun-ext (λ x → refl (h , v₀ , x))
                 qed)
           qed
 
-open import Proposition.Identity.Homogeneous using (het==→==)
+open import Proposition.Identity.Homogeneous
 
 applicative ⦃ ListMonad ⦄ = ListApplicative
 join ⦃ ListMonad ⦄ = mconcat
-⋆-def ⦃ ListMonad ⦄ [] v = refl []
+⋆-def ⦃ ListMonad ⦄ [] v = Id-refl []
 ⋆-def ⦃ ListMonad ⦄ (u₀ ∷ u) v = ap (fmap (u₀ ,_) v ++_) (⋆-def u v)
-associativity ⦃ ListMonad ⦄ = fun-ext go
+associativity ⦃ ListMonad ⦄ = subrel $ fun-ext go
   where go : mconcat ∘ fmap mconcat ~ mconcat ∘ mconcat
-        go [] = refl []
+        go [] = Het.refl []
         go ([] ∷ t) = go t
         go (([] ∷ t₀) ∷ t₁) = go (t₀ ∷ t₁)
-        go (((h ∷ t₀) ∷ t₁) ∷ t₂) = ap (h ∷_) (
+        go (((h ∷ t₀) ∷ t₁) ∷ t₂) = subrel $ ap (h ∷_) (
           proof t₀ ++ mconcat t₁ ++ mconcat (mconcat <$> t₂)
             === t₀ ++ (mconcat t₁ ++ mconcat (mconcat <$> t₂))
               :by: sym $ assoc t₀ _ _
@@ -209,16 +216,16 @@ associativity ⦃ ListMonad ⦄ = fun-ext go
               :by: ap (t₀ ++_) (
                 proof mconcat t₁ ++ mconcat (fmap mconcat t₂)
                   === mconcat t₁ ++ mconcat (mconcat t₂)
-                    :by: ap (mconcat t₁ ++_) (go t₂)
+                    :by: ap (mconcat t₁ ++_) (subrel $ go t₂)
                   === mconcat (t₁ ++ mconcat t₂)
                     :by: sym $ mconcat-∪ t₁ (mconcat t₂)
                 qed)
           qed)
-unit1 ⦃ ListMonad ⦄ = het==→== $ fun-ext go
+unit1 ⦃ ListMonad ⦄ = subrel $ fun-ext go
   where go : mconcat ∘ fmap pure ~ id
-        go [] = refl []
+        go [] = Het.refl []
         go (h ∷ t) = ap (h ∷_) (go t)
-unit2 ⦃ ListMonad ⦄ = het==→== $ fun-ext go
+unit2 ⦃ ListMonad ⦄ = subrel $ fun-ext go
   where go : mconcat ∘ pure ~ id
-        go [] = refl []
+        go [] = Het.refl []
         go (h ∷ t) = ap (h ∷_) (go t)

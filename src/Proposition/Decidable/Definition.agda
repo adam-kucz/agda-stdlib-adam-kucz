@@ -88,7 +88,6 @@ instance
   ⊥Decidable : Decidable ⊥
   ⊤Decidable : Decidable ⊤
   LiftDecidable : ⦃ d : Decidable 𝑋 ⦄ → Decidable (Lift𝒰ᵖ {𝒱 = 𝒰} 𝑋)
-  ¬Decidable : ⦃ p : Decidable 𝑋 ⦄ → Decidable (¬ 𝑋)
   ∨Decidable : ⦃ p : Decidable 𝑋 ⦄ ⦃ q : Decidable 𝑌 ⦄ → Decidable (𝑋 ∨ 𝑌)
   ∧Decidable : ⦃ p : Decidable 𝑋 ⦄ ⦃ q : Decidable 𝑌 ⦄ → Decidable (𝑋 ∧ 𝑌)
   →Decidable : ⦃ p : Decidable 𝑋 ⦄ ⦃ q : Decidable 𝑌 ⦄ → Decidable (𝑋 → 𝑌)
@@ -100,9 +99,6 @@ instance
 LiftDecidable ⦃ d = true p ⦄ = true (↑prop p)
 LiftDecidable ⦃ d = false ¬p ⦄ = false (λ z → ¬p (↓prop z))
   
-¬Decidable ⦃ true p ⦄ = false λ ¬p → ¬p p
-¬Decidable ⦃ false ¬p ⦄ = true ¬p
-
 ∨Decidable ⦃ true p ⦄ ⦃ q ⦄ = true (∨left p)
 ∨Decidable ⦃ false ¬p ⦄ ⦃ true q ⦄ = true (∨right q)
 ∨Decidable ⦃ false ¬p ⦄ ⦃ false ¬q ⦄ =

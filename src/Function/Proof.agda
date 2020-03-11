@@ -2,9 +2,9 @@
 module Function.Proof where
 
 open import PropUniverses
-open import Proposition.Identity.Definition using (_==_; refl)
+open import Proposition.Identity.Definition
 open import Logic.Basic
-open import Relation.Binary.Definition using (Rel; BinRel)
+open import Relation.Binary.Definition
 
 record Relating {X : 𝒰 ˙} {A : (x : X) → 𝒱 ˙}
     (f : (x : X) → A x)
@@ -26,38 +26,12 @@ ap :
   (f : (x : X) → A x)
   {r : BinRel 𝒰 X}
   {r' : ∀ {a b} → Rel 𝒱 (A a) (A b)}
-  ⦃ _ : Relating f r r' ⦄
+  ⦃ rel : Relating f r r' ⦄
   {a b : X}
   (rab : r a b)
   → ----------------
   r' (f a) (f b)
 ap f = rel-preserv
-
-record ReindexingRelating
-  {I : 𝒰 ˙} (F : (i : I) → 𝒱 ˙) {j : (i : I) → I}
-  (f : ∀ {i} → F i → F (j i))
-  (r : ∀ {i} → Rel 𝒲 (F i) (F i))
-  : --------------------
-  𝒰 ⊔ 𝒱 ⊔ 𝒲 ᵖ
-    where
-  field
-    reindexed : ∀ i → Relating (f {i}) (r {i}) (r {j i})
-
-open ReindexingRelating ⦃ ... ⦄ public
-
-ap' :
-  {I : 𝒰 ˙}  {j : (i : I) → I}
-  (F : (i : I) → 𝒱 ˙)
-  (f : ∀ {i} → F i → F (j i))
-  {r : ∀ {i} → Rel 𝒲 (F i) (F i)}
-  ⦃ rr : ReindexingRelating F f r ⦄
-  {i : I}
-  {a b : F i}
-  (rab : r a b)
-  → ----------------
-  r (f a) (f b)
-ap' F f ⦃ rr ⦄ {i} = rel-preserv
-  where instance _ = reindexed ⦃ rr ⦄ i
 
 record Relating-2 {X : 𝒰 ˙}{Y : 𝒱 ˙}{K : (x : X)(y : Y) → 𝒲 ˙}
     (f : (x : X)(y : Y) → K x y)
@@ -124,27 +98,47 @@ prefix :
 prefix f ⦃ pre ⦄ = UniversalPrefix.prefix pre
 
 open import Function.Basic
-open import Function.Equivalence
+open import Function.Property
+open import Function.Equivalence.Definition
 
 instance
-  Relating-all-== : {f : (x : X) → A x} → Relating f _==_ _==_
-  Relating-2-all-== :
+  Relating-all-==-het== : {f : (x : X) → A x} → Relating f _==_ Het._==_
+  Relating-all-het== : {f : (x : X) → A x} → Relating f Het._==_ Het._==_
+  Relating-2-all-== : {f : X → Y → Z}
+    → --------------------------------------
+    Relating-2 f _==_ _==_ _==_
+  Relating-2-all-het== :
     {K : (x : X)(y : Y) → 𝒰 ˙}
     {f : (x : X)(y : Y) → K x y}
     → ----------------------------
-    Relating-2 f _==_ _==_ _==_
+    Relating-2 f Het._==_ Het._==_ Het._==_
+  RelatingInjective :
+    {f : X → Y}
+    ⦃ injective : Injective f ⦄
+    → -----------------------------------------------------------
+    Relating f (_≠_ {X = X}) (_≠_ {X = Y})
+  RelatingInjectiveHet :
+    {f : (x : X) → A x}
+    ⦃ injective : Injective f ⦄
+    → -----------------------------------------------------------
+    Relating f (_≠_ {X = X}) (λ {x}{y} → Het._≠_ {X = A x}{Y = A y})
   Relating-∘-~ : {f : (y : Y) → A y} → Relating (f ∘_) (_~_ {X = X}) _~_
 
-  RRelating-all-== :
-    {I : 𝒰 ˙} {F : (i : I) → 𝒱 ˙} {j : (i : I) → I}
-    {f : ∀ {i} → F i → F (j i)}
-    → ----------------------------
-    ReindexingRelating F f _==_
+open import Proposition.Function renaming (_$_ to _$ₚ_)
 
-rel-preserv ⦃ Relating-all-== {f = f} ⦄ (refl x) = refl (f x)
-rel-preserv-2 ⦃ Relating-2-all-== {f = f} ⦄ (refl x) (refl y) = refl (f x y)
+rel-preserv ⦃ Relating-all-==-het== {f = f} ⦄
+  (refl x) = Het.refl (f x)
+rel-preserv ⦃ Relating-all-het== {f = f} ⦄
+  (Het.refl x) = Het.refl (f x)
+rel-preserv-2 ⦃ Relating-2-all-== {f = f} ⦄
+  (refl x) (refl y) = refl (f x y)
+rel-preserv-2 ⦃ Relating-2-all-het== {f = f} ⦄
+  (Het.refl x) (Het.refl y) = Het.refl (f x y)
+Relating.rel-preserv RelatingInjective a≠b fa==fb =
+  a≠b $ₚ inj $ₚ ==→het== fa==fb 
+Relating.rel-preserv RelatingInjectiveHet a≠b fa==fb =
+  a≠b $ₚ inj fa==fb
 rel-preserv ⦃ Relating-∘-~ {f = f} ⦄ p x = ap f (p x)
-reindexed ⦃ RRelating-all-== {f = f} ⦄ i = Relating-all-==
 
   -- TODO (low priority): think of a different approach, this produces too many choice points
   -- Relating-∧-intro :

@@ -3,11 +3,11 @@ module Function.Property where
 
 open import PropUniverses
 open import Proposition.Identity.Definition
-  renaming (Idₚ to Id) using (_==_; refl)
+import Proposition.Identity.Heterogeneous as Het
 open import Proposition.Sum
 open import Logic.Basic
 open import Function.Basic hiding (_$_)
-open import Function.Equivalence
+open import Function.Equivalence.Definition
 
 record LeftInverse {X : 𝒰 ˙}{Y : 𝒱 ˙}
     (f : X → Y)
@@ -81,7 +81,7 @@ DefaultInverse = record {}
 
 record Injective {X : 𝒰 ˙} {A : (x : X) → 𝒱 ˙} (f : (x : X) → A x) : 𝒰 ⊔ 𝒱 ᵖ where
   field
-    inj : ∀ {x y} (p : f x == f y) → x == y
+    inj : ∀ {x y} (p : f x Het.== f y) → x == y
 
 open Injective ⦃ ... ⦄ public
 
@@ -126,7 +126,7 @@ open Bijection ⦃ … ⦄ public
 {-# DISPLAY Bijection.back B = back #-}
 
 Injective-id : Injective (𝑖𝑑 X)
-inj ⦃ Injective-id ⦄ (Id.refl x) = refl x
+inj ⦃ Injective-id ⦄ (Het.refl x) = refl x
 
 Surjective-id : Surjective (𝑖𝑑 X)
 surj ⦃ Surjective-id ⦄ y = y , refl y
@@ -142,10 +142,25 @@ module mkInvolutive {f : X → X}(p : f ∘ f ~ id) where
   right-inv ⦃ rght ⦄ = p
 
 module IdInvolutive {𝒰}{X : 𝒰 ˙} where
-  open mkInvolutive {X = X}{f = id} refl
+  open mkInvolutive {X = X}{f = id} Het.refl
 
 record Idempotent {X : 𝒰 ˙}(f : (x : X) → X) : 𝒰 ᵖ where
   field
     idemp : ∀ x → f (f x) == f x 
 
 open Idempotent ⦃ … ⦄ public
+
+open import Data.Nat.Definition
+open import Data.Nat.Syntax
+open Pattern
+
+injective-repeat :
+  (f : X → X)
+  (m : ℕ)
+  ⦃ injective : Injective f ⦄
+  → ---------------------------
+  Injective (repeat f m)
+
+inj ⦃ injective-repeat f 0 ⦄ = het==→==
+inj ⦃ injective-repeat f (m +1) ⦃ injective ⦄ ⦄ p =
+  inj ⦃ injective-repeat f m ⦄ (==→het== (inj ⦃ injective ⦄ p))

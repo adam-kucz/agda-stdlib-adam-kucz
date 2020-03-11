@@ -36,11 +36,11 @@ insert ⦃ NonemptyListInsertable ⦄ = _∷_
 ⟶ (insert-valid ⦃ NonemptyListInsertable ⦄) (x ∈⦅ h ∷ p ⦆) =
   ∨left p
 ⟶ (insert-valid ⦃ NonemptyListInsertable ⦄) (x ∈head t) =
-  ∨right (refl x)
+  ∨right (Id-refl x)
 ⟵ (insert-valid ⦃ NonemptyListInsertable ⦄ {x}{y}) (∨left p) =
   y ∈⦅ x ∷ p ⦆
 ⟵ (insert-valid ⦃ NonemptyListInsertable ⦄ {S = l})
-  (∨right (Id.refl x)) = x ∈head l
+  (∨right (Id-refl x)) = x ∈head l
 
 open import Data.List renaming ([_] to [[_]])
 
@@ -89,7 +89,7 @@ open import Proposition.Identity hiding (refl)
 NonemptyListDecidable∈ {x = x} {[ x₁ ]} =
   dif x == x₁
     then (λ p → true (Id.coe (ap (λ — → x ∈ [ — ]) p) $ ∈[ x ]))
-    else λ ¬p → false λ { ∈[ x ] → ¬p (refl x)}
+    else λ ¬p → false λ { ∈[ x ] → ¬p (Id-refl x)}
 NonemptyListDecidable∈ {x = x} {h ∷ l} with decide (x == h)
 NonemptyListDecidable∈ {x = x} {h ∷ l}
   | true p = true (Id.coe (ap (λ — → x ∈ — ∷ l) p) (x ∈head l))
@@ -99,5 +99,5 @@ NonemptyListDecidable∈ {x = x} {h ∷ l}
   | false ¬p | true q = true (x ∈⦅ h ∷ q ⦆)
 NonemptyListDecidable∈ {x = x} {h ∷ l}
   | false ¬p | false ¬q =
-  false (λ { (x ∈head t) → ¬p (refl x)
+  false (λ { (x ∈head t) → ¬p (Id-refl x)
            ; (x ∈⦅ h ∷ q ⦆) → ¬q q})

@@ -48,10 +48,6 @@ right-unit ⦃ ++-[] ⦄ (h ∷ t) =
 
 open import Data.Nat.Arithmetic.Definition
 
-len++ : (l l' : List X) → len (l ++ l') == len l + len l'
-len++ [] l' = refl (len l')
-len++ (h ∷ l) l' = ap suc $ len++ l l'
-
 map : (f : X → Y)(l : List X) → List Y
 map f [] = []
 map f (h ∷ l) = f h ∷ map f l
@@ -122,7 +118,7 @@ open WithDecidableElement== public
 drop-last : (l : List X)(p : l ≠ [] {X = X}) → List X
 drop-last {X = X} [] p = ⊥-recursion (List X) (p (refl [])) 
 drop-last [ h ] p = []
-drop-last (h₀ ∷ h₁ ∷ t) p = h₀ ∷ drop-last (h₁ ∷ t) (λ ())
+drop-last (h₀ ∷ h₁ ∷ t) p = h₀ ∷ drop-last (h₁ ∷ t) λ ()
 
 drop-last++last== : ∀ l
   (p : l ≠ [] {X = X})
@@ -131,4 +127,4 @@ drop-last++last== : ∀ l
 drop-last++last==  [] p = ⊥-recursionₚ _ (p (refl [])) 
 drop-last++last== [ h ] p = refl [ h ]
 drop-last++last== (h₀ ∷ h₁ ∷ t) p =
-  List== (refl h₀) (drop-last++last== (h₁ ∷ t) (λ ()))
+  List== (refl h₀) (drop-last++last== (h₁ ∷ t) λ ())

@@ -82,6 +82,9 @@ to-nonempty-list-valid : ∀ {x : X}{t}
 open import Data.Vec as V hiding ([_])
 open import Proposition.Decidable
 
+open import Data.NonemptyList.Permutation
+  using (_~_; ∈-~)
+
 module Sort
     (_≤_ : BinRel 𝒰 X)
     ⦃ dec≤ : ∀ {x y} → Decidable (x ≤ y) ⦄
@@ -108,22 +111,29 @@ module Sort
           ∈insert-2 x h₀ h₁ t (x∈tail h₀ p) = x∈tail h₀ (x∈tail h₁ p)
 
   open import Proposition.Sum
-  open import Data.Vec.Permutation using (_~_)
+  open import Data.Vec.Permutation as VP
+    using (vec-remove-~)
 
-  vec-sort : (v : Vec X m) → Σₚ λ (v' : Vec X m) → v' ~ v
+  vec-sort : (v : Vec X m) → Σₚ λ (v' : Vec X m) → v' VP.~ v
   vec-sort [] = [] , refl []
   vec-sort (h ∷ t)
     with vec-sort (vec-remove (find-min t h) (h ∷ t) (find-min∈ t h))
   vec-sort (h ∷ t) | v' , v'-min~h∷t =
-    find-min t h ∷ v' , {!vec-remove~!}
+    find-min t h ∷ v' ,
+    ⟵ (vec-remove-~ (find-min t h) v' (h ∷ t) (find-min∈ t h)) v'-min~h∷t
 
-  sort : (l : List X) → List X
-  sort l = {!!} -- to-list (vec-sort (to-vec l))
+  import Data.NonemptyList.Permutation as NL
+
+  sort : (l : NonemptyList X) → Σₚ λ (l' : NonemptyList X) → l' ~ l
+  sort l with vec-sort (nonempty-to-vec l)
+  sort [ x ] | v , p = vec-to-nonempty-list v , {!!}
+  sort (h ∷ l) | v , p = vec-to-nonempty-list v , {!!}
   
-  sort-valid : ∀ (x : X) l → x ∈ sort l ↔ x ∈ l
+  sort-valid : ∀ (x : X) l → x ∈ elem (sort l) ↔ x ∈ l
   ⟶ (sort-valid x l) p = {!!}
-  ⟵ (sort-valid x (x ∷ t)) (x∈x∷ t) = {!!}
-  ⟵ (sort-valid x (h ∷ _)) (x∈tail h q) = {!!}
+  ⟵ (sort-valid x [ x ]) ∈[ x ] = {!!}
+  ⟵ (sort-valid x (x ∷ t)) (x ∈head t) = {!!}
+  ⟵ (sort-valid x (h ∷ t)) (x ∈⦅ h ∷ p ⦆) = {!!}
   
   -- len-sort : ∀ l → len (sort l) == len l
   -- len-sort l = vec-to-list-len (vec-sort (to-vec l))
@@ -204,9 +214,6 @@ module WithCommutativeSemigroup
     where l' = to-nonempty-list l
           r' = to-nonempty-list r
 
-  open import Data.NonemptyList.Permutation
-    using (_~_; ∈-~)
-
   ~→eval-list== : ∀ {l l'}(p : l ~ l')(values : Interpret X l)
     → ----------------------------------------
     let values' : Interpret X l'
@@ -241,35 +248,37 @@ module WithCommutativeSemigroup
   open import Logic.Proof
 
   sort==→~ : ∀ l₀ l₁
-    (p : sort (to-list l₀) == sort (to-list l₁))
+    (p : sort l₀ == sort l₁)
     → --------------------------------------------
     l₀ ~ l₁
-  sort==→~ [ x ] [ x ] (Id.refl _) = refl [ x ]
+  sort==→~ [ x ] [ x₁ ] p = {!!}
   sort==→~ (h ∷ l₀) (h₁ ∷ l₁) p = {!!}
   sort==→~ [ x ] (h ∷ t) p = {!!}
   sort==→~ (h ∷ l₀) [ x ] p = {!!}
+
+  open import Proposition.Sum
 
   comm-semigroup-tactic :
     ⦃ sem : Semigroup X ⦄
     ⦃ com : Commutative (_∙_ ⦃ sem ⦄) ⦄
     (t₀ t₁ : BinaryTree ℕ)
-    (p : sort (to-list t₀) == sort (to-list t₁))
+    (p : sort (to-nonempty-list t₀) == sort (to-nonempty-list t₁))
     (values : Interpret X t₀)
     → -------------------------------------------
     let values' : Interpret X t₁
-        values' x q = values x (⟶ (
-          proof x ∈ t₁
-            〉 _↔_ 〉 x ∈ to-list t₁
-              :by: to-list-valid
-            〉 _↔_ 〉 x ∈ sort (to-list t₁)
-              :by: sym $ sort-valid x (to-list t₁)
-            〉 _==_ 〉 x ∈ sort (to-list t₀)
-              :by: ap (x ∈_) $ sym p 
-            〉 _↔_ 〉 x ∈ to-list t₀
-              :by: sort-valid x (to-list t₀)
-            〉 _↔_ 〉 x ∈ t₀
-              :by: sym to-list-valid
-          qed)
+        values' x q = values x (⟶ (?)
+          -- proof x ∈ t₁
+          --   〉 _↔_ 〉 x ∈ to-nonempty-list t₁
+          --     :by: to-nonempty-list-valid
+          --   〉 _↔_ 〉 x ∈ elem (sort (to-nonempty-list t₁))
+          --     :by: sym $ sort-valid x (to-nonempty-list t₁)
+          --   〉 _==_ 〉 x ∈ elem (sort (to-nonempty-list t₀))
+          --     :by: ap (x ∈_) $ sym $ from-Σₚ== p 
+          --   〉 _↔_ 〉 x ∈ to-nonempty-list t₀
+          --     :by: sort-valid x (to-nonempty-list t₀)
+          --   〉 _↔_ 〉 x ∈ t₀
+          --     :by: sym to-nonempty-list-valid
+          -- qed)
           q)
     in eval-tree t₀ values == eval-tree t₁ values'
   comm-semigroup-tactic t₀ t₁ p values = {!!}

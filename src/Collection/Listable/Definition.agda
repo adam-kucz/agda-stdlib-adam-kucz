@@ -28,3 +28,4 @@ to-list ⦃ pure-listable tl ⦄ = tl
 _∈_ ⦃ collection ⦃ pure-listable tl ⦄ ⦄ x c = x ∈ tl c
 ⟶ (to-list-valid ⦃ pure-listable tl ⦄) p = p
 ⟵ (to-list-valid ⦃ pure-listable tl ⦄) p = p
+

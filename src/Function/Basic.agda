@@ -64,3 +64,11 @@ flip :
   → ---------------------------
   (y : Y)(x : X) → K x y
 flip f y x = f x y
+
+open import Data.Nat.Definition
+open import Data.Nat.Syntax
+open Pattern
+
+repeat : (f : X → X)(m : ℕ)(x : X) → X
+repeat f 0 x = x
+repeat f (m +1) x = f $ repeat f m x

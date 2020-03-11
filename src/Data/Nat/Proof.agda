@@ -1,84 +1,84 @@
 {-# OPTIONS --exact-split --safe --prop #-}
 module Data.Nat.Proof where
 
+open import Data.Nat.Definition
+open import Data.Nat.Syntax
+open Pattern
 open import Data.Nat.Order
 
 open import PropUniverses
-open import Proposition.Identity hiding (refl)
-open import Logic
-
-open import Data.Nat.Definition
-
-open import Proposition.Identity.Property
 open import Relation.Binary.Property
 open import Operation.Binary.Property
-
+open import Logic
 open import Proof
 open import Proposition.Proof
 open import Function.Proof
 
 open Composable ⦃ ... ⦄ public
 
-module comp-< where
-  open TransMakeComposable _<_ public
-module comp-≤ where
-  open TransMakeComposable _≤_ public
+module Composable-< where
+  open MakeComposable _<_ public
 
 instance
-  comp-<-≤ : Composable 𝒰₀ _<_ _≤_
-  rel ⦃ comp-<-≤ ⦄ = _<_
-  compose ⦃ comp-<-≤ ⦄ a<b (∨left (Idₚ.refl _)) = a<b
-  compose ⦃ comp-<-≤ ⦄ a<b (∨right b<c) = trans a<b b<c
-
-  comp-≤-< : Composable 𝒰₀ _≤_ _<_
-  rel ⦃ comp-≤-< ⦄ = _<_
-  compose ⦃ comp-≤-< ⦄ (∨right a<b) b<c = trans a<b b<c
-  compose ⦃ comp-≤-< ⦄ (∨left (Idₚ.refl _)) b<c = b<c
-
+  Composable-<-≤ : Composable 𝒰₀ _<_ _≤_
+  Composable-≤-< : Composable 𝒰₀ _≤_ _<_
   Relating-min-right : ∀ {n} → Relating (min n) _≤_ _≤_
-  rel-preserv ⦃ Relating-min-right {n} ⦄ (∨left (Idₚ.refl x)) = refl (min n x)
-  rel-preserv ⦃ Relating-min-right {zero} ⦄ (∨right x) = refl 0
-  rel-preserv ⦃ Relating-min-right {suc n} ⦄ (∨right z<s) = ∨right z<s
-  rel-preserv ⦃ Relating-min-right {suc n} ⦄ {suc m} {suc m'} (∨right (s<s m<m')) =
-    have
-      min n m ≤ min n m' :from: rel-preserv (∨right m<m')
-      ⟶ suc (min n m) ≤ suc (min n m') :by: ap suc
-
   Relating-min-left : ∀ {n} → Relating (λ m → min m n) _≤_ _≤_
-  rel-preserv ⦃ Relating-min-left {n} ⦄ {a} {b} a≤b =
-    proof min a n
-      〉 _==_ 〉 min n a :by: comm a n
-      〉 _≤_ 〉 min n b :by: rel-preserv a≤b
-      〉 _==_ 〉 min b n :by: comm n b
-    qed
 
---   Postfix+- : Postfix (b +_) _≤_
---   postfix ⦃ Postfix+- {zero} ⦄ = rflx
---   postfix ⦃ Postfix+- {suc b} ⦄ {a} =
---     proof a
---       〉 _≤_ 〉 suc a     :by: ∨right self<s
---       〉 _≤_ 〉 b + suc a :by: postfix
---       〉 _==_ 〉 suc b + a :by: +suc
---     qed
+Composable.rel Composable-<-≤ = _<_
+Composable.compose Composable-<-≤ (x≤y , x≠y) y≤z =
+  trans x≤y y≤z , trans≠ (x≤y , x≠y) y≤z
+  where trans≠ : (p : n < m)(q : m ≤ k) → n ≠ k
+        trans≠ (z≤ 0 , 0≠0) (z≤ m) _ = 0≠0 $ refl 0
+        trans≠ (s≤s n≤m , n+1≠m+1) (s≤s q) r =
+          trans≠ (n≤m , λ n==m → n+1≠m+1 $ ap suc n==m) q $ ap pred r
 
---   Postfix-+ : Postfix (_+ b) _≤_
---   postfix ⦃ Postfix-+ {b} ⦄ {a} =
---     proof a
---       〉 _≤_ 〉 b + a :by: postfix
---       〉 _==_ 〉 a + b :by: +comm {a = b}
---     qed
+Composable.rel Composable-≤-< = _<_
+Composable.compose Composable-≤-< x≤y (y≤z , y≠z) =
+  trans x≤y y≤z , trans≠ x≤y (y≤z , y≠z)
+  where trans≠ : (p : n ≤ m)(q : m < k) → n ≠ k
+        trans≠ (z≤ m) (z≤ 0 , 0≠0) _ = 0≠0 $ refl 0
+        trans≠ (s≤s q) (s≤s n≤m , n+1≠m+1) r =
+          trans≠ q (n≤m , λ n==m → n+1≠m+1 $ ap suc n==m) $ ap pred r
 
---   Postfix*- : Postfix (suc b *_) _≤_
---   postfix ⦃ Postfix*- {b} ⦄ {a} =
---     proof a
---       〉 _≤_ 〉 a + b * a :by: postfix ⦃ Postfix-+ ⦄
---       〉 _==_ 〉 suc b * a :by: refl
---     qed
+rel-preserv ⦃ Relating-min-right {zero} ⦄ _ = refl 0
+rel-preserv ⦃ Relating-min-right {n +1} ⦄ {zero} {b} rab =
+  z≤ min (n +1) b
+rel-preserv ⦃ Relating-min-right {n +1} ⦄ {a +1} {b +1} rab =
+  s≤s $ rel-preserv ⦃ Relating-min-right ⦄ $ ap pred rab
 
---   Postfix-* : Postfix (_* suc b) _≤_
---   postfix ⦃ Postfix-* {b} ⦄ {a} =
---     proof a
---       〉 _≤_ 〉 suc b * a :by: postfix ⦃ Postfix*- {b} ⦄
---       〉 _==_ 〉 a * suc b :by: +comm {a = suc b}
---     qed
+rel-preserv ⦃ Relating-min-left {n} ⦄ {a} {b} a≤b =
+  proof min a n
+    〉 _==_ 〉 min n a :by: comm a n
+    〉 _≤_ 〉 min n b :by: rel-preserv a≤b
+    〉 _==_ 〉 min b n :by: comm n b
+  qed
 
+open import Data.Nat.Arithmetic
+
+instance
+  Postfix+- : UniversalPostfix (m +_) _≤_
+  Postfix-+ : UniversalPostfix (_+ m) _≤_
+  Postfix*- : UniversalPostfix ((m +1) *_) _≤_
+  Postfix-* : UniversalPostfix (_* (m +1)) _≤_
+
+UniversalPostfix.postfix (Postfix+- {zero}) n = refl n
+UniversalPostfix.postfix (Postfix+- {m +1}) n =
+  proof n
+    〉 _≤_ 〉 m + n    :by: UniversalPostfix.postfix Postfix+- n
+    〉 _≤_ 〉 m + n +1 :by: -≤self+1 (m + n)
+  qed
+
+UniversalPostfix.postfix (Postfix-+ {m}) n =
+  proof n
+    〉 _≤_ 〉 m + n  :by: postfix (m +_) n
+    〉 _==_ 〉 n + m :by: comm m n
+  qed
+
+UniversalPostfix.postfix (Postfix*- {m}) n = postfix (_+ m * n) n
+
+UniversalPostfix.postfix (Postfix-* {m}) n =
+  proof n
+    〉 _≤_ 〉 (m +1) * n  :by: postfix ((m +1) *_) ⦃ Postfix*- {m} ⦄ n
+    〉 _==_ 〉 n * (m +1) :by: comm (m +1) n
+  qed

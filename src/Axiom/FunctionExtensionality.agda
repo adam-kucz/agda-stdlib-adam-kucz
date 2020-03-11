@@ -2,7 +2,7 @@
 module Axiom.FunctionExtensionality where
 
 open import Universes
-open import Proposition.Identity using (_==_)
+open import Proposition.Identity.Heterogeneous using (_==_)
 open import Function.Equivalence
 
 postulate

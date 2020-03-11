@@ -7,10 +7,10 @@ open import PropUniverses
 open import Function.Property
 
 type== : {x : X} {y : Y}
-  (p : x == y)
+  (p : x Het.== y)
   → ----------
   X == Y
-type== {X = X}(refl _) = refl X
+type== {X = X}(Het.refl _) = Idₚ.refl X
 
 subst :
   (𝐴 : (x : X) → 𝒰 ᵖ)
@@ -35,8 +35,8 @@ coe-eval :
   {A : {𝑋 : 𝒰 ᵖ}(x : 𝑋) → 𝒱 ˙}
   (f : {𝑋 : 𝒰 ᵖ}(x : 𝑋) → A x)
   → ---------------
-  f (coe p x) == f x
-coe-eval (refl _) x f = refl (f x)
+  f (coe p x) Het.== f x
+coe-eval (refl _) x f = Het.refl (f x)
 
 -- more general than Function.Proof.ap
 -- it doesn't require the two sides
@@ -45,12 +45,12 @@ ap : {I : 𝒰 ˙}{F : I → 𝒱 ˙}{A : (i : I)(x : F i) → 𝒲 ˙}
   (inject : Injective F)
   (f : ∀ {i}(x : F i) → A i x)
   {i j : I}{x : F i}{y : F j}
-  (p : x == y)
+  (p : x Het.== y)
   → ----------
-  f x == f y
-ap inject f p with inj (type== p)
+  f x Het.== f y
+ap inject f p with inj (==→het== (type== p))
   where instance _ = inject
-ap inject f (refl x) | refl i = refl (f x)
+ap inject f (Het.refl x) | refl i = Het.refl (f x)
 
 ap2 :
   {K : (x : X)(y : A x) → 𝒰 ˙}
@@ -58,7 +58,7 @@ ap2 :
   {x x' : X}
   (p : x == x')
   {y : A x}{y' : A x'}
-  (q : y == y')
+  (q : y Het.== y')
   → ------------------------------
-  f x y == f x' y'
-ap2 f (refl x) (refl y) = refl (f x y)
+  f x y Het.== f x' y'
+ap2 f (refl x) (Het.refl y) = Het.refl (f x y)

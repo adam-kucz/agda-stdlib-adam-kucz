@@ -3,6 +3,7 @@ module Data.Nat.Property where
 
 open import Data.Nat.Definition
 open import Data.Nat.Arithmetic
+open import Data.Nat.Arithmetic.Subtraction.Definition
 open import Data.Nat.Order
 open import Data.Nat.Syntax
 open Pattern
@@ -19,14 +20,12 @@ open import Function.Proof
 open import Data.Nat.Proof
 
 instance
-  Injective-suc : Injective suc
   Surjective-pred : Surjective pred
   Decidableℕ== : Decidable (n == m)
-  Relating-+-left-< : Relating (m +_) _<_ _<_
-  Relating-+-right-< : Relating (_+ m) _<_ _<_
   Relating-+-left-≤ : Relating (m +_) _≤_ _≤_
   Relating-+-right-≤ : Relating (_+ m) _≤_ _≤_
-  Relating-2-+-<-< : Relating-2 _+_ _<_ _<_ _<_
+  Relating-+-left-< : Relating (m +_) _<_ _<_
+  Relating-+-right-< : Relating (_+ m) _<_ _<_
   Relating-2-+-≤-≤ : Relating-2 _+_ _≤_ _≤_ _≤_
   Relating-2-+-<-≤ : Relating-2 _+_ _<_ _≤_ _<_
   Relating-2-+-≤-< : Relating-2 _+_ _≤_ _<_ _<_
@@ -37,8 +36,6 @@ instance
   Postfix-*-left-≤ : UniversalPostfix (suc n *_) _≤_
   Postfix-*-right-≤ : UniversalPostfix (_* suc n) _≤_
 
-inj ⦃ Injective-suc ⦄ (Id.refl (suc m)) = refl m
-
 surj ⦃ Surjective-pred ⦄ y = suc y , refl y
 
 Decidableℕ== {zero} {zero} = true (refl zero)
@@ -47,19 +44,20 @@ Decidableℕ== {suc m} {zero} = false λ ()
 Decidableℕ== {suc m} {suc n} with decide (m == n)
 Decidableℕ== {suc m} {suc n} | true n==m = true (ap suc n==m)
 Decidableℕ== {suc m} {suc n} | false ¬n==m =
-  false λ { (Id.refl (suc m)) → ¬n==m (refl m) }
+  false λ { (Id-refl (suc m)) → ¬n==m (refl m) }
 
-rel-preserv ⦃ Relating-+-left-< {zero} ⦄ a<b = a<b
-rel-preserv ⦃ Relating-+-left-< {m +1} ⦄ a<b =
-  ap suc ⦃ Relating-suc-< ⦄ $ rel-preserv a<b
-rel-preserv ⦃ Relating-+-right-< {m} ⦄ {a}{b} a<b =
-  proof a + m
-    〉 _==_ 〉 m + a :by: comm a m
-    〉 _<_ 〉  m + b :by: ap (m +_) a<b
-    〉 _==_ 〉 b + m :by: comm m b
+rel-preserv ⦃ Relating-+-left-≤ {m} ⦄ (z≤ k) =
+  proof m + 0
+    〉 _==_ 〉 m    :by: right-unit m 
+    〉 _≤_ 〉 m + k :by: postfix (_+ k) m
   qed
-rel-preserv ⦃ Relating-+-left-≤ {m} ⦄ (∨left (Id.refl a)) = refl (m + a)
-rel-preserv ⦃ Relating-+-left-≤ {m} ⦄ (∨right q) = ∨right $ ap (m +_) q
+rel-preserv ⦃ Relating-+-left-≤ {m} ⦄ (s≤s {n}{k} n≤k) =
+  proof m + (n +1)
+    〉 _==_ 〉 (m +1) + n :by: +-suc m n
+    〉 _≤_ 〉 (m +1) + k
+      :by: s≤s $ rel-preserv ⦃ Relating-+-left-≤ ⦄ n≤k
+    〉 _==_ 〉 m + (k +1) :by: sym $ +-suc m k
+  qed
 rel-preserv ⦃ Relating-+-right-≤ {m} ⦄ {a}{b} a≤b =
   proof a + m
     〉 _==_ 〉 m + a :by: comm a m
@@ -67,10 +65,30 @@ rel-preserv ⦃ Relating-+-right-≤ {m} ⦄ {a}{b} a≤b =
     〉 _==_ 〉 b + m :by: comm m b
   qed
 
-rel-preserv-2 ⦃ Relating-2-+-<-< ⦄ {x}{x'}{y}{y'} x<x' y<y' =
-  proof x + y
-    〉 _<_ 〉 x' + y  :by: ap (_+ y) x<x'
-    〉 _<_ 〉 x' + y' :by: ap (x' +_) y<y'
+rel-preserv ⦃ Relating-+-left-< ⦄ (z≤ zero , a≠b) =
+  ⊥-recursion _ $ a≠b $ refl 0
+rel-preserv ⦃ Relating-+-left-< {m} ⦄ (z≤ a +1 , a≠b) =
+  proof m + 0
+    〉 _==_ 〉 m          :by: right-unit m
+    〉 _<_ 〉 m +1        :by: postfix suc m
+    〉 _≤_ 〉 (m +1) + a  :by: postfix (_+ a) (m +1)
+    〉 _==_ 〉 m + (a +1) :by: sym $ +-suc m a
+  qed
+rel-preserv ⦃ Relating-+-left-< {m} ⦄ (s≤s {a}{b} a≤b , a≠b) =
+  proof m + (a +1)
+    〉 _==_ 〉 m + a +1   :by: +-suc m a
+    〉 _<_ 〉 m + b +1
+      :by: s<s $
+           rel-preserv ⦃ Relating-+-left-< {m} ⦄
+           (a≤b , λ { (Id-refl a) → a≠b $ refl (a +1)})
+    〉 _==_ 〉 m + (b +1) :by: sym $ +-suc m b
+  qed
+
+rel-preserv ⦃ Relating-+-right-< {m} ⦄ {a}{b} a<b =
+  proof a + m
+    〉 _==_ 〉 m + a :by: comm a m
+    〉 _<_ 〉 m + b  :by: ap (m +_) a<b
+    〉 _==_ 〉 b + m :by: comm m b
   qed
 
 rel-preserv-2 ⦃ Relating-2-+-≤-≤ ⦄ {x}{x'}{y}{y'} x≤x' y≤y' = 
@@ -90,24 +108,24 @@ rel-preserv-2 ⦃ Relating-2-+-≤-< ⦄ {x}{x'}{y}{y'} x≤x' y<y' =
     〉 _<_ 〉 x' + y' :by: ap (x' +_) y<y'
   qed
 
-UniversalPostfix.postfix (Postfix-+-left-< {zero}) =
-  postfix suc ⦃ Postfix-suc-< ⦄
-UniversalPostfix.postfix (Postfix-+-left-< {suc n}) x =
+UniversalPostfix.postfix (Postfix-+-left-< {n}) x =
   proof x
-    〉 _<_ 〉 suc n + x   :by: postfix (suc n +_) x
-    〉 _<_ 〉 suc (suc n + x)
-      :by: postfix suc ⦃ Postfix-suc-< ⦄ (suc n + x)
+    〉 _≤_ 〉 n + x    :by: postfix (n +_) x 
+    〉 _<_ 〉 n + x +1 :by: -<self+1 (n + x)
   qed
 
 UniversalPostfix.postfix (Postfix-+-right-< {n}) x =
   proof x
-    〉 _<_ 〉 suc n + x :by: postfix (suc n +_) x
-    〉 _==_ 〉 x + suc n :by: comm (suc n) x
+    〉 _<_ 〉 (n +1) + x  :by: postfix (n +1 +_) x 
+    〉 _==_ 〉 x + (n +1) :by: comm (n +1) x
   qed
 
 UniversalPostfix.postfix (Postfix-+-left-≤ {zero}) x = refl x
-UniversalPostfix.postfix (Postfix-+-left-≤ {suc n}) x =
-  ∨right (postfix (suc n +_) x)
+UniversalPostfix.postfix (Postfix-+-left-≤ {n +1}) x =
+  proof x
+    〉 _≤_ 〉 n + x    :by: postfix (n +_) x
+    〉 _≤_ 〉 n + x +1 :by: -≤self+1 (n + x)
+  qed
 
 UniversalPostfix.postfix (Postfix-+-right-≤ {n}) x =
   proof x
@@ -124,39 +142,34 @@ UniversalPostfix.postfix (Postfix-*-right-≤ {n}) x =
     〉 _==_ 〉 x * suc n :by: comm (suc n) x
   qed
 
-postfix-sub-< : ∀ {m n} k {p p'}
-  (q : m < n)
+postfix-sub-≤ : ∀ {m n} k {p p'}
+  (q : m ≤ n)
   → --------------------
-  m - k [ p ] < n - k [ p' ]
-postfix-sub-< {zero} {_ +1} zero _ = z<s
-postfix-sub-< {zero} {_ +1} (_ +1) {Logic.∨left ()}
-postfix-sub-< {zero} {_ +1} (_ +1) {∨right ()}
-postfix-sub-< {_ +1} {_ +1} zero q = q
-postfix-sub-< {m +1} {n +1} (k +1) q = postfix-sub-< k (s<s→-<- q)
+  m - k [ p ] ≤ n - k [ p' ]
+postfix-sub-≤ zero q = q
+postfix-sub-≤ (k +1) (s≤s q) = postfix-sub-≤ k q
 
--+ : (p : m ≥ k) → m - k [ p ] + k == m
--+ {m}{zero} p = right-unit m
--+ {zero}{k +1} (∨left ())
--+ {zero}{k +1} (∨right ())
--+ {m +1}{k +1} p =
+-+ : (p : k ≤ m) → m - k [ p ] + k == m
+-+ {0}{m} p = right-unit m
+-+ {k +1}{m +1} p =
   proof m - k [ ap pred p ] + (k +1)
     === m - k [ ap pred p ] + k +1
       :by: +-suc (m - k [ ap pred p ]) k
     === m +1
-      :by: ap suc $ -+ {m}{k} $ ap pred p
+      :by: ap suc $ -+ {k}{m} $ ap pred p
   qed
 
 +==→-== :
   (q : m == k + n)
   → ---------------
   m - n [ Id.coe (ap (n ≤_) $ sym q) $ postfix (k +_) n ] == k
-+==→-== {.(k + 0)}{k}{zero} (Id.refl .(k + 0)) = right-unit k
-+==→-== {.(k + (n +1))}{k} {n +1} (Id.refl .(k + (n +1))) =
++==→-== {.(k + 0)}{k}{zero} (Id-refl .(k + 0)) = right-unit k
++==→-== {.(k + (n +1))}{k} {n +1} (Id-refl .(k + (n +1))) =
   proof k + (n +1) - (n +1) [ p ]
     === k + n +1 - (n +1) [ Id.coe (ap (n +1 ≤_) (+-suc k n)) p  ]
       :by: -== (+-suc k n) (refl (n +1))
     === k + n - n [ postfix (k +_) n  ]
-      :by: Id.refl _
+      :by: Id-refl _
     === k
       :by: +==→-== (refl (k + n))
   qed
@@ -165,8 +178,8 @@ postfix-sub-< {m +1} {n +1} (k +1) q = postfix-sub-< k (s<s→-<- q)
 -==0 : ∀ {a b p}
   → ------------------
   a - b [ p ] == 0 ↔ a == b
-⟶ (-==0 {p = ∨left p}) q = sym p
-⟶ (-==0 {p = ∨right (s<s p)}) q = ap suc $ ⟶ (-==0 {p = ∨right p}) q
+⟶ (-==0 {p = z≤ m}) q = q
+⟶ (-==0 {p = s≤s p}) q = ap suc $ ⟶ -==0 q
 ⟵ -==0 = +==→-==
 
 open import Relation.Binary
@@ -183,19 +196,13 @@ comm-+ {a}{b}{c} p = sym $ +==→-== $ sym (
       :by: ap (_+ c) $ -+ p
   qed)
 
-relating-≤ : ∀ {a b c}
+relating---≤ : ∀ {a b c}
   (p : b ≤ c)
   (q : c ≤ a)
   → -----------------------
   c - b [ p ] ≤ a - b [ trans p q ]
-relating-≤ {a}{b} p (∨left (Id.refl a)) =
-  refl (a - b [ p ])
-relating-≤ {a +1} {zero} {c +1} p (∨right (s<s q)) =
-  ∨right (ap suc q)
-relating-≤ {a +1} {b +1} {c +1} p (∨right (s<s q)) =
-  relating-≤ (ap pred p) (∨right q)
-relating-≤ (∨left (Id.refl 0)) (∨right z<s) =
-  ∨right z<s
+relating---≤ (z≤ m) q = q
+relating---≤ (s≤s p) (s≤s q) = relating---≤ p q
 
 -comm : ∀ {a b c}
   (p : b ≤ a)
@@ -205,14 +212,14 @@ relating-≤ (∨left (Id.refl 0)) (∨right z<s) =
              〉 _==_ 〉 c + b - b [ postfix (c +_) b ]
                :by: sym $ +==→-== (refl (c + b))
              〉 _≤_ 〉 a - b [ p ]
-               :by: relating-≤ (postfix (c +_) b) q
+               :by: relating---≤ (postfix (c +_) b) q
            qed
       p' = trans (postfix (_+ b) c) q
       p₀' = proof b
               〉 _==_ 〉 c + b - c [ _ ]
                 :by: sym $ +==→-== $ comm c b
               〉 _≤_ 〉 a - c [ p' ]
-                :by: relating-≤  (postfix (_+ b) c) q
+                :by: relating---≤  (postfix (_+ b) c) q
             qed
   in
   a - b [ p ] - c [ p₀ ] == a - c [ p' ] - b [ p₀' ]
@@ -231,7 +238,7 @@ relating-≤ (∨left (Id.refl 0)) (∨right z<s) =
             〉 _==_ 〉 c + b - c [ _ ]
               :by: sym $ +==→-== $ comm c b
             〉 _≤_ 〉 a - c [ p' ]
-              :by: relating-≤  (postfix (_+ b) c) q
+              :by: relating---≤  (postfix (_+ b) c) q
           qed
 
 open import Proposition.Proof

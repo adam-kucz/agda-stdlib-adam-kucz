@@ -11,24 +11,22 @@ data List (X : 𝒰 ˙) : 𝒰 ˙ where
 open import Data.Nat.Definition using (ℕ; zero; suc)
 open import Data.Nat.Syntax
 open Pattern
-open import Data.Nat.Order using (_<_; s<s→-<-)
+-- open import Data.Nat.Order using (_<_; s<s→-<-)
 
-len : (l : List X) → ℕ
-len [] = 0
-len (x ∷ l) = len l +1
+-- module Data.List.Definition {𝒰 : Universe} where
 
-infixr 110 _!_[_]
-_!_[_] : (l : List X) (n : ℕ) (p : n < len l) → X
-h ∷ _ ! zero [ _ ] = h
-_ ∷ l ! suc n [ p ] = l ! n [ s<s→-<- p ]
+-- infixr 110 _!_[_]
+-- _!_[_] : (l : List X) (n : ℕ) (p : n < len l) → X
+-- h ∷ _ ! zero [ _ ] = h
+-- _ ∷ l ! suc n [ p ] = l ! n [ s<s→-<- p ]
 
 open import Proposition.Identity
 open import Proposition.Empty
 
-last : (l : List X)(p : l ≠ [] {X}) → X
+last : (l : List X)(p : l ≠ []) → X
 last {X = X} [] p = ⊥-recursion X (p (refl []))
 last (x ∷ []) p = x
-last (_ ∷ h ∷ l) p = last (h ∷ l) (λ ())
+last (_ ∷ h ∷ l) p = last (h ∷ l) λ ()
 
 List== :
   {h h' : X}

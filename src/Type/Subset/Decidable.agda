@@ -6,7 +6,7 @@ import Type.Subset.Operation as Op
 
 open import PropUniverses
 open import Proposition.Decidable
-open import Collection
+open import Collection hiding (Subset; _∪_)
 
 record DecSubset 𝒰 (X : 𝒱 ˙) : 𝒱 ⊔ 𝒰 ⁺ ˙ where
   constructor dec-set
@@ -70,7 +70,7 @@ _[_,_]`_ {𝒲 = 𝒲}{X = X}{Y} f f⁻¹ p S@(dec-set set) = dec-set (f Op.` se
                 go with mconcat∨→elem (pr₁ <$> ls y) p'
                 go | 𝑋 , (p , 𝑋∈) with have3
                   where have1 : fmap pr₁ ∘ fmap func == fmap (pr₁ ∘ func)
-                        have1 = strong-sym $ fmap-∘ pr₁ func
+                        have1 = sym {R = _==_} $ fmap-∘ pr₁ func
                         have2 : 𝑋 ∈ fmap (_∈ set) (f⁻¹ y)
                         have2 = Id.coe (ap (λ — → 𝑋 ∈ — (f⁻¹ y)) have1) 𝑋∈
                         have3 : ∃ λ (x : X) → x ∈ set == 𝑋 ∧ x ∈ f⁻¹ y
@@ -94,6 +94,8 @@ _[_,_]`_ {𝒲 = 𝒲}{X = X}{Y} f f⁻¹ p S@(dec-set set) = dec-set (f Op.` se
                     ⟶ ⊥
                       :by: (_$ (↑prop ⋆ₚ))
 
+open import Relation.Binary
+
 infixr 105 _`_
 _`_ : {X : 𝒰 ˙}{Y : 𝒱 ˙}
   (f : X → Y)
@@ -104,6 +106,7 @@ _`_ : {X : 𝒰 ˙}{Y : 𝒱 ˙}
   DecSubset (𝒰 ⊔ 𝒱 ⊔ 𝒲) Y
 _`_ f {f⁻¹} ⦃ inv ⦄ S = f [ [_] ∘ f⁻¹ , p ]` S
   where p : ∀ x y → x ∈ [ f⁻¹ y ] ↔ f x == y
-        ⟶ (p .(f⁻¹ y) y) (x∈x∷ []) = right-inv y
-        ⟵ (p x .(f x)) (Id.refl .(f x)) =
-          Id.coe (ap (λ — → x ∈ [ — ]) $ sym $ left-inv x) $ x∈x∷ []
+        ⟶ (p .(f⁻¹ y) y) (x∈x∷ []) = subrel $ right-inv y
+        ⟵ (p x .(f x)) (Id-refl .(f x)) =
+          Id.coe (ap (λ — → x ∈ [ — ]) $ sym $ subrel $ left-inv x) $
+          x∈x∷ []

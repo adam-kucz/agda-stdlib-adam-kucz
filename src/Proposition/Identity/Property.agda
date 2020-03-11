@@ -1,22 +1,16 @@
 {-# OPTIONS --exact-split --safe --prop #-}
 module Proposition.Identity.Property where
 
-open import PropUniverses
-open import Relation.Binary.Property as Rel
-  renaming (refl to rel-refl; sym to rel-sym)
-open import Proposition.Identity.Definition
+open import Proposition.Identity.Homogeneous hiding (refl)
+import Proposition.Identity.Heterogeneous as Het
+
+open import Universes
+open import Relation.Binary.Property
 
 instance
-  Transitive== : Transitive {𝒱 = 𝒱} {X = X} _==_
-  trans ⦃ Transitive== ⦄ p (refl x) = p
+  hom⊆het : (_==_ {X = X}) ⊆ Het._==_
+  het⊆hom : Het._==_ ⊆ (_==_ {X = X})
 
-  Reflexive== : Reflexive {𝒱 = 𝒱} {X = X} _==_
-  rel-refl ⦃ Reflexive== ⦄ = refl
+subrel ⦃ hom⊆het ⦄ (Idₚ.refl x) = Het.refl x
+subrel ⦃ het⊆hom ⦄ (Het.refl x) = Idₚ.refl x
 
-  Symmetric== : Symmetric {𝒱 = 𝒱} {X = X} _==_
-  rel-sym ⦃ Symmetric== ⦄ (refl x) = refl x
-  
-  Equivalence== : Equivalence {𝒱 = 𝒱} {X = X} _==_
-  equiv-reflexive ⦃ Equivalence== ⦄ = Reflexive==
-  equiv-symmetric ⦃ Equivalence== ⦄ = Symmetric==
-  equiv-transitive ⦃ Equivalence== ⦄ = Transitive==

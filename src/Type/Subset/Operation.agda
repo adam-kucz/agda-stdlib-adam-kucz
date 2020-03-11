@@ -1,7 +1,7 @@
 {-# OPTIONS --exact-split --safe --prop #-}
 module Type.Subset.Operation where
 
-open import Type.Subset.Definition
+open import Type.Subset.Definition hiding (_∪_; ⋃_; _∩_; ⋂_)
 
 open import PropUniverses
 open import Logic
