@@ -89,9 +89,10 @@ instance
 ≤-⊆-rtc-≤ = ↔-→-⊆ ≤-↔-rtc-≤
 rtc-≤-⊆-≤ = ↔-→-⊇ ≤-↔-rtc-≤
 
-open import
-  Relation.Binary.ReflexiveTransitiveClosure.Transfer _≤_ suc_==_
-  public
+module Transferred≤ where
+  open import
+    Relation.Binary.ReflexiveTransitiveClosure.Transfer _≤_ suc_==_
+    public
 
 module Composable-≤ where
   open MakeTransComposable _≤_ public

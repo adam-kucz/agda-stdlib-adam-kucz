@@ -14,7 +14,7 @@ module Relation.Binary.ReflexiveTransitiveClosure.Transfer
 open import Proposition.Function using (_$_)
 open import Function.Proof
 
-import Relation.Binary.ReflexiveTransitiveClosure.Property
+open import Relation.Binary.ReflexiveTransitiveClosure.Property
 
 instance
   ReflexiveR : Reflexive R
@@ -35,5 +35,10 @@ InheritsRelatingR :
 
 refl ⦃ ReflexiveR ⦄ x = subrel $ refl x
 trans ⦃ TransitiveR ⦄ p q = subrel $ trans (subrel p) (subrel q)
+
 sym ⦃ InheritsSymmetricR ⦄ p = subrel $ sym $ subrel p
 rel-preserv ⦃ InheritsRelatingR ⦄ aRb = subrel $ rel-preserv $ subrel aRb
+
+Subrelation-rtcR-R : refl-trans-close R ⊆ R
+subrel ⦃ Subrelation-rtcR-R ⦄ p =
+  subrel $ subrel ⦃ Subrelation-rtc2 ⦄ $ subrel p

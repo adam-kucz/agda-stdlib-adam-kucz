@@ -32,6 +32,24 @@ if 𝑋 then x else y with decide 𝑋
 if 𝑋 then x else y | true _ = x
 if 𝑋 then x else y | false _ = y
 
+open import Proposition.Identity.Definition
+
+if==then : {x y : X}⦃ d : Decidable 𝑋 ⦄
+  (p : 𝑋)
+  → -------------------------------------
+  if 𝑋 then x else y == x
+if==then ⦃ d ⦄ p with d
+if==then ⦃ d = d ⦄ p | true _ = refl _
+if==then ⦃ d = d ⦄ p | false ¬p = ⊥-recursion _ (¬p p)
+
+if==else : {x y : X}⦃ d : Decidable 𝑋 ⦄
+  (¬p : ¬ 𝑋)
+  → -------------------------------------
+  if 𝑋 then x else y == y
+if==else ⦃ d ⦄ ¬p with d
+if==else ⦃ d = d ⦄ ¬p | true p = ⊥-recursion _ (¬p p)
+if==else ⦃ d = d ⦄ ¬p | false _ = refl _
+
 dif_then_else_ :
   (𝑋 : 𝒰 ᵖ)
   ⦃ d : Decidable 𝑋 ⦄

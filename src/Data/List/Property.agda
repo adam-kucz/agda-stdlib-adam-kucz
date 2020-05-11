@@ -3,7 +3,7 @@ module Data.List.Property where
 
 open import Data.List.Definition
 open import Data.List.Collection
-open import Data.List.Operation
+open import Data.List.Operation.Basic
 
 open import PropUniverses
 open import Proposition.Identity hiding (refl)

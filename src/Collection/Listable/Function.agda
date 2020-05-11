@@ -34,7 +34,7 @@ open import Logic hiding (⊥-recursion)
 ⟵ ++-prop (∨right q) = ⟵ extend-prop (∨left (⟶ to-list-valid q))
 
 open import Structure.Monoid
-open import Data.List
+open import Data.List.Operation.Basic
 
 fold-map : {Col : 𝒰 ˙}{Elem : 𝒱 ˙}
   ⦃ list : Listable 𝒲 Col Elem ⦄

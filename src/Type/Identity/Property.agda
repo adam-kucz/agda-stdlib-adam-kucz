@@ -4,13 +4,13 @@ module Type.Identity.Property where
 open import Type.Identity.Definition
 
 open import Universes
-open import Proposition.Identity.Definition renaming (_≡_ to _===_)
+open import Proposition.Identity
 
-≡→== : {x : X} {y : Y}
+≡→het== : {x : X} {y : Y}
   (id : x ≡ y)
   → ------------
-  x == y
-≡→== (refl x) = refl x
+  x Het.== y
+≡→het== (refl x) = Het.refl x
 
 trans : {x : X} {y : Y} {z : Z}
   (p : x ≡ y)
@@ -23,5 +23,5 @@ transport== :
   (x : X)
   (p : X ≡ Y)
   → -----------------
-  transport p x == x
-transport== x (refl _) = refl x
+  transport p x Het.== x
+transport== x (refl _) = Het.refl x

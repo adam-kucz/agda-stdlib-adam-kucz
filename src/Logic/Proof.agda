@@ -53,6 +53,8 @@ instance
   Relating-∧-right-↔ : Relating (_∧ 𝑋) (_↔_ {𝒰}) _↔_
   Relating-∨-left-↔ : Relating (𝑋 ∨_) (_↔_ {𝒰}) _↔_
   Relating-∨-right-↔ : Relating (_∨ 𝑋) (_↔_ {𝒰}) _↔_
+  Relating-2-∧ : Relating-2 (_∧_ {𝒰}{𝒱}) _↔_ _↔_ _↔_
+  Relating-2-∨ : Relating-2 (_∨_ {𝒰}{𝒱}) _↔_ _↔_ _↔_
 
 ⟶ (rel-preserv ⦃ Relating-∧-left-↔ ⦄ A↔B) (x , a) = x , ⟶ A↔B a
 ⟵ (rel-preserv ⦃ Relating-∧-left-↔ ⦄ A↔B) (x , b) = x , ⟵ A↔B b
@@ -69,6 +71,17 @@ instance
 ⟶ (rel-preserv ⦃ Relating-∨-right-↔ ⦄ A↔B) (∨left b) = ∨left $ ⟶ A↔B b
 ⟵ (rel-preserv ⦃ Relating-∨-right-↔ ⦄ A↔B) (∨right x) = ∨right x
 ⟵ (rel-preserv ⦃ Relating-∨-right-↔ ⦄ A↔B) (∨left a) = ∨left $ ⟵ A↔B a
+
+rel-preserv-2 ⦃ Relating-2-∧ ⦄ {X}{X'}{Y}{Y'} X↔X' Y↔Y' =
+  proof X ∧ Y
+    〉 _↔_ 〉 X' ∧ Y  :by: ap (_∧ Y) X↔X'
+    〉 _↔_ 〉 X' ∧ Y' :by: ap (X' ∧_) Y↔Y'
+  qed
+rel-preserv-2 ⦃ Relating-2-∨ ⦄ {X}{X'}{Y}{Y'} X↔X' Y↔Y' =
+  proof X ∨ Y
+    〉 _↔_ 〉 X' ∨ Y  :by: ap (_∨ Y) X↔X'
+    〉 _↔_ 〉 X' ∨ Y' :by: ap (X' ∨_) Y↔Y'
+  qed
 
 -↔-∧- : (p : 𝑋 → 𝑌) → 𝑋 ↔ 𝑋 ∧ 𝑌
 ⟶ (-↔-∧- p) x = x , p x

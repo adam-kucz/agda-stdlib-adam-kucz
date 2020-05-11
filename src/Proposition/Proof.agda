@@ -1,7 +1,9 @@
-{-# OPTIONS --without-K --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe --prop #-}
 module Proposition.Proof where
 
 open import PropUniverses
+
+open import Proposition.Function renaming (_$_ to _$ₚ_; _∘_ to _∘ₚ_) public
 
 infix 4 have_:from:_
 have_:from:_ : (𝑋 : 𝒰 ᵖ) (p : 𝑋) → 𝑋

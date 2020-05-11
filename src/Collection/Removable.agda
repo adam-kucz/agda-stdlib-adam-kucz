@@ -46,4 +46,8 @@ record Removable
       λ { (refl x) → x∉h∷l (x∈x∷ l) }
       )
 
+  _∉remove_ : (x : Elem)(S : Col) → x ∉ remove x S
+  (x ∉remove S) q = ∧right (⟶ remove-valid q) (refl x)
+
+
 open Removable ⦃ … ⦄ public

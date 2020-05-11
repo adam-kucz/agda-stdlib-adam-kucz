@@ -11,7 +11,7 @@ open import Proposition.Function using (_$_)
 open import Relation.Binary.Property hiding (_~_)
 open import Operation.Binary.Property
 
-open import Structure.Monoid
+open import Structure.Monoid.Definition
 open import Structure.Hemiring hiding (_+_; _*_; zero)
 
 open import Proof

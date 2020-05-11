@@ -13,6 +13,17 @@ open import Proof
   f ~ g
 ==→~ (Idₚ.refl f) x = Het.refl (f x)
 
+-- het==→~ :
+--   {f : Π A}{g : Π B}
+--   (p : f Het.== g)
+--   → -----------------
+--   f ~ g
+-- het==→~ {A = A}{B} p x = {!(Id.type== p)!}
+--   where hi : ((x : _) → A x) == ((x : _) → B x)
+--         hi = Id.type== p
+--         hi2 : A x == B x
+--         hi2 = {!!}
+  
 open import Relation.Binary.Property
   using (Reflexive; refl; Symmetric; sym; Transitive; trans)
 

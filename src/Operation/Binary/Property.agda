@@ -210,3 +210,27 @@ instance
     → -------------------------
     z IsZeroOf op
 DefaultZero = record {}
+
+right-zero-of-commutative-left-zero :
+  (z : X) (op : Op X X X)
+  ⦃ _ : Commutative op ⦄
+  ⦃ _ : z IsLeftZeroOf op ⦄
+  → --------------------------
+  z IsRightZeroOf op
+right-zero ⦃ right-zero-of-commutative-left-zero z _∙_ ⦄ a =
+  proof a ∙ z
+    〉 _==_ 〉 z ∙ a :by: comm a z
+    〉 _==_ 〉 z     :by: left-zero a
+  qed
+     
+left-zero-of-commutative-right-zero :
+  (z : X) (op : Op X X X)
+  ⦃ _ : Commutative op ⦄
+  ⦃ _ : z IsRightZeroOf op ⦄
+  → --------------------------
+  z IsLeftZeroOf op
+left-zero ⦃ left-zero-of-commutative-right-zero z _∙_ ⦄ a =
+  proof z ∙ a
+    〉 _==_ 〉 a ∙ z :by: comm z a
+    〉 _==_ 〉 z     :by: right-zero a
+  qed

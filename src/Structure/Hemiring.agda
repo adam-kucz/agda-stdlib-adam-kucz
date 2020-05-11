@@ -2,7 +2,7 @@
 module Structure.Hemiring where
 
 open import Structure.Semigroup.Definition
-open import Structure.Monoid
+open import Structure.Monoid.Definition
 open import Operation.Binary.Property using (Commutative)
 
 open import PropUniverses

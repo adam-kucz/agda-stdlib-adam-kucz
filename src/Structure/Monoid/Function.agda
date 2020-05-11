@@ -13,7 +13,7 @@ open import Data.List.Property
 module WithMonoid {X : 𝒰 ˙}⦃ M : Monoid X ⦄ where
 
   open import Operation.Binary
-  open import Data.List.Operation
+  open import Data.List.Operation.Basic
   open import Proof
   
   mconcat : (l : List X) → X

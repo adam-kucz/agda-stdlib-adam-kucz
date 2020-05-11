@@ -29,9 +29,11 @@ maxFinℕ : ∀ n → Finℕ (suc n)
 maxFinℕ zero = zero
 maxFinℕ (suc n) = suc (maxFinℕ n)
 
-toFinℕ : ∀ {m} n (n<m : n < m) → Finℕ m
+open import Function.Proof
+
+toFinℕ : ∀ {m} n (n≤m : suc n ≤ m) → Finℕ m
 toFinℕ {suc m} zero _ = zero
-toFinℕ {suc m} (suc n) n<m = suc $ toFinℕ n (s<s→-<- n<m)
+toFinℕ {suc m} (suc n) n<m = suc $ toFinℕ n (ap pred n<m)
 
 module Pattern where
   pattern _+1 x = Finℕ.suc x

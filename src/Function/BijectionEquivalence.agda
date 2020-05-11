@@ -5,6 +5,7 @@ open import Universes
 open import Function.Basic hiding (_$_)
 open import Function.Property
 open import Proposition.Sum
+open import Relation.Binary
 open import Logic
 open import Proof
 
@@ -18,9 +19,9 @@ bijection-of-bijective :
 bijection-of-bijective f = record { forw = f; back = inv }
   where uniq : (y : codomain f) → ∃! λ x → f x == y
         uniq y with sur f y
-        uniq y | x , p = x , (p , λ x₁ p₁ → inj (
+        uniq y | x , p = x , (p , λ x₁ p₁ → inj $ subrel (
           proof f x₁
-            〉 _==_ 〉 y :by: p₁
+            〉 _==_ 〉 y   :by: p₁
             〉 _==_ 〉 f x :by: sym p
           qed))
         inv : codomain f → domain f
@@ -28,5 +29,7 @@ bijection-of-bijective f = record { forw = f; back = inv }
         instance
           RightInverse-f : RightInverse f inv
           LeftInverse-f : LeftInverse f inv
-        right-inv ⦃ RightInverse-f ⦄ y = ∧left $ prop (!choice (uniq y))
-        left-inv ⦃ LeftInverse-f ⦄ x = inj $ ∧left $ prop (!choice (uniq (f x)))
+        right-inv ⦃ RightInverse-f ⦄ y =
+          subrel $ ∧left $ prop (!choice (uniq y))
+        left-inv ⦃ LeftInverse-f ⦄ x =
+          subrel $ inj $ subrel $ ∧left $ prop (!choice (uniq (f x)))

@@ -8,7 +8,6 @@ open import Data.List.Definition
 open import Collection.Definition
 open import Collection.Basic
 open import Collection.Listable
-open import Structure.Monoid
 
 infixr 108 ⋃_
 ⋃' : {Col : 𝒱 ˙}{Elem : 𝒰 ˙}{Col' : 𝒯 ˙}
@@ -53,3 +52,74 @@ infixl 108 ⋂_
   Col
 ⋂ S = ⋂' S Univ
 
+open import Collection.Insertable
+open import Collection.Removable
+
+from-list-uniq :
+  {Col : 𝒱 ˙}
+  {Elem : 𝒰 ˙}
+  ⦃ ls : Listable 𝒳 Col Elem ⦄
+  ⦃ ins : Insertable Col Elem ⦄
+  ⦃ rem : Removable Col Elem ⦄
+  (S : Col)
+  (l : List Elem)
+  → --------------------------
+  Col
+from-list-uniq S [] = S
+from-list-uniq S (h ∷ t) =
+  insert h (remove h (from-list-uniq S t))
+
+recreate :
+  {Col : 𝒱 ˙}
+  {Elem : 𝒰 ˙}
+  ⦃ ls : Listable 𝒳 Col Elem ⦄
+  ⦃ ins : Insertable Col Elem ⦄
+  ⦃ rem : Removable Col Elem ⦄
+  (S : Col)
+  → -------------------------------
+  Col
+recreate S = from-list-uniq S (to-list S)
+
+open import Proposition.Decidable
+open import Logic
+open import Proof
+open import Data.List.Collection
+
+recreate-prop :
+  {Col : 𝒱 ˙}
+  {Elem : 𝒰 ˙}
+  ⦃ ls : Listable 𝒳 Col Elem ⦄
+  ⦃ ins : Insertable Col Elem ⦄
+  ⦃ rem : Removable Col Elem ⦄
+  ⦃ eq-dec : HasDecidableIdentity Elem ⦄
+  {x : Elem}
+  {S : Col}
+  → ------------------------------
+  x ∈ recreate S ↔ x ∈ S
+⟵ (recreate-prop {S = S}) p with to-list S | ⟶ to-list-valid p
+⟵ (recreate-prop {Elem = Elem}{x = x}{S}) p | l | q = go l q
+  where go :
+          (l : List Elem)
+          (q : x ∈ l)
+          → --------------------
+          x ∈ from-list-uniq S l
+        go (h ∷ t) (x∈x∷ t) = ⟵ insert-valid $ ∨right $ Id-refl h
+        go (h ∷ t) (x∈tail h q) with decide (x == h)
+        go (h ∷ t) (x∈tail h q) | true (Id-refl h) =
+          ⟵ insert-valid $ ∨right $ Id-refl h
+        go (h ∷ t) (x∈tail h q) | false ¬p =
+          ⟵ insert-valid $ ∨left $ ⟵ remove-valid (go t q , ¬p)
+⟶ (recreate-prop ⦃ ls = ls ⦄{x = x}{S}) p with ⟵ (to-list-valid ⦃ ls ⦄ {S}{x})
+⟶ (recreate-prop ⦃ ls = ls ⦄{S = S}) p | q with to-list ⦃ ls ⦄ S
+⟶ (recreate-prop {Elem = Elem}{x = x}{S}) p | q | l = go l q p
+  where go :
+          (l : List Elem)
+          (q : x ∈ l → x ∈ S)
+          (p : x ∈ from-list-uniq S l)
+          → --------------------------
+          x ∈ S
+        go [] _ p = p
+        go (h ∷ t) q p with ⟶ insert-valid p
+        go (h ∷ t) q p | ∨right (Id-refl h) = q $ x∈x∷ t 
+        go (h ∷ t) q p | ∨left r =
+          go t (λ p' → q $ x∈tail h p') (∧left $ ⟶ remove-valid r)

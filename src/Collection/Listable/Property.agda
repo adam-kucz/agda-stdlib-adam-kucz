@@ -31,7 +31,7 @@ module WithListable
   open import Logic
   open import Proof
   open import Logic.Proof
-  open import Data.List
+  open import Data.List.Collection
 
   ∈-~ : ∀ (x : Elem){l l' : Col}(p : l ~ l')
     → -------------------------

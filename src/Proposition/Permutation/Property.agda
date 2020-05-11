@@ -34,7 +34,8 @@ open import Logic.Proof
         go (rfl a) q = q
         go (step aRb p) q = go p $ ∈-single-swap aRb q
 
-open import Data.List
+open import Data.List.Property
+open import Data.List.Monoid
 open import Structure.Monoid
 open import Operation.Binary
 open import Collection.Listable.Function

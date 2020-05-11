@@ -274,3 +274,8 @@ open import Proposition.Proof
     === d - c [ q ]
       :by: -== (+==→-== $ refl (d + a)) (refl c)
   qed
+
+open import Structure.Monoid.Definition
+
+MaxMonoid : Monoid ℕ
+MaxMonoid = record { e = 0; _∙_ = max }

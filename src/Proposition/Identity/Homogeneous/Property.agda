@@ -52,3 +52,4 @@ module TransferredProperties {X : 𝒰 ˙} where
   instance
     SymmetricId = InheritsSymmetricR
     RelatingId = InheritsRelatingR
+
