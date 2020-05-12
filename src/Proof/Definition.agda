@@ -113,7 +113,7 @@ _〉_〉_:by:_ : {X : 𝒰 ˙} {Y : 𝒱 ˙} {Z : 𝒲 ˙}
   Composable.rel c x z
 _〉_〉_:by:_ p r a q ⦃ c ⦄  = Composable.compose c p q
 
-infixl 6 _===_:by:_
+infixl 6 _===_:by:_ _het==_:by:_
 _===_:by:_ :
   {x : X} {y : Y}
   {_R_ : Rel 𝒰 X Y}
@@ -124,6 +124,17 @@ _===_:by:_ :
   → -------------------------------------
   Composable.rel c x z
 p === z :by: q = p 〉 _==_ 〉 z :by: q
+
+_het==_:by:_ :
+  {x : X} {y : Y}
+  {_R_ : Rel 𝒰 X Y}
+  (p : x R y)
+  (z : Z)
+  (q : y Het.== z)
+  ⦃ c : Composable 𝒵 _R_ Het._==_ ⦄
+  → -------------------------------------
+  Composable.rel c x z
+p het== z :by: q = p 〉 Het._==_ 〉 z :by: q
 
 -- TODO: check if this actually works
 
@@ -142,9 +153,9 @@ injective-equiv :
   Injective g
 inj ⦃ injective-equiv {f = f}{g} f~g ⦄ {x}{y} gx==gy = inj (
   proof f x
-    〉 Het._==_ 〉 g x :by: f~g x
-    〉 Het._==_ 〉 g y :by: gx==gy
-    〉 Het._==_ 〉 f y :by: isym $ f~g y
+    het== g x :by: f~g x
+    het== g y :by: gx==gy
+    het== f y :by: isym $ f~g y
   qed)
 
 data Singleton {X Y : 𝒰 ˙}(x : X) : 𝒰 ˙ where

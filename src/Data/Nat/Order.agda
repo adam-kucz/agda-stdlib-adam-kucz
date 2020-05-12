@@ -132,6 +132,8 @@ Decidable≤ {m +1} {n +1} | false ¬p = false (λ p' → ¬p $ ap pred p')
 -≤self+1 : ∀ m → m ≤ m +1
 -≤self+1 m = -≤s $ refl m
 
+open import Proposition.Comparable
+
 instance
   Irreflexive< : Irreflexive _<_
   Asym< : Asymmetric _<_

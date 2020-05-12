@@ -62,3 +62,14 @@ ap2 :
   → ------------------------------
   f x y Het.== f x' y'
 ap2 f (refl x) (Het.refl y) = Het.refl (f x y)
+
+het-ap2 :
+  {K : (x : X)(y : A x) → 𝒰 ˙}
+  (f : (x : X)(y : A x) → K x y)
+  {x x' : X}
+  (p : x Het.== x')
+  {y : A x}{y' : A x'}
+  (q : y Het.== y')
+  → ------------------------------
+  f x y Het.== f x' y'
+het-ap2 f (Het.refl x) (Het.refl y) = Het.refl (f x y)

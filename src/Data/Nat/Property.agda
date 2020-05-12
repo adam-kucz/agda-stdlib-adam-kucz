@@ -10,6 +10,7 @@ open Pattern
 
 open import Proposition.Identity hiding (refl)
 open import Proposition.Decidable
+open import Proposition.Comparable
 open import Function.Property
 
 open import Operation.Binary.Property
@@ -35,6 +36,7 @@ instance
   Postfix-+-right-≤ : UniversalPostfix (_+ n) _≤_
   Postfix-*-left-≤ : UniversalPostfix (suc n *_) _≤_
   Postfix-*-right-≤ : UniversalPostfix (_* suc n) _≤_
+  Comparable< : Comparable _<_ m n
 
 surj ⦃ Surjective-pred ⦄ y = suc y , refl y
 
@@ -141,6 +143,21 @@ UniversalPostfix.postfix (Postfix-*-right-≤ {n}) x =
     〉 _≤_ 〉 suc n * x :by: postfix (suc n *_) ⦃ Postfix-*-left-≤ {n} ⦄ x
     〉 _==_ 〉 x * suc n :by: comm (suc n) x
   qed
+
+Comparable< {m}{n} with decide (m == n)
+Comparable< | true p = eq p
+Comparable< {m}{n} | false m≠n with decide (m ≤ n)
+Comparable< | false m≠n | true p = lt (p , m≠n)
+Comparable< {m}{n} | false m≠n | false _ with decide (n ≤ m)
+Comparable< | false m≠n | false _ | true p = gt (p , sym m≠n)
+Comparable< {m}{n} | false m≠n | false m≰n | false n≰m =
+  ⊥-recursionₜ _ contradiction
+  where open import Proposition.Empty
+          using () renaming (⊥-recursion to ⊥-recursionₜ)
+        contradiction : ⊥
+        contradiction with total m n
+        contradiction | ∨left m≤n = m≰n m≤n
+        contradiction | ∨right n≤m = n≰m n≤m
 
 postfix-sub-≤ : ∀ {m n} k {p p'}
   (q : m ≤ n)

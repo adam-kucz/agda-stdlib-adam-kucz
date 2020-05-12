@@ -79,7 +79,7 @@ infix 11 _,_ -- Operation.Property
 
 infix 7 proof_ -- Proof
 infix 5 _qed -- Proof
-infixl 6 _〉_〉_:by:_ -- Proof
+infixl 6 _〉_〉_:by:_ _===_:by:_ _het==_:by:_ -- Proof
 
 infix 4 have_:from:_ -- Prop'.Proof
 infixl 3 _⟶_:by:_ -- Prop'.Proof
