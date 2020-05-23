@@ -72,4 +72,18 @@ het-ap2 :
   (q : y Het.== y')
   → ------------------------------
   f x y Het.== f x' y'
-het-ap2 f (Het.refl x) (Het.refl y) = Het.refl (f x y)
+het-ap2 f (Het.refl x)(Het.refl y) = Het.refl (f x y)
+
+het-ap3 :
+  {K : (x : X)(y : A x) → 𝒰 ˙}
+  {M : (x : X)(y : A x)(z : K x y) → 𝒱 ˙}
+  (f : (x : X)(y : A x)(z : K x y) → M x y z)
+  {x x' : X}
+  (p : x == x')
+  {y : A x}{y' : A x'}
+  (q : y Het.== y')
+  {z : K x y}{z' : K x' y'}
+  (r : z Het.== z')
+  → ------------------------------
+  f x y z Het.== f x' y' z'
+het-ap3 f (refl x)(Het.refl y)(Het.refl z) = Het.refl (f x y z)

@@ -46,6 +46,20 @@ right-unit ⦃ ++-[] ⦄ [] = refl []
 right-unit ⦃ ++-[] ⦄ (h ∷ t) =
   List== (refl h) (right-unit t)
 
+∈++ : {x : X}
+  (l l' : List X)
+  → ----------------------------
+  x ∈ l ++ l' ↔ x ∈ l ∨ x ∈ l'
+⟶ (∈++ [] l') p = ∨right p
+⟵ (∈++ [] l') (∨right q) = q
+⟶ (∈++ (h ∷ l) l') (x∈x∷ .(l ++ l')) = ∨left $ x∈x∷ l
+⟶ (∈++ (h ∷ l) l') (x∈tail h p) with ⟶ (∈++ l l') p
+⟶ (∈++ (h ∷ l) l') (x∈tail h p) | ∨left q = ∨left $ x∈tail h q
+⟶ (∈++ (h ∷ l) l') (x∈tail h p) | ∨right q = ∨right q
+⟵ (∈++ (h ∷ l) l') (∨left (x∈x∷ l)) = x∈x∷ l ++ l'
+⟵ (∈++ (h ∷ l) l') (∨left (x∈tail h p)) = x∈tail h $ ⟵ (∈++ l l') $ ∨left p
+⟵ (∈++ (h ∷ l) l') (∨right q) = x∈tail h $ ⟵ (∈++ l l') $ ∨right q
+
 open import Data.Nat.Arithmetic.Definition
 
 map : (f : X → Y)(l : List X) → List Y

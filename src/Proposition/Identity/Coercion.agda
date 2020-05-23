@@ -22,3 +22,5 @@ coe-eval :
   → -------------------------
   coe p x Het.== x
 coe-eval p x = ∧left (prop (!choice (uniq p x)))
+
+

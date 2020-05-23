@@ -124,6 +124,11 @@ ListDecidable∈ {x = x} {h ∷ l} | false ¬p | true p = true (x∈tail h p)
 ListDecidable∈ {x = x} {h ∷ l} | false ¬p | false ¬p₁ =
   false (λ { (x∈x∷ t) → ¬p (Id-refl x) ; (x∈tail h q) → ¬p₁ q })
 
+-∈[-]↔== : {x y : X} →
+  x ∈ [ y ] ↔ x == y
+⟶ -∈[-]↔== (x∈x∷ []) = Id-refl _
+⟵ -∈[-]↔== (Id-refl x) = x∈x∷ []
+
 -- remove-at : (n : ℕ) (l : List X) (p : n < len l) → List X
 -- remove-at zero    (h ∷ l) p = l
 -- remove-at (suc n) (h ∷ l) p = remove-at n l (s<s→-<- p)

@@ -144,20 +144,17 @@ UniversalPostfix.postfix (Postfix-*-right-≤ {n}) x =
     〉 _==_ 〉 x * suc n :by: comm (suc n) x
   qed
 
-Comparable< {m}{n} with decide (m == n)
-Comparable< | true p = eq p
-Comparable< {m}{n} | false m≠n with decide (m ≤ n)
-Comparable< | false m≠n | true p = lt (p , m≠n)
-Comparable< {m}{n} | false m≠n | false _ with decide (n ≤ m)
-Comparable< | false m≠n | false _ | true p = gt (p , sym m≠n)
-Comparable< {m}{n} | false m≠n | false m≰n | false n≰m =
-  ⊥-recursionₜ _ contradiction
-  where open import Proposition.Empty
-          using () renaming (⊥-recursion to ⊥-recursionₜ)
-        contradiction : ⊥
-        contradiction with total m n
-        contradiction | ∨left m≤n = m≰n m≤n
-        contradiction | ∨right n≤m = n≰m n≤m
+Comparable< {zero} {zero} = eq (Id-refl 0)
+Comparable< {zero} {n +1} = lt (z<s n)
+Comparable< {m +1} {zero} = gt (z<s m)
+Comparable< {m +1} {n +1} = suc-step Comparable<
+  where suc-step : ∀ {m n}
+          (c : Comparable _<_ m n)
+          → -----------------------------
+          Comparable _<_ (m +1) (n +1)
+        suc-step (lt p) = lt (ap suc p)
+        suc-step (eq p) = eq (ap suc p)
+        suc-step (gt p) = gt (ap suc p)
 
 postfix-sub-≤ : ∀ {m n} k {p p'}
   (q : m ≤ n)

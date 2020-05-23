@@ -170,6 +170,9 @@ s<s (n≤m , n≠m) = s≤s n≤m , ap suc n≠m
 s<s→-<- : (n+1<m+1 : n +1 < m +1) → n < m
 s<s→-<- n+1<m+1 = ⟵ -<-↔s≤- $ ap pred $ ⟶ -<-↔s≤- n+1<m+1
 
+¬-<0 : ∀ m → ¬ m < 0
+¬-<0 0 (z≤ 0 , 0≠0) = 0≠0 $ refl 0
+
 -- -<s↔¬->- : ∀ {a b} → a < suc b ↔ ¬ a > b
 -- ⟶ (-<s↔¬->- {suc a} {zero}) (s<s ())
 -- ⟶ -<s↔¬->- (s<s a<sb) (s<s b<a) = ⟶ -<s↔¬->- a<sb b<a
