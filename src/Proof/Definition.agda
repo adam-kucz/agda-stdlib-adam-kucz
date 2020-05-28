@@ -48,23 +48,66 @@ record Composable 𝒵 (R : Rel 𝒯 X Y) (S : Rel 𝒮 Y Z) : 𝒰ω
       rel : Rel 𝒵 X Z
       compose : ∀ {x y z}(p : R x y) (q : S y z) → rel x z
 
+open Composable
+
 instance
   Composable-==-== : {X : 𝒰 ˙} →
     Composable 𝒰 (_==_ {X = X}) _==_
 
-Composable.rel Composable-==-== = _==_
-Composable.compose Composable-==-== (Id-refl _) q = q
+rel Composable-==-== = _==_
+compose Composable-==-== (Id-refl _) q = q
 
-module MakeComposable (R : Rel 𝒲 X Y) where
+Composable-sub-R-sub-P :
+  (R : Rel 𝒰 X Y)
+  (sub-R : Rel 𝒱 X Y)
+  (P : Rel 𝒲 Y Z)
+  (sub-P : Rel 𝒳 Y Z)
+  ⦃ comp-R-P : Composable 𝒴 R P ⦄
+  ⦃ sub-R⊆R : sub-R ⊆ R ⦄
+  ⦃ sub-P⊆P : sub-P ⊆ P ⦄
+  → --------------------------------
+  Composable 𝒴 sub-R sub-P
+rel (Composable-sub-R-sub-P R sub-R P sub-P ⦃ comp-R-P ⦄) =
+  rel comp-R-P
+compose (Composable-sub-R-sub-P R sub-R P sub-P ⦃ comp-R-P ⦄) p q =
+  compose comp-R-P (subrel p) (subrel q)
+
+Composable-R-sub-P :
+  (R : Rel 𝒰 X Y)
+  (P : Rel 𝒲 Y Z)
+  (sub-P : Rel 𝒳 Y Z)
+  ⦃ comp-R-P : Composable 𝒴 R P ⦄
+  ⦃ sub-P⊆P : sub-P ⊆ P ⦄
+  → --------------------------------
+  Composable 𝒴 R sub-P
+rel (Composable-R-sub-P R P sub-P ⦃ comp-R-P ⦄) =
+  rel comp-R-P
+compose (Composable-R-sub-P R P sub-P ⦃ comp-R-P ⦄) p q =
+  compose comp-R-P p (subrel q)
+
+Composable-sub-R-P :
+  (R : Rel 𝒰 X Y)
+  (sub-R : Rel 𝒱 X Y)
+  (P : Rel 𝒲 Y Z)
+  ⦃ comp-R-P : Composable 𝒴 R P ⦄
+  ⦃ sub-R⊆R : sub-R ⊆ R ⦄
+  → --------------------------------
+  Composable 𝒴 sub-R P
+rel (Composable-sub-R-P R sub-R P ⦃ comp-R-P ⦄) =
+  rel comp-R-P
+compose (Composable-sub-R-P R sub-R P ⦃ comp-R-P ⦄) p q =
+  compose comp-R-P (subrel p) q
+
+module MakeComposable (R : Rel 𝒰 X Y) where
   instance
-    composable-R-== : Composable 𝒲 R _==_
-    composable-==-R : Composable 𝒲 _==_ R
+    composable-R-== : Composable 𝒰 R _==_
+    composable-==-R : Composable 𝒰 _==_ R
 
-  Composable.rel composable-R-== = R
-  Composable.compose composable-R-== p (Id-refl x) = p
+  rel composable-R-== = R
+  compose composable-R-== p (Id-refl x) = p
   
-  Composable.rel composable-==-R = R
-  Composable.compose composable-==-R (Id-refl x) q = q
+  rel composable-==-R = R
+  compose composable-==-R (Id-refl x) q = q
 
 module MakeTransComposable
     (R : BinRel 𝒰 X)
@@ -74,8 +117,8 @@ module MakeTransComposable
   instance
     ComposableTrans : Composable 𝒰 R R
 
-  Composable.rel ComposableTrans = R
-  Composable.compose ComposableTrans = trans
+  rel ComposableTrans = R
+  compose ComposableTrans = trans
 
 module Composable-het== {X Y : 𝒰 ˙} where
   open MakeComposable (Het._==_ {X = X}{Y}) public
@@ -83,8 +126,8 @@ module Composable-het== {X Y : 𝒰 ˙} where
     Composable-Het==-Het== : {Z : 𝒰 ˙} →
       Composable 𝒰 (Het._==_ {X = X}{Y}) (Het._==_ {X = Y}{Z})
 
-  Composable.rel Composable-Het==-Het== = Het._==_
-  Composable.compose Composable-Het==-Het== (Het.refl _) q = q
+  rel Composable-Het==-Het== = Het._==_
+  compose Composable-Het==-Het== (Het.refl _) q = q
 
 infix 7 proof_
 proof_ : (x : X) → x == x
@@ -110,8 +153,8 @@ _〉_〉_:by:_ : {X : 𝒰 ˙} {Y : 𝒱 ˙} {Z : 𝒲 ˙}
   (q : y S z)
   ⦃ c : Composable 𝒵 _R_ _S_ ⦄
   → -------------------------------------
-  Composable.rel c x z
-_〉_〉_:by:_ p r a q ⦃ c ⦄  = Composable.compose c p q
+  rel c x z
+_〉_〉_:by:_ p r a q ⦃ c ⦄  = compose c p q
 
 infixl 6 _===_:by:_ _het==_:by:_
 _===_:by:_ :
@@ -122,7 +165,7 @@ _===_:by:_ :
   (q : y == z)
   ⦃ c : Composable 𝒵 _R_ _==_ ⦄
   → -------------------------------------
-  Composable.rel c x z
+  rel c x z
 p === z :by: q = p 〉 _==_ 〉 z :by: q
 
 _het==_:by:_ :
@@ -133,7 +176,7 @@ _het==_:by:_ :
   (q : y Het.== z)
   ⦃ c : Composable 𝒵 _R_ Het._==_ ⦄
   → -------------------------------------
-  Composable.rel c x z
+  rel c x z
 p het== z :by: q = p 〉 Het._==_ 〉 z :by: q
 
 -- TODO: check if this actually works

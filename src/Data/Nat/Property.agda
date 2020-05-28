@@ -176,7 +176,8 @@ postfix-sub-≤ (k +1) (s≤s q) = postfix-sub-≤ k q
 +==→-== :
   (q : m == k + n)
   → ---------------
-  m - n [ Id.coe (ap (n ≤_) $ sym q) $ postfix (k +_) n ] == k
+  let p = Id.coe (ap (n ≤_) $ sym q) $ postfix (k +_) n in
+  m - n [ p ] == k
 +==→-== {.(k + 0)}{k}{zero} (Id-refl .(k + 0)) = right-unit k
 +==→-== {.(k + (n +1))}{k} {n +1} (Id-refl .(k + (n +1))) =
   proof k + (n +1) - (n +1) [ p ]

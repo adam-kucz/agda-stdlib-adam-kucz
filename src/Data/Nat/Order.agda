@@ -38,12 +38,14 @@ instance
 
 rel-preserv ⦃ Relating-suc-≤-single ⦄ (Id-refl (m +1)) = refl (m +2)
 
-open import Data.Nat.Arithmetic
+open import Data.Nat.Arithmetic.Definition
 
 private
   ∃+ : BinRel 𝒰₀ ℕ
 
 ∃+ n m = ∃ λ k → k + n == m
+
+open import Data.Nat.Arithmetic.Property
 
 rtc-≤-↔-∃+ : m rtc-≤ n ↔ ∃+ m n
 rtc-≤-↔-∃+ = forw-dir , λ { (k , p) → back-dir k p}

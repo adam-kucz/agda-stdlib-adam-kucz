@@ -30,7 +30,7 @@ variable
   A B : (x : X) → 𝒱 ˙
 
 record Lift𝒰 {𝒱} (X : 𝒰 ˙) : 𝒰 ⊔ 𝒱 ˙ where
-  constructor ↑type
+  instance constructor ↑type
   field
     ↓type : X
 

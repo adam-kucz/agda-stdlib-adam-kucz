@@ -10,11 +10,15 @@ empty-rel : (X : 𝒰 ˙)(Y : 𝒱 ˙) → Rel 𝒰₀ X Y
 empty-rel _ _ _ _  = ⊥
 
 data Idₚ (X : 𝒰 ˙) : BinRel 𝒰 X where
-  instance refl : (x : X) → Idₚ X x x
+  refl : (x : X) → Idₚ X x x
 
 infix 19 _==_
 _==_ : {X : 𝒰 ˙}(x y : X) → 𝒰 ᵖ
 x == y = Idₚ _ x y
+
+instance
+  Refl : {x : X} → x == x
+Refl {x = x} = refl x
 
 {-# DISPLAY Idₚ X Y x y = x == y #-}
 

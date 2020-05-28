@@ -43,9 +43,13 @@ last : {m : ℕ}(v : Vec X (m +1)) → X
 last [ h ] = h
 last (_ ∷ h₁ ∷ v) = last (h₁ ∷ v)
 
-drop-last : {m : ℕ}(v : Vec X (m +1)) → Vec X m
+drop-last : (v : Vec X (m +1)) → Vec X m
 drop-last [ _ ] = []
 drop-last (h₀ ∷ h₁ ∷ v) = h₀ ∷ drop-last (h₁ ∷ v)
+
+delete-nth : (k : ℕ)(p : k ≤ m)(v : Vec X (m +1)) → Vec X m
+delete-nth zero p (h ∷ v) = v
+delete-nth {m +1} (k +1) p (h ∷ v) = h ∷ delete-nth k (ap pred p) v
 
 infixl 105 _++_
 _++_ : ∀ {m n}(v : Vec X m)(v' : Vec X n) → Vec X (m + n)

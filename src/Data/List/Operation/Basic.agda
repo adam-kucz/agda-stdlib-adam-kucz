@@ -66,6 +66,30 @@ map : (f : X → Y)(l : List X) → List Y
 map f [] = []
 map f (h ∷ l) = f h ∷ map f l
 
+∈map :
+  {X : 𝒰 ˙}{Y : 𝒱 ˙}
+  {x : X}{l : List X}
+  (f : (x : X) → Y)
+  (p : x ∈ l)
+  → ------------------
+  f x ∈ map f l
+∈map f (x∈x∷ t) = x∈x∷ map f t
+∈map f (x∈tail h p) = x∈tail (f h) (∈map f p)
+
+∈map⁻¹ : 
+  {X : 𝒰 ˙}{Y : 𝒱 ˙}
+  {y : Y}
+  (l : List X)
+  (f : (x : X) → Y)
+  (p : y ∈ map f l)
+  → ------------------
+  ∃ λ (x : X) → f x == y ∧ x ∈ l
+∈map⁻¹ (h ∷ l) f (x∈x∷ .(map f l)) =
+  h , (Id-refl (f h) , x∈x∷ l)
+∈map⁻¹ (h ∷ l) f (x∈tail .(f h) p) with ∈map⁻¹ l f p
+∈map⁻¹ (h ∷ l) f (x∈tail .(f h) p) | x , (fx==y , x∈l) =
+  x , (fx==y , x∈tail h x∈l)
+
 filter :
   (p : X → 𝒰 ᵖ)
   ⦃ d : ∀ {x} → Decidable (p x) ⦄
@@ -112,4 +136,8 @@ drop-last++last==  [] p = ⊥-recursionₚ _ (p (refl []))
 drop-last++last== [ h ] p = refl [ h ]
 drop-last++last== (h₀ ∷ h₁ ∷ t) p =
   List== (refl h₀) (drop-last++last== (h₁ ∷ t) λ ())
+
+reverse : (l : List X) → List X
+reverse [] = []
+reverse (h ∷ l) = reverse l ++ [ h ]
 

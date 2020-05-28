@@ -23,4 +23,10 @@ coe-eval :
   coe p x Het.== x
 coe-eval p x = ∧left (prop (!choice (uniq p x)))
 
+coe-eval' :
+  ⦃ p : X == X ⦄
+  (x : X)
+  → -------------------------
+  coe p x == x
+coe-eval' ⦃ p ⦄ x = subrel (coe-eval p x)
 

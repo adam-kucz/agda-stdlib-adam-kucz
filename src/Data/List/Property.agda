@@ -7,7 +7,7 @@ open import Data.List.Operation.Basic
 
 open import PropUniverses
 open import Proposition.Identity hiding (refl)
-open import Proposition.Decidable.Definition
+open import Proposition.Decidable
 open import Collection.Definition
 open import Collection.Basic
 open import Collection.Removable
@@ -21,15 +21,15 @@ instance
   ListListable : Listable 𝒰₀ (List X) X
   ListUnion : Union (List X) X
   ListRemovable :
-    ⦃ d : ∀ {x y : X} → Decidable (x == y) ⦄
+    ⦃ d : HasDecidableIdentity X ⦄
     → -----------------------------------
     Removable (List X) X
   ListIntersection :
-    ⦃ d : ∀ {x y : X} → Decidable (x == y) ⦄
+    ⦃ d : HasDecidableIdentity X ⦄
     → -----------------------------------
     Intersection (List X) X
-  ListDecidable∈ : {X : 𝒰 ˙}
-    ⦃ d : ∀ {x y : X} → Decidable (x == y) ⦄
+  ListDecidable∈ :
+    ⦃ d : HasDecidableIdentity X ⦄
     → ----------------------------------------
     ∀ {x : X}{l : List X} → Decidable (x ∈ l)
 

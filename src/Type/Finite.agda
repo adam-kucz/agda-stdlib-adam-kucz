@@ -25,6 +25,7 @@ open import Proposition.Sum
 Finite : (𝒰 : Universe) → 𝒰 ⁺ ˙
 Finite 𝒰 = Σₚ λ (X : 𝒰 ˙) → is-finite X
 
+{-
 open import Data.Nat
 open import Proposition.Decidable
 
@@ -37,3 +38,4 @@ card :
     contains-all X v ∧
     (∀ m (p : m < n) → ¬ ∃ λ (v' : Vec X m) → contains-all X v')
 card (X , (l , p)) = {!!}
+-}

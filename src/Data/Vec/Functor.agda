@@ -5,9 +5,11 @@ open import Data.Functor
 open import Data.Vec.Definition
 
 open import Universes
-open import Function
+open import Function hiding (_$_)
 open import Logic
 open import Proof
+
+open import Data.Vec.Function
 
 open import Axiom.FunctionExtensionality
 
@@ -16,18 +18,13 @@ instance
     → -------------------------------
     Functor {U = universe-of}(λ — → Vec — n)
 
-private
-  v-map : ∀ {n}(f : X → Y)(v : Vec X n) → Vec Y n
-  v-map _ [] = []
-  v-map f (h ∷ v) = f h ∷ v-map f v
-
-fmap ⦃ VecFunctor ⦄ = v-map
-fmap-id ⦃ VecFunctor ⦄ = fun-ext go
-  where go : ∀ {n} → v-map id ~ 𝑖𝑑 (Vec X n)
+fmap ⦃ VecFunctor ⦄ = map
+fmap-id ⦃ VecFunctor ⦄ = subrel $ fun-ext go
+  where go : ∀ {n} → map id ~ 𝑖𝑑 (Vec X n)
         go [] = refl []
         go (h ∷ v) = ap (h ∷_) (go v)
-fmap-∘ ⦃ VecFunctor ⦄ g f = fun-ext go
-  where go : ∀ {n} → v-map {n = n} (g ∘ f) ~ v-map g ∘ v-map f
+fmap-∘ ⦃ VecFunctor ⦄ g f = subrel {_P_ = _==_} $ fun-ext go
+  where go : ∀ {n} → map {n = n} (g ∘ f) ~ map g ∘ map f
         go [] = refl []
         go (h ∷ v) = ap (g (f h) ∷_) (go v)
 

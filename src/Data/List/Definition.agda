@@ -11,14 +11,7 @@ data List (X : 𝒰 ˙) : 𝒰 ˙ where
 open import Data.Nat.Definition using (ℕ; zero; suc)
 open import Data.Nat.Syntax
 open Pattern
--- open import Data.Nat.Order using (_<_; s<s→-<-)
-
--- module Data.List.Definition {𝒰 : Universe} where
-
--- infixr 110 _!_[_]
--- _!_[_] : (l : List X) (n : ℕ) (p : n < len l) → X
--- h ∷ _ ! zero [ _ ] = h
--- _ ∷ l ! suc n [ p ] = l ! n [ s<s→-<- p ]
+open import Data.Nat.Order
 
 open import Proposition.Identity
 open import Proposition.Empty
