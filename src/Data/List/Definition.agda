@@ -21,15 +21,6 @@ last {X = X} [] p = ⊥-recursion X (p (refl []))
 last (x ∷ []) p = x
 last (_ ∷ h ∷ l) p = last (h ∷ l) λ ()
 
-List== :
-  {h h' : X}
-  {t t' : List X}
-  (p : h == h')
-  (q : t == t')
-  → ---------------
-  h ∷ t == h' ∷ t'
-List== (refl h) (refl t) = refl (h ∷ t)
-
 pattern [_] a₀ = a₀ ∷ []
 pattern [_⸴_] a₀ a₁ = a₀ ∷ a₁ ∷ []
 pattern [_⸴_⸴_] a₀ a₁ a₂ = a₀ ∷ a₁ ∷ a₂ ∷ []

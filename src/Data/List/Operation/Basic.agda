@@ -37,14 +37,12 @@ instance
   ++-[] : [] IsRightUnitOf (_++_ {X = X})
   
 assoc ⦃ ++-assoc ⦄ [] y z = refl (y ++ z)
-assoc ⦃ ++-assoc ⦄ (h ∷ x) y z =
-  List== (refl h) (assoc x y z)
+assoc ⦃ ++-assoc ⦄ (h ∷ x) y z = ap (h ∷_) $ assoc x y z
 
 left-unit ⦃ []-++ ⦄ = refl
 
 right-unit ⦃ ++-[] ⦄ [] = refl []
-right-unit ⦃ ++-[] ⦄ (h ∷ t) =
-  List== (refl h) (right-unit t)
+right-unit ⦃ ++-[] ⦄ (h ∷ t) = ap (h ∷_) $ right-unit t
 
 ∈++ : {x : X}
   (l l' : List X)
@@ -135,7 +133,7 @@ drop-last++last== : ∀ l
 drop-last++last==  [] p = ⊥-recursionₚ _ (p (refl [])) 
 drop-last++last== [ h ] p = refl [ h ]
 drop-last++last== (h₀ ∷ h₁ ∷ t) p =
-  List== (refl h₀) (drop-last++last== (h₁ ∷ t) λ ())
+  ap (h₀ ∷_) $ drop-last++last== (h₁ ∷ t) λ ()
 
 reverse : (l : List X) → List X
 reverse [] = []
