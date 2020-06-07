@@ -8,3 +8,4 @@ open import Collection.Removable public
 open import Collection.Listable public
 open import Collection.Operation public
 open import Collection.Subset public
+open import Collection.Nested public

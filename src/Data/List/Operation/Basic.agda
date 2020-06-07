@@ -83,10 +83,18 @@ map f (h ∷ l) = f h ∷ map f l
   → ------------------
   ∃ λ (x : X) → f x == y ∧ x ∈ l
 ∈map⁻¹ (h ∷ l) f (x∈x∷ .(map f l)) =
-  h , (Id-refl (f h) , x∈x∷ l)
+  h , (Id.refl (f h) , x∈x∷ l)
 ∈map⁻¹ (h ∷ l) f (x∈tail .(f h) p) with ∈map⁻¹ l f p
 ∈map⁻¹ (h ∷ l) f (x∈tail .(f h) p) | x , (fx==y , x∈l) =
   x , (fx==y , x∈tail h x∈l)
+
+map++ : 
+  (l l' : List X)
+  (f : (x : X) → Y)
+  → ------------------------------------
+  map f (l ++ l') == map f l ++ map f l'
+map++ [] l' f = Id.refl (map f l')
+map++ (h ∷ l) l' f = ap (f h ∷_) $ map++ l l' f
 
 filter :
   (p : X → 𝒰 ᵖ)

@@ -4,8 +4,7 @@ module Data.Nat.Syntax where
 open import Data.Nat.Definition
 
 open import PropUniverses
-open import Logic using (⊤)
-open Logic using (⋆ₚ) public
+open import Proposition.Unit public
 
 {-# BUILTIN NATURAL ℕ #-}
 

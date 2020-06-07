@@ -31,7 +31,7 @@ open import Structure.Monoid
   x ∈ (l >>= f) ↔ ∃ λ y → y ∈ l ∧ x ∈ f y
 ⟶ (∈bind x f l) p with ⟶ (∈mconcat (fmap f l) x) p
 ⟶ (∈bind x f l) p | y' , (y'∈fmap , x∈y) with ∈map⁻¹ l f y'∈fmap
-⟶ (∈bind x f l) p | .(f y) , (_ , x∈fy) | y , (Id-refl _ , y∈l) =
+⟶ (∈bind x f l) p | .(f y) , (_ , x∈fy) | y , (Id.refl _ , y∈l) =
   y , (y∈l , x∈fy)
 ⟵ (∈bind x f l) (y , (y∈l , x∈fy)) =
   ⟵ (∈mconcat (fmap f l) x) $

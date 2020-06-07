@@ -21,4 +21,4 @@ open import Proposition.Identity hiding (refl)
   (q₁ : n == n')
   → -----------------
   m - n [ p ] == m' - n' [ Id.coe (ap2 _≤_ q₁ q₀) p ]
--== (Id-refl m) (Id-refl n) = Id-refl (m - n [ _ ])
+-== (Id.refl m) (Id.refl n) = Id.refl (m - n [ _ ])

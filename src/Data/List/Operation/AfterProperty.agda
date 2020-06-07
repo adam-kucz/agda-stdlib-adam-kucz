@@ -39,12 +39,12 @@ open import Logic
 ⟶ (∈-zip [] [] p) ()
 ⟵ (∈-zip [] [] p) (_ , ())
 ⟶ (∈-zip (h₀ ∷ l₀) (h₁ ∷ l₁) p) (x∈x∷ _) =
-  0 , (s≤s $ z≤ len l₀ , (Id-refl h₀ , Id-refl h₁))
+  0 , (s≤s $ z≤ len l₀ , (Id.refl h₀ , Id.refl h₁))
 ⟶ (∈-zip (h₀ ∷ l₀) (h₁ ∷ l₁) p) (x∈tail _ q)
   with ⟶ (∈-zip l₀ l₁ (ap pred p)) q
 ⟶ (∈-zip (h₀ ∷ l₀) (h₁ ∷ l₁) p) (x∈tail _ q)
   | i , (i+1≤len-l₀ , eqs) = i +1 , (s≤s i+1≤len-l₀ , eqs)
-⟵ (∈-zip (h₀ ∷ l₀) (h₁ ∷ l₁) p) (zero , (_ , (Id-refl _ , Id-refl _))) =
+⟵ (∈-zip (h₀ ∷ l₀) (h₁ ∷ l₁) p) (zero , (_ , (Id.refl _ , Id.refl _))) =
   x∈x∷ (zip l₀ l₁ (ap pred p))
 ⟵ (∈-zip (h₀ ∷ l₀) (h₁ ∷ l₁) p) (i +1 , (s≤s i+1≤len , eqs)) =
   x∈tail (h₀ Σ., h₁) $ ⟵ (∈-zip l₀ l₁ (ap pred p)) (i , (i+1≤len , eqs))

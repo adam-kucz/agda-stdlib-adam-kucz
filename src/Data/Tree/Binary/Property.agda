@@ -66,7 +66,7 @@ BinaryTreeDecidable∈ {x = x} {leaf y} with decide (x == y)
 BinaryTreeDecidable∈ {x = x} {leaf y} | true p =
   true (Id.coe (ap (λ — → x ∈ leaf —) p) $ x ∈leaf)
 BinaryTreeDecidable∈ {x = x} {leaf y} | false ¬p =
-  false λ { (x ∈leaf) → ¬p $ Id-refl x}
+  false λ { (x ∈leaf) → ¬p $ Id.refl x}
 BinaryTreeDecidable∈ {x = x} {l /\ r}
   with BinaryTreeDecidable∈ {x = x}{l}
 BinaryTreeDecidable∈ {x = x} {l /\ r} | true p = true (x ∈left p /\ r)

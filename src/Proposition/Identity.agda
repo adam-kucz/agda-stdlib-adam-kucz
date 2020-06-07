@@ -3,6 +3,7 @@ module Proposition.Identity where
 
 open import Proposition.Identity.Homogeneous public
 module Id where
+  open import Proposition.Identity.Homogeneous public
   open import Proposition.Identity.Function
     hiding (ap; het-ap2; het-ap3; type==) public
 module Het where

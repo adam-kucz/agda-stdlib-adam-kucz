@@ -130,7 +130,7 @@ LiftDecidable ⦃ d = false ¬p ⦄ = false (λ z → ¬p (↓prop z))
 →Decidable ⦃ true p ⦄ ⦃ true q ⦄ = true λ _ → q
 →Decidable ⦃ true p ⦄ ⦃ false ¬q ⦄ = false λ p→q → ¬q $ p→q p
 
-open import Logic.Iff
+open import Logic.Iff.Definition
 
 instance
   ↔Decidable : ⦃ p : Decidable 𝑋 ⦄ ⦃ q : Decidable 𝑌 ⦄ → Decidable (𝑋 ↔ 𝑌)

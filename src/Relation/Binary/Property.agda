@@ -4,7 +4,9 @@ module Relation.Binary.Property where
 open import PropUniverses
 open import Relation.Binary.Definition
 open import Proposition.Identity.Definition using (_==_; _≠_)
-open import Logic
+open import Proposition.Empty
+open import Proposition.BinarySum
+  renaming (left to ∨left; right to ∨right)
 
 private
   module RelProp (property : RelProperty) where
@@ -85,7 +87,7 @@ total-other :
   y R x
 total-other {x = x}{y} p with total x y
 total-other {_R_ = _R_}{x = x} {y} p | ∨left q =
-  ⊥-recursion (y R x) (p q)
+  ⊥-recursionₚ (y R x) (p q)
 total-other {x = x} {y} p | ∨right q = q
 
 record Minimal {X : 𝒰 ˙} (_≼_ : BinRel 𝒱 X) (⊥ : X) : 𝒰 ⊔ 𝒱 ᵖ where
@@ -133,7 +135,7 @@ instance
     R ~ P
 Default-~ = record {}
 
-open import Logic
+open import Logic.Iff.Definition
 
 ↔-→-⊆ :
   {_R_ : Rel 𝒰 X Y}

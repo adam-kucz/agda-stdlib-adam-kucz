@@ -31,7 +31,7 @@ open import Proof
 ⟶ (∈fold-map f l {x}) p | l' , (x∈l' , l'∈map-f)
   with ∈map⁻¹ (to-list l) f x∈l'
 ⟶ (∈fold-map f l {x}) p
-  | .(f e) , (fe∈mapfl , x∈fe) | e , (Id-refl _ , e∈to-list-l) =
+  | .(f e) , (fe∈mapfl , x∈fe) | e , (Id.refl _ , e∈to-list-l) =
   e , (⟵ to-list-valid e∈to-list-l , x∈fe)
 ⟵ (∈fold-map f l {x}) (e , (e∈l , x∈fe)) =
   ⟵ (∈mconcat (map f (to-list l)) x)

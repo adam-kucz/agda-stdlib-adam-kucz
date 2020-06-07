@@ -15,7 +15,7 @@ open import Operation.Binary
 open import Structure.Monoid
 open import Function
   renaming (_∘ₛ_ to _∘_; _$_ to _$'_)
-  using (universe-of; uncurry; id; 𝑖𝑑; ==→~)
+  using (universe-of; uncurry; id; 𝑖𝑑; ==→~; _~_)
 open import Proof
 
 instance
@@ -24,7 +24,6 @@ instance
   ListMonad : Monad {U = universe-of}(λ X → List X)
 
 open import Relation.Binary hiding (_~_)
-open import Function using (_~_)
 open import Axiom.FunctionExtensionality
 
 fmap ⦃ ListFunctor ⦄ = map
@@ -176,7 +175,7 @@ open import Proposition.Identity.Homogeneous
 
 applicative ⦃ ListMonad ⦄ = ListApplicative
 join ⦃ ListMonad ⦄ = mconcat
-⋆-def ⦃ ListMonad ⦄ [] v = Id-refl []
+⋆-def ⦃ ListMonad ⦄ [] v = Id.refl []
 ⋆-def ⦃ ListMonad ⦄ (u₀ ∷ u) v = ap (fmap (u₀ ,_) v ++_) (⋆-def u v)
 associativity ⦃ ListMonad ⦄ = subrel $ fun-ext go
   where go : mconcat ∘ fmap mconcat ~ mconcat ∘ mconcat

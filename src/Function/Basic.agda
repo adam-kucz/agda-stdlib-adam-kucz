@@ -28,7 +28,7 @@ type-of {X = X} _ = X
 universe-of : (X : 𝒰 ˙) → Universe
 universe-of {𝒰} _ = 𝒰
 
-open import Type.Sum
+open import Type.Sum.Definition
 
 uncurry : {K : (x : X)(y : A x) → 𝒰 ˙}
   (f : (x : X)(y : A x) → K x y)

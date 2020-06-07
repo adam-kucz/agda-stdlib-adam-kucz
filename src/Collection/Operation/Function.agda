@@ -103,10 +103,10 @@ recreate-prop :
           (q : x ∈ l)
           → --------------------
           x ∈ from-list-uniq S l
-        go (h ∷ t) (x∈x∷ t) = ⟵ insert-valid $ ∨right $ Id-refl h
+        go (h ∷ t) (x∈x∷ t) = ⟵ insert-valid $ ∨right $ Id.refl h
         go (h ∷ t) (x∈tail h q) with decide (x == h)
-        go (h ∷ t) (x∈tail h q) | true (Id-refl h) =
-          ⟵ insert-valid $ ∨right $ Id-refl h
+        go (h ∷ t) (x∈tail h q) | true (Id.refl h) =
+          ⟵ insert-valid $ ∨right $ Id.refl h
         go (h ∷ t) (x∈tail h q) | false ¬p =
           ⟵ insert-valid $ ∨left $ ⟵ remove-valid (go t q , ¬p)
 ⟶ (recreate-prop ⦃ ls = ls ⦄{x = x}{S}) p with ⟵ (to-list-valid ⦃ ls ⦄ {S}{x})
@@ -120,6 +120,6 @@ recreate-prop :
           x ∈ S
         go [] _ p = p
         go (h ∷ t) q p with ⟶ insert-valid p
-        go (h ∷ t) q p | ∨right (Id-refl h) = q $ x∈x∷ t 
+        go (h ∷ t) q p | ∨right (Id.refl h) = q $ x∈x∷ t 
         go (h ∷ t) q p | ∨left r =
           go t (λ p' → q $ x∈tail h p') (∧left $ ⟶ remove-valid r)

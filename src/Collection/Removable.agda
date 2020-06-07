@@ -49,5 +49,4 @@ record Removable
   _∉remove_ : (x : Elem)(S : Col) → x ∉ remove x S
   (x ∉remove S) q = ∧right (⟶ remove-valid q) (refl x)
 
-
 open Removable ⦃ … ⦄ public

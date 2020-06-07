@@ -73,7 +73,7 @@ instance
   assoc* : Associative _*_
   1-* : 1 IsLeftUnitOf _*_
   *-1 : 1 IsRightUnitOf _*_
-  Hemiringℕ+* : FormHemiring _+_ _*_ 0
+  FormHemiringℕ+* : FormHemiring _+_ _*_ 0
 
 left-zero ⦃ 0-* ⦄ _ = refl 0
 
@@ -102,8 +102,8 @@ left-unit ⦃ 1-* ⦄ = right-unit {_∙_ = _+_}
 
 *-1 = right-unit-of-commutative-left-unit 1 _*_
   
-*[+]==*+* ⦃ Hemiringℕ+* ⦄ = *-+-distrib
-[+]*==*+* ⦃ Hemiringℕ+* ⦄ a b c = 
+*[+]==*+* ⦃ FormHemiringℕ+* ⦄ = *-+-distrib
+[+]*==*+* ⦃ FormHemiringℕ+* ⦄ a b c = 
   proof
     (a + b) * c
       〉 _==_ 〉 c * (a + b)   :by: comm (a + b) c
@@ -160,4 +160,8 @@ Injective-right-+ {m} = injective-equiv (sym $ +-right-equiv)
 Injective-left-+ {m} = injective-equiv (sym $ +-left-equiv)
   where instance _ = injective-repeat suc m
 
+Hemiringℕ+* : Hemiring ℕ
+Hemiring._+_ Hemiringℕ+* = _+_
+Hemiring._*_ Hemiringℕ+* = _*_
+Hemiring.zero Hemiringℕ+* = 0
 

@@ -32,6 +32,10 @@ instance
     ⦃ d : HasDecidableIdentity X ⦄
     → ----------------------------------------
     ∀ {x : X}{l : List X} → Decidable (x ∈ l)
+  ListDecidable== :
+    ⦃ d : HasDecidableIdentity X ⦄
+    → ----------------------------------------
+    HasDecidableIdentity (List X)
 
 ∅ ⦃ ListEmpty ⦄ = []
 _∉∅ ⦃ ListEmpty ⦄ _ ()
@@ -122,82 +126,22 @@ ListDecidable∈ {x = x} {h ∷ l} | true p =
 ListDecidable∈ {x = x} {h ∷ l} | false ¬p with decide (x ∈ l)
 ListDecidable∈ {x = x} {h ∷ l} | false ¬p | true p = true (x∈tail h p)
 ListDecidable∈ {x = x} {h ∷ l} | false ¬p | false ¬p₁ =
-  false (λ { (x∈x∷ t) → ¬p (Id-refl x) ; (x∈tail h q) → ¬p₁ q })
+  false (λ { (x∈x∷ t) → ¬p (Id.refl x) ; (x∈tail h q) → ¬p₁ q })
+
+ListDecidable== {x = []} {[]} = true (Id.refl [])
+ListDecidable== {x = []} {h ∷ y} = false λ ()
+ListDecidable== {x = h ∷ x} {[]} = false λ ()
+ListDecidable== {x = h₀ ∷ x} {h₁ ∷ y} with ListDecidable== {x = x}{y}
+ListDecidable== ⦃ d = _ ⦄ {h₀ ∷ x} {h₁ ∷ y} | true q =
+  dif h₀ == h₁
+    then (λ p → true (ap2 _∷_ p q))
+    else (λ ¬p → false λ { (Id.refl _) → ¬p $ Id.refl h₀})
+ListDecidable== ⦃ d = _ ⦄ {h₀ ∷ x} {h₁ ∷ y} | false ¬q =
+  false λ { (Id.refl _) → ¬q $ Id.refl x}
 
 -∈[-]↔== : {x y : X} →
   x ∈ [ y ] ↔ x == y
-⟶ -∈[-]↔== (x∈x∷ []) = Id-refl _
-⟵ -∈[-]↔== (Id-refl x) = x∈x∷ []
+⟶ -∈[-]↔== (x∈x∷ []) = Id.refl _
+⟵ -∈[-]↔== (Id.refl x) = x∈x∷ []
 
--- remove-at : (n : ℕ) (l : List X) (p : n < len l) → List X
--- remove-at zero    (h ∷ l) p = l
--- remove-at (suc n) (h ∷ l) p = remove-at n l (s<s→-<- p)
 
--- private
---   remove-duplicates' :
---     ⦃ d : ∀ {x y : X} → Decidable (x == y) ⦄
---     (l : List X)
---     (n : ℕ)
---     (p : len l < n)
---     → -----------------------------------------
---     List X
-
--- remove-duplicates' [] n p = []
--- remove-duplicates' (_ ∷ _) zero ()
--- remove-duplicates' {X = X} ⦃ d ⦄ (h ∷ t) (n +1) p =
---   h ∷ remove-duplicates' (remove h t) n (
---     proof len (remove h t)
---       〉 _≤_ 〉 len t         :by: len-remove-≤ h t
---       〉 _<_ 〉 n             :by: s<s→-<- p
---     qed)
---   where len-remove-≤ : (x : X)(l : List X) → len (remove x l) ≤ len l
---         len-remove-≤ x [] = refl 0
---         len-remove-≤ x (h ∷ l) with decide (h == x) ⦃ d ⦄
---         len-remove-≤ x (h ∷ l) | true _ = ∨right (
---           proof len (remove x l)
---             〉 _≤_ 〉 len l         :by: len-remove-≤ x l
---             〉 _<_ 〉 len l +1      :by: postfix suc (len l)
---           qed)
---         len-remove-≤ x (h ∷ l) | false _ = ap suc $ len-remove-≤ x l
-
--- remove-duplicates :
---   ⦃ d : ∀ {x y : X} → Decidable (x == y) ⦄
---   → -----------------------------------
---   (l : List X) → List X
--- remove-duplicates {X = X} ⦃ d ⦄ l =
---   remove-duplicates' l (len l +1) (postfix suc (len l))
-
--- private
---   ∈remove-duplicates' :
---     ⦃ d : ∀ {x y : X} → Decidable (x == y) ⦄
---     {l : List X}
---     {n : ℕ}
---     {p : len l < n}
---     {x : X}
---     → ------------------------------------------
---     x ∈ remove-duplicates' l n p ↔ x ∈ l
-
--- ⟶ (∈remove-duplicates' {l = h ∷ l} {n +1}) (x∈x∷ _) = x∈x∷ l
--- ⟶ (∈remove-duplicates' {l = h ∷ l} {n +1}) (x∈tail .h p) =
---   x∈tail h $
---   ∧left $
---   ⟶ remove-valid $
---   ⟶ ∈remove-duplicates' p
--- ⟵ (∈remove-duplicates' {l = h ∷ t}{n +1}{x = x}) q with decide (x == h)
--- ⟵ (∈remove-duplicates' {l = h ∷ t} {n +1} {x = .h}) q
---   | true (Id.refl .h) = x∈x∷ _
--- ⟵ (∈remove-duplicates' {l = h ∷ t}{n +1}{x = x}) (x∈x∷ .t)
---   | false ¬p = x∈x∷ _
--- ⟵ (∈remove-duplicates' {l = h ∷ t}{n +1}{x = x}) (x∈tail h q)
---   | false ¬p =
---   x∈tail h $
---   ⟵ (∈remove-duplicates' {l = remove h t}) $
---   ⟵ remove-valid (q , ¬p)
-
--- ∈remove-duplicates :
---   ⦃ d : ∀ {x y : X} → Decidable (x == y) ⦄
---   {l : List X}
---   {x : X}
---   → ------------------------------------------
---   x ∈ remove-duplicates l ↔ x ∈ l
--- ∈remove-duplicates = ∈remove-duplicates'

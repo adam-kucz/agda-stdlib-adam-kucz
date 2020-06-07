@@ -16,6 +16,15 @@ from-maybe :
 from-maybe f y nothing = y
 from-maybe f y (just x) = f x
 
+from-maybeₚ : {𝐴 : Maybe X → 𝒰 ᵖ}
+  (p : (x : X) → 𝐴 (just x))
+  (q : 𝐴 nothing)
+  (mx : Maybe X)
+  → -------------------------
+  𝐴 mx
+from-maybeₚ p q  nothing = q
+from-maybeₚ p q (just x) = p x
+
 from-maybe' :
   (f : (x : X) → Y)
   (y : Y)

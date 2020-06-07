@@ -3,11 +3,11 @@ module Proof.Definition where
 
 open import PropUniverses
 
-open import Type.Sum using (Σ; _,_; pr₁; pr₂; _×_)
+open import Type.Sum.Definition using (Σ; _,_; pr₁; pr₂; _×_)
 import Proposition.Identity as Identity
 open import Relation.Binary hiding (_~_)
 
-open import Proposition.Identity renaming (refl to Id-refl) public
+open import Proposition.Identity hiding (refl) public
 open import Proposition.Identity.Homogeneous.Property public
 open import Proposition.Function using (_$_) public
 open import Function.Proof
@@ -55,7 +55,7 @@ instance
     Composable 𝒰 (_==_ {X = X}) _==_
 
 rel Composable-==-== = _==_
-compose Composable-==-== (Id-refl _) q = q
+compose Composable-==-== (Id.refl _) q = q
 
 Composable-sub-R-sub-P :
   (R : Rel 𝒰 X Y)
@@ -104,10 +104,10 @@ module MakeComposable (R : Rel 𝒰 X Y) where
     composable-==-R : Composable 𝒰 _==_ R
 
   rel composable-R-== = R
-  compose composable-R-== p (Id-refl x) = p
+  compose composable-R-== p (Id.refl x) = p
   
   rel composable-==-R = R
-  compose composable-==-R (Id-refl x) q = q
+  compose composable-==-R (Id.refl x) q = q
 
 module MakeTransComposable
     (R : BinRel 𝒰 X)
@@ -131,7 +131,7 @@ module Composable-het== {X Y : 𝒰 ˙} where
 
 infix 7 proof_
 proof_ : (x : X) → x == x
-proof_ = Id-refl
+proof_ = Id.refl
 
 infix 5 _qed
 _qed : (x : 𝑋) → 𝑋

@@ -255,16 +255,6 @@ min== (suc m) (suc n) with min== m n
 min== (suc m) (suc n) | ∨left min-m-n==m = ∨left $ ap suc min-m-n==m
 min== (suc m) (suc n) | ∨right min-m-n==n = ∨right $ ap suc min-m-n==n
 
-min≤ : ∀ m n → m ⊓ n ≤ m
-min≤ zero n = refl 0
-min≤ (m +1) zero = z≤ (m +1)
-min≤ (m +1) (n +1) = s≤s $ min≤ m n
-
-≤max : ∀ m n → m ≤ m ⊔ n
-≤max zero n = z≤ n
-≤max (m +1) zero = refl (m +1)
-≤max (m +1) (n +1) = s≤s $ ≤max m n 
-
 ≤→min== : (p : n ≤ m) → n ⊓ m == n
 ≤→min== (z≤ m) = refl 0
 ≤→min== (s≤s p) = ap suc $ ≤→min== p

@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --prop #-}
+{-# OPTIONS --exact-split --prop --safe #-}
 module Relation.Binary.Pointwise.Property where
 
 open import Relation.Binary.Pointwise.Definition
@@ -7,6 +7,19 @@ open import Relation.Binary.ReflexiveTransitiveClosure
   renaming (refl-trans-close to rtc)
 
 open import Universes
+
+instance
+  Pointwise⊆Pointwise :
+    {X : 𝒰 ˙}{A : X → 𝒱 ˙}{B : X → 𝒲 ˙}
+    {R : ∀{x x'} → Rel 𝒳 (A x) (B x')}
+    {P : ∀{x x'} → Rel 𝒯 (A x) (B x')}
+    ⦃ p : ∀ {x}{x'} → R {x}{x'} ⊆ P {x}{x'} ⦄
+    → -----------------------------------
+    Pointwise {X = X} (λ {x}{x'} → R {x}{x'}) ⊆ Pointwise P
+
+subrel ⦃ Pointwise⊆Pointwise ⦄ xRy x = subrel (xRy x)
+
+{-
 open import Type.Finite
 open import Proposition.Sum
 open import Proposition.Decidable
@@ -45,3 +58,4 @@ subrel ⦃ ~-⊆ ⦃ ptwise-rtc-commute {Y = Y}{X = X}{R = R} (l , p) ⦄ ⦄ {f
 subrel ⦃ ~-⊇ ⦃ ptwise-rtc-commute p ⦄ ⦄ (rfl f) x = rfl (f x)
 subrel ⦃ ~-⊇ ⦃ ptwise-rtc-commute p ⦄ ⦄ (step f~g g~*h) x =
   step (f~g x) $ subrel ⦃ ~-⊇ ⦃ ptwise-rtc-commute p ⦄ ⦄ g~*h x
+-}

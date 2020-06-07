@@ -33,12 +33,12 @@ fmap-bind₁ : {X : 𝒰 ˙}{Y : 𝒱 ˙}{Z : 𝒲 ˙}
 fmap-bind₁ m f g =
   proof fmap g (m >>= f)
     === fmap g (join (fmap f m))
-      :by: Id-refl _
+      :by: Id.refl _
     === join (fmap (fmap g) (fmap f m))
       :by: ap (λ — → — (fmap f m)) $
            sym {R = _==_} $ mon-naturality g
     === join (fmap (fmap g ∘ f) m)
       :by: fmap-bind₀ m f (fmap g) 
     === m >>= fmap g ∘ f
-      :by: Id-refl _
+      :by: Id.refl _
   qed
