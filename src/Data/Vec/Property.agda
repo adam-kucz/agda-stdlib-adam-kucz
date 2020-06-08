@@ -55,5 +55,5 @@ to-list ⦃ VecListable ⦄ (h ∷ S) = h ∷ to-list S
   x∈tail h (⟵ to-list-valid q)
 
 vec-to-list-len : (v : Vec X m) → len (to-list v) == m
-vec-to-list-len [] = Id-refl 0
+vec-to-list-len [] = Id.refl 0
 vec-to-list-len (h ∷ v) = ap suc (vec-to-list-len v)

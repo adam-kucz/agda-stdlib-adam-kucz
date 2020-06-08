@@ -109,7 +109,7 @@ remove ⦃ TreeRemovable {X = X} ⦄ x' = trim ∘ go
 TreeDecidable∈ {x = x} {leaf y} with decide (x == y)
 TreeDecidable∈ {x = x} {leaf y} | true p =
   true (Id.coe (ap (_∈ leaf y) $ sym p) $ y ∈leaf)
-TreeDecidable∈ {x = x} {leaf y} | false ¬p = false λ { (x ∈leaf) → ¬p $ Id-refl x}
+TreeDecidable∈ {x = x} {leaf y} | false ¬p = false λ { (x ∈leaf) → ¬p $ Id.refl x}
 TreeDecidable∈ {x = x} {◻} = false (x ∉∅)
 TreeDecidable∈ {x = x} {branch (h ∷ br)} with TreeDecidable∈ {x = x} {h}
 TreeDecidable∈ {x = x} {branch (h ∷ br)} | true p =

@@ -37,17 +37,17 @@ open import Proof
   (p : y ∈ map f v)
   → ------------------
   ∃ λ (x : X) → f x == y ∧ x ∈ v
-∈map⁻¹ (h ∷ v) f (x∈x∷ .(map f v)) = h , (Id-refl _ , x∈x∷ v)
+∈map⁻¹ (h ∷ v) f (x∈x∷ .(map f v)) = h , (Id.refl _ , x∈x∷ v)
 ∈map⁻¹ (h ∷ v) f (x∈tail .(f h) p) with ∈map⁻¹ v f p
-∈map⁻¹ (h ∷ v) f (x∈tail .(f h) p) | x , (Id-refl _ , x∈v) =
-  x , (Id-refl _ , x∈tail h x∈v)
+∈map⁻¹ (h ∷ v) f (x∈tail .(f h) p) | x , (Id.refl _ , x∈v) =
+  x , (Id.refl _ , x∈tail h x∈v)
 
 map-as-dmap : ∀ {n}
   (f : X → Y)
   (v : Vec X n)
   → -----------------------------------------
   map f v == dmap v λ x _ → f x
-map-as-dmap f [] = Id-refl []
+map-as-dmap f [] = Id.refl []
 map-as-dmap f (h ∷ v) = ap (f h ∷_) $ map-as-dmap f v
 
 ∈dmap : ∀{X : 𝒰 ˙}{n}
@@ -64,7 +64,7 @@ dmap-id : ∀{m}
   (v : Vec X m)
   → ------------------------------
   dmap v (λ x _ → x) == v
-dmap-id [] = Id-refl []
+dmap-id [] = Id.refl []
 dmap-id (h ∷ v) = ap (h ∷_) $ dmap-id v
 
 dmap-∘ : ∀{X : 𝒰 ˙}{Y : 𝒱 ˙}{n}
@@ -73,7 +73,7 @@ dmap-∘ : ∀{X : 𝒰 ˙}{Y : 𝒱 ˙}{n}
   (g : (y : Y)(p : y ∈ dmap v f) → Z)
   → -------------------------------------
   dmap (dmap v f) g == dmap v λ x p → g (f x p) (∈dmap f p)
-dmap-∘ [] f g = Id-refl []
+dmap-∘ [] f g = Id.refl []
 dmap-∘ (h ∷ v) f g =
   ap (g (f h (x∈x∷ v)) (x∈x∷ _) ∷_) $
   dmap-∘ v (λ x p → f x (x∈tail _ p)) (λ y p → g y (x∈tail _ p))
@@ -87,7 +87,7 @@ dmap++ : ∀{X : 𝒰 ˙}{m n}
   dmap v₁ (λ x p → f x (⟵ (∈++ v₀ v₁) $ ∨right p))
   ==
   dmap (v₀ ++ v₁) f
-dmap++ [] [] f = Id-refl []
+dmap++ [] [] f = Id.refl []
 dmap++ [] (h ∷ v₁) f = ap (f h _ ∷_) $ dmap++ [] v₁ λ x p → f x (x∈tail h p)
 dmap++ (h ∷ v₀) v₁ f = ap (f h _ ∷_) $ dmap++ v₀ v₁ λ x p → f x (x∈tail h p)
 
@@ -125,11 +125,11 @@ vec-remove x (h ∷ v) p | true _ = v
 vec-remove {m = zero} x [ h ] p | false ¬p =
   ⊥ₜ-recursion (Vec _ 0) (contradiction p)
   where contradiction : (p : x ∈ [ h ]) → ⊥
-        contradiction (x∈x∷ t) = ¬p $ Id-refl x
+        contradiction (x∈x∷ t) = ¬p $ Id.refl x
 vec-remove {m = m +1} x (h ∷ v) p | false ¬p =
   h ∷ vec-remove x v (p' p)
   where p' : (p : x ∈ h ∷ v) → x ∈ v
-        p' (x∈x∷ t) = ⊥-recursionₚ (x ∈ v) $ ¬p $ Id-refl x
+        p' (x∈x∷ t) = ⊥-recursionₚ (x ∈ v) $ ¬p $ Id.refl x
         p' (x∈tail h p) = p
 
 open import Function hiding (_$_)

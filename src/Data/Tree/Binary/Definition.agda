@@ -7,5 +7,5 @@ data BinaryTree (X : 𝒰 ˙) : 𝒰 ˙ where
   leaf : (x : X) → BinaryTree X
   branch : (l r : BinaryTree X) → BinaryTree X
 
-infixr 115 _/\_
+infix 115 _/\_
 pattern _/\_ l r = branch l r

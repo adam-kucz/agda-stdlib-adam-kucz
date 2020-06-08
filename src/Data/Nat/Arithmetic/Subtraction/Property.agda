@@ -58,6 +58,12 @@ relating-sub-≤ (k +1) (s≤s q) = relating-sub-≤ k q
 
 open import Relation.Binary
 
+suc- : ∀{a b} p
+  → -------------------
+  a - b [ p ] +1 == a +1 - b [ trans p $ postfix suc a ]
+suc- (z≤ a) = Id.refl (a +1)
+suc- (s≤s p) = suc- p
+
 -+comm : ∀ {a b c}
   (p : b ≤ a)
   → -----------------------

@@ -32,13 +32,12 @@ coe-eval-hom ⦃ p ⦄ x = subrel (coe-eval p x)
 
 open import Proof
 
-coe-2-eval :
+coe-2-eval : {Y : 𝒰 ˙}
   (p : Y == X)
-  (q : X == Y)
   (x : X)
   → -------------------------
-  coe p (coe q x) == x
-coe-2-eval (Id.refl _)(Id.refl _) x =
+  coe p (coe (sym p) x) == x
+coe-2-eval (Id.refl _) x =
   proof coe (Id.refl _) (coe (Id.refl _) x)
     === coe (Id.refl _) x :by: coe-eval-hom (coe (Id.refl _) x)
     === x                 :by: coe-eval-hom x

@@ -15,7 +15,7 @@ het-fun-ext :
   (q : ∀ x → f x Het.== f' (coe p x))
   → ----------------------------
   f Het.== f'
-het-fun-ext {f = f}{f'}(Id-refl X) q = fun-ext λ x →
+het-fun-ext {f = f}{f'}(Id.refl X) q = fun-ext λ x →
   proof f x
     het== f' (coe (refl X) x) :by: q x
     het== f' x                :by: ap f' $ coe-eval (refl X) x
@@ -29,14 +29,14 @@ het-==→~ :
   (p' : ∀ x → A x == B (coe p x))
   → -----------------
   ∀ x → f x Het.== g (coe p x)
-het-==→~ {A = A}{B = B}{f}{g} _ (Id-refl X) p' _ with p''
+het-==→~ {A = A}{B = B}{f}{g} _ (Id.refl X) p' _ with p''
   where p'' : A Het.== B
         p'' = fun-ext $ λ x →
           proof A x
             === B (coe (refl X) x) :by: p' x
             het== B x              :by: ap B $ coe-eval (refl X) x
           qed
-het-==→~ (Het.refl f)(Id-refl X) _  x
+het-==→~ (Het.refl f)(Id.refl X) _  x
   | Het.refl A = ap f $ sym $ coe-eval (refl X) x
 
 -- open import Logic

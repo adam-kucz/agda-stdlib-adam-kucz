@@ -36,8 +36,8 @@ Vec== : ∀ {m}
   {h1 h2 : X} {t1 t2 : Vec X m}
   → -----------------------------------------
   h1 ∷ t1 == h2 ∷ t2 ↔ h1 == h2 ∧ t1 == t2
-⟶ Vec== (Id-refl (h ∷ t)) = refl h , refl t
-⟵ Vec== (Id-refl h , Id-refl t) = refl (h ∷ t)
+⟶ Vec== (Id.refl (h ∷ t)) = refl h , refl t
+⟵ Vec== (Id.refl h , Id.refl t) = refl (h ∷ t)
 
 last : {m : ℕ}(v : Vec X (m +1)) → X
 last [ h ] = h

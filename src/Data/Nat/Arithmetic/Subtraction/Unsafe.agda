@@ -81,3 +81,14 @@ rel-preserv ⦃ RelatingUnsafeSub-≤-≤ {k +1} ⦄ (s≤s {n} {m} n≤m) =
     === a - c - (b +1)
       :by: sym $ -suc (a - c) b
   qed
+
+open import PropUniverses
+
+unsafe-prop-from-safe :
+  (𝐴 : ℕ → 𝒰 ᵖ)
+  (p : m ≤ n)
+  (q : 𝐴 (n - m [ p ]))
+  → ----------------------
+  𝐴 (n - m)
+unsafe-prop-from-safe 𝐴 p q =
+  Id.coe (ap 𝐴 $ sym $ unsafe-is-safe p) q

@@ -53,7 +53,7 @@ branch (h ∷ br) ! branch zero loc [ p ] = h ! loc [ p' p ]
         p' p with ⟶ (∈++ (map (branch 0) (locations h))
                           (map shift (locations (branch br)))) p
         p' p | ∨left q with ∈map⁻¹ (locations h) (branch 0) q
-        p' p | ∨left q | loc , (Id-refl _ , q') = q'
+        p' p | ∨left q | loc , (Id.refl _ , q') = q'
         p' p | ∨right q with ∈map⁻¹ (locations (branch br)) shift q
         p' p | ∨right q | leaf , ()
         p' p | ∨right q | branch _ _ , ()
@@ -66,4 +66,4 @@ branch (h ∷ br) ! branch (n +1) loc [ p ] = branch br ! branch n loc [ p' p ]
         p' p | ∨left q with ∈map⁻¹ (locations h) (branch 0) q
         p' p | ∨left q | _ , ()
         p' p | ∨right q with ∈map⁻¹ (locations (branch br)) shift q
-        p' p | ∨right q | branch _ _ , (Id-refl _ , q') = q'
+        p' p | ∨right q | branch _ _ , (Id.refl _ , q') = q'
