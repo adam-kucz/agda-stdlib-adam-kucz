@@ -84,7 +84,7 @@ instance
 ≤-↔-rtc-≤ : ∀ {n m} → n ≤ m ↔ n rtc-≤ m
 ≤-↔-rtc-≤ {n} {m} =
   proof n ≤ m
-    〉 _↔_ 〉 ∃+ n m    :by: ≤-↔-∃+
+    〉 _↔_ 〉 ∃+ n m    :by: ≤-↔-∃+         [: _↔_ ]
     〉 _↔_ 〉 n rtc-≤ m :by: sym rtc-≤-↔-∃+
   qed
 
@@ -115,7 +115,7 @@ total ⦃ Connex≤ ⦄ (x +1) (y +1) = ∨[ s≤s ⸴ s≤s ] (total x y)
 
 UniversalPrefix.prefix Prefix-pred-≤ zero = refl 0
 UniversalPrefix.prefix Prefix-pred-≤ (x +1) =
-  subrel ⦃ ~-⊇ ⦄ $ subrel $ Id-refl (x +1)
+  subrel {_R_ = _rtc-≤_} $ subrel {_R_ = suc_==_} $ Id.refl (x +1)
 
 rel-preserv ⦃ Relating-pred-≤ ⦄ {zero} {zero} rab = refl 0
 rel-preserv ⦃ Relating-pred-≤ ⦄ {zero} {b +1} rab = z≤ b
@@ -227,11 +227,11 @@ instance
 comm ⦃ min-comm ⦄ zero zero = refl 0
 comm ⦃ min-comm ⦄ zero (suc b) = refl 0
 comm ⦃ min-comm ⦄ (suc a) zero = refl 0
-comm ⦃ min-comm ⦄ (suc a) (suc b) = ap suc $ comm a b
+comm ⦃ min-comm ⦄ (suc a) (suc b) = ap suc (comm a b)
 assoc ⦃ min-assoc ⦄ zero y z = refl 0
 assoc ⦃ min-assoc ⦄ (x +1) zero z = refl 0
 assoc ⦃ min-assoc ⦄ (x +1) (y +1) zero = refl 0
-assoc ⦃ min-assoc ⦄ (x +1) (y +1) (z +1) = ap suc $ assoc x y z
+assoc ⦃ min-assoc ⦄ (x +1) (y +1) (z +1) = ap suc (assoc x y z)
 left-zero ⦃ min-0-left ⦄ _ = refl 0
 right-zero ⦃ min-0-right ⦄ zero = refl 0
 right-zero ⦃ min-0-right ⦄ (_ +1) = refl 0
@@ -239,11 +239,11 @@ right-zero ⦃ min-0-right ⦄ (_ +1) = refl 0
 comm ⦃ max-comm ⦄ zero zero = refl 0
 comm ⦃ max-comm ⦄ zero (suc y) = refl (suc y)
 comm ⦃ max-comm ⦄ (suc x) zero = refl (suc x)
-comm ⦃ max-comm ⦄ (suc x) (suc y) = ap suc $ comm x y
+comm ⦃ max-comm ⦄ (suc x) (suc y) = ap suc (comm x y)
 assoc ⦃ max-assoc ⦄ zero y z = refl (y ⊔ z)
 assoc ⦃ max-assoc ⦄ (x +1) zero z = refl (x +1 ⊔ z)
 assoc ⦃ max-assoc ⦄ (x +1) (y +1) zero = refl ((x ⊔ y) +1)
-assoc ⦃ max-assoc ⦄ (x +1) (y +1) (z +1) = ap suc $ assoc x y z
+assoc ⦃ max-assoc ⦄ (x +1) (y +1) (z +1) = ap suc (assoc x y z)
 left-unit ⦃ max-0-left ⦄ y = refl y
 right-unit ⦃ max-0-right ⦄ zero = refl 0
 right-unit ⦃ max-0-right ⦄ (y +1) = refl (y +1)

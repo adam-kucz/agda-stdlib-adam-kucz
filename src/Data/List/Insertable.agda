@@ -7,7 +7,7 @@ open import Data.List.Definition {𝒰}
 open import Data.List.Collection {𝒰}
 
 open import Collection.Insertable public
-open import Proposition.Identity renaming (Idₚ to Id) hiding (refl)
+open import Proposition.Identity hiding (refl)
 open import Proof
 open import Logic
 

@@ -57,7 +57,7 @@ cap-n-zero==zero {n} =
       :by: Id.refl (cap n zero)
     === toFinℕ zero (ap suc $ z≤ n)
       :by: subrel $
-           toFinℕ== (right-zero n)(Id-refl (n +1))
+           toFinℕ== (right-zero n)(Id.refl (n +1))
                      (ap suc $ prefix (λ — → min — 0) n)
     === zero
       :by: Id.refl zero
@@ -107,7 +107,7 @@ cap-thm {suc m} {suc n} f x≤fx | false ¬n≤m =
     === toFinℕ (min (suc m) (f $' suc m)) _
       :by: Id.refl _
     === toFinℕ (min (suc m) (f $' suc n)) _
-      :by: subrel $ toFinℕ== min-sm-fsn==min-sm-fsm (Id-refl (m +2)) _
+      :by: subrel $ toFinℕ== min-sm-fsn==min-sm-fsm (Id.refl (m +2)) _
     === cap (suc m) ∘ f ∘ suc $' n
       :by: Id.refl (cap (suc m) (f $' suc n))
   qed

@@ -5,7 +5,7 @@ open import Data.List.Definition
 open import Data.List.Property
 
 open import Universes
-open import Type.Sum hiding (_,_)
+open import Type.Sum renaming (_,_ to _Σ,_)
 open import Collection
 open import Data.Nat
 open import Proof
@@ -17,7 +17,7 @@ _ ∷ l ! suc n [ p ] = l ! n [ ap pred p ]
 
 zip : (l₀ : List X)(l₁ : List Y)(p : len l₀ == len l₁) → List (X × Y)
 zip [] [] p = []
-zip (h₀ ∷ l₀) (h₁ ∷ l₁) p = (h₀ Σ., h₁) ∷ zip l₀ l₁ (ap pred p)
+zip (h₀ ∷ l₀) (h₁ ∷ l₁) p = (h₀ Σ, h₁) ∷ zip l₀ l₁ (ap pred p)
 
 open import Proposition.Sum
 open import Data.List.Collection
@@ -31,7 +31,7 @@ open import Logic
   → -----------------------
   let p' : ∀{i}(p : i +1 ≤ len l₀) → i +1 ≤ len l₁
       p' {i} = Id.coe (ap (i +1 ≤_) p) in
-  x Σ., y ∈ zip l₀ l₁ p
+  x Σ, y ∈ zip l₀ l₁ p
   ↔
   ∃ λ i →
     i +1 ≤ len l₀ ∧ᵈ
@@ -40,11 +40,15 @@ open import Logic
 ⟵ (∈-zip [] [] p) (_ , ())
 ⟶ (∈-zip (h₀ ∷ l₀) (h₁ ∷ l₁) p) (x∈x∷ _) =
   0 , (s≤s $ z≤ len l₀ , (Id.refl h₀ , Id.refl h₁))
-⟶ (∈-zip (h₀ ∷ l₀) (h₁ ∷ l₁) p) (x∈tail _ q)
-  with ⟶ (∈-zip l₀ l₁ (ap pred p)) q
-⟶ (∈-zip (h₀ ∷ l₀) (h₁ ∷ l₁) p) (x∈tail _ q)
-  | i , (i+1≤len-l₀ , eqs) = i +1 , (s≤s i+1≤len-l₀ , eqs)
+⟶ (∈-zip l₀@(_ ∷ t₀) l₁@(_ ∷ t₁) p {x}{y}) (x∈tail _ q) =
+  f $ ⟶ (∈-zip t₀ t₁ (ap pred p)) q
+  where f : (p : ∃ λ i → i +1 ≤ len t₀ ∧ᵈ
+                         λ p₁ → t₀ ! i [ _ ] == x ∧ t₁ ! i [ _ ] == y)
+            → ------------------------------------------------------------
+            ∃ λ i → i +1 ≤ len l₀ ∧ᵈ
+                    λ p → l₀ ! i [ p ] == x ∧ l₁ ! i [ _ ] == y
+        f (i , (i+1≤len-l₀ , eqs)) = i +1 , (s≤s i+1≤len-l₀ , eqs)
 ⟵ (∈-zip (h₀ ∷ l₀) (h₁ ∷ l₁) p) (zero , (_ , (Id.refl _ , Id.refl _))) =
   x∈x∷ (zip l₀ l₁ (ap pred p))
 ⟵ (∈-zip (h₀ ∷ l₀) (h₁ ∷ l₁) p) (i +1 , (s≤s i+1≤len , eqs)) =
-  x∈tail (h₀ Σ., h₁) $ ⟵ (∈-zip l₀ l₁ (ap pred p)) (i , (i+1≤len , eqs))
+  x∈tail (h₀ Σ, h₁) $ ⟵ (∈-zip l₀ l₁ (ap pred p)) (i , (i+1≤len , eqs))

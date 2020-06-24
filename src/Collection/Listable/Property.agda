@@ -13,7 +13,7 @@ open import Relation.Binary
 open import Data.List.Definition
 open import Data.List.Collection
 open import Data.List.Monoid
-open import Data.List.Property
+open import Data.List.Property.Instance
 open import Data.List.Operation.Basic
 open import Structure.Monoid
 open import Logic
@@ -65,12 +65,9 @@ module WithListable
     x ∈ l ↔ x ∈ l'
   ∈-~ x {l}{l'} p =
     proof x ∈ l
-      〉 _↔_ 〉 x ∈ to-list l
-        :by: to-list-valid
-      〉 _↔_ 〉 x ∈ to-list l'
-        :by: Perm.∈-~ x p
-      〉 _↔_ 〉 x ∈ l'
-        :by: isym to-list-valid
+      〉 _↔_ 〉 x ∈ to-list l  :by: to-list-valid [: _↔_ ]
+      〉 _↔_ 〉 x ∈ to-list l' :by: Perm.∈-~ x p [: _↔_ ]
+      〉 _↔_ 〉 x ∈ l'         :by: isym to-list-valid
     qed
     
 open WithListable public

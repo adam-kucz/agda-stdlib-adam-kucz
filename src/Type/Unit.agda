@@ -3,10 +3,12 @@ module Type.Unit where
 
 open import Universes
 
-data 𝟙 : 𝒰₀ ˙ where
-  instance ⋆ : 𝟙
+record 𝟙 : 𝒰₀ ˙ where
+  instance constructor ⋆
 
-open import Proposition.Identity
+{-# BUILTIN UNIT 𝟙 #-}
+
+open import Proposition.Identity.Definition
 
 subsingleton : (x y : 𝟙) → x == y
 subsingleton ⋆ ⋆ = refl ⋆

@@ -88,6 +88,12 @@ map f (h ∷ l) = f h ∷ map f l
 ∈map⁻¹ (h ∷ l) f (x∈tail .(f h) p) | x , (fx==y , x∈l) =
   x , (fx==y , x∈tail h x∈l)
 
+open import Function hiding (_$_)
+
+map-∘ : ∀(g : Y → Z)(f : X → Y) → map (g ∘ f) ~ map g ∘ map f
+map-∘ _ _ [] = refl []
+map-∘ g f (h ∷ t) = ap (g (f h) ∷_) $ map-∘ g f t
+
 map++ : 
   (l l' : List X)
   (f : (x : X) → Y)

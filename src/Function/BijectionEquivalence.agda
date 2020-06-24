@@ -19,10 +19,10 @@ bijection-of-bijective :
 bijection-of-bijective f = record { forw = f; back = inv }
   where uniq : (y : codomain f) → ∃! λ x → f x == y
         uniq y with sur f y
-        uniq y | x , p = x , (p , λ x₁ p₁ → inj $ subrel (
+        uniq y | x , p = x , (p , λ x₁ p₁ → inj $ subrel {_R_ = _==_} (
           proof f x₁
-            〉 _==_ 〉 y   :by: p₁
-            〉 _==_ 〉 f x :by: sym p
+            === y   :by: p₁
+            === f x :by: sym p
           qed))
         inv : codomain f → domain f
         inv y = elem (!choice (uniq y))

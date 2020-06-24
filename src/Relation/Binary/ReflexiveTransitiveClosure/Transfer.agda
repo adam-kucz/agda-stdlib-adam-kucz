@@ -2,13 +2,14 @@
 open import Relation.Binary.Definition
 open import Relation.Binary.Property
 open import Relation.Binary.ReflexiveTransitiveClosure.Definition
+  renaming (refl-trans-close to rtc)
 
 open import Universes
 
 module Relation.Binary.ReflexiveTransitiveClosure.Transfer
   (R : BinRel 𝒰 X)
   (single-step : BinRel 𝒱 X)
-  ⦃ equiv : R ~ refl-trans-close single-step ⦄
+  ⦃ equiv : R ~ rtc single-step ⦄
   where
 
 open import Proposition.Function using (_$_)
@@ -27,7 +28,7 @@ InheritsSymmetricR :
 InheritsRelatingR :
   {single-step-P : BinRel 𝒲 Y}
   {P : BinRel 𝒯 Y}
-  ⦃ equiv : P ~ refl-trans-close single-step-P ⦄
+  ⦃ equiv : P ~ rtc single-step-P ⦄
   {f : X → Y}
   ⦃ ss-rel : Relating f single-step single-step-P ⦄
   → ----------------------
@@ -39,6 +40,6 @@ trans ⦃ TransitiveR ⦄ p q = subrel $ trans (subrel p) (subrel q)
 sym ⦃ InheritsSymmetricR ⦄ p = subrel $ sym $ subrel p
 rel-preserv ⦃ InheritsRelatingR ⦄ aRb = subrel $ rel-preserv $ subrel aRb
 
-Subrelation-rtcR-R : refl-trans-close R ⊆ R
+Subrelation-rtcR-R : rtc R ⊆ R
 subrel ⦃ Subrelation-rtcR-R ⦄ p =
-  subrel $ subrel ⦃ Subrelation-rtc2 ⦄ $ subrel p
+  subrel $ subrel $ subrel {_P_ = rtc (rtc single-step)} p

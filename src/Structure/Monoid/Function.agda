@@ -8,7 +8,7 @@ open import Collection.Definition
 open import Collection.Operation.Definition
 open import Data.List.Definition
 open import Data.List.Collection
-open import Data.List.Property
+open import Data.List.Property.Instance
 
 module WithMonoid {X : 𝒰 ˙}⦃ M : Monoid X ⦄ where
 

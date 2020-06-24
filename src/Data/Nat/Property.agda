@@ -53,47 +53,46 @@ Decidableℕ== {suc m} {suc n} | false ¬n==m =
 
 rel-preserv ⦃ Relating-+-left-≤ {m} ⦄ (z≤ k) =
   proof m + 0
-    〉 _==_ 〉 m    :by: right-unit m 
+    === m        :by: right-unit m     [: _==_ ]
     〉 _≤_ 〉 m + k :by: postfix (_+ k) m
   qed
 rel-preserv ⦃ Relating-+-left-≤ {m} ⦄ (s≤s {n}{k} n≤k) =
   proof m + (n +1)
-    〉 _==_ 〉 (m +1) + n :by: +-suc m n
-    〉 _≤_ 〉 (m +1) + k
-      :by: s≤s $ rel-preserv ⦃ Relating-+-left-≤ ⦄ n≤k
-    〉 _==_ 〉 m + (k +1) :by: sym $ +-suc m k
+    === (m +1) + n    :by: +-suc m n
+    〉 _≤_ 〉 (m +1) + k :by: s≤s $ rel-preserv ⦃ Relating-+-left-≤ ⦄ n≤k
+    === m + (k +1)    :by: sym $ +-suc m k
   qed
 rel-preserv ⦃ Relating-+-right-≤ {m} ⦄ {a}{b} a≤b =
   proof a + m
-    〉 _==_ 〉 m + a :by: comm a m
+    === m + a     :by: comm a m
     〉 _≤_ 〉  m + b :by: ap (m +_) a≤b
-    〉 _==_ 〉 b + m :by: comm m b
+    === b + m     :by: comm m b
   qed
 
 rel-preserv ⦃ Relating-+-left-< ⦄ (z≤ zero , a≠b) =
   ⊥-recursion _ $ a≠b $ refl 0
 rel-preserv ⦃ Relating-+-left-< {m} ⦄ (z≤ a +1 , a≠b) =
   proof m + 0
-    〉 _==_ 〉 m          :by: right-unit m
-    〉 _<_ 〉 m +1        :by: postfix suc m
-    〉 _≤_ 〉 (m +1) + a  :by: postfix (_+ a) (m +1)
-    〉 _==_ 〉 m + (a +1) :by: sym $ +-suc m a
+    === m             :by: right-unit m
+    〉 _<_ 〉 m +1       :by: postfix suc m
+    〉 _≤_ 〉 (m +1) + a :by: postfix (_+ a) (m +1)
+    === m + (a +1)    :by: sym $ +-suc m a
   qed
 rel-preserv ⦃ Relating-+-left-< {m} ⦄ (s≤s {a}{b} a≤b , a≠b) =
   proof m + (a +1)
-    〉 _==_ 〉 m + a +1   :by: +-suc m a
+    === m + a +1   :by: +-suc m a
     〉 _<_ 〉 m + b +1
       :by: s<s $
            rel-preserv ⦃ Relating-+-left-< {m} ⦄
            (a≤b , λ { (Id.refl a) → a≠b $ refl (a +1)})
-    〉 _==_ 〉 m + (b +1) :by: sym $ +-suc m b
+    === m + (b +1) :by: sym $ +-suc m b
   qed
 
 rel-preserv ⦃ Relating-+-right-< {m} ⦄ {a}{b} a<b =
   proof a + m
-    〉 _==_ 〉 m + a :by: comm a m
+    ===     m + a :by: comm a m
     〉 _<_ 〉 m + b  :by: ap (m +_) a<b
-    〉 _==_ 〉 b + m :by: comm m b
+    ===     b + m :by: comm m b
   qed
 
 rel-preserv-2 ⦃ Relating-2-+-≤-≤ ⦄ {x}{x'}{y}{y'} x≤x' y≤y' = 
@@ -109,20 +108,20 @@ rel-preserv-2 ⦃ Relating-2-+-<-≤ ⦄ {x}{x'}{y}{y'} x<x' y≤y' =
   qed
 rel-preserv-2 ⦃ Relating-2-+-≤-< ⦄ {x}{x'}{y}{y'} x≤x' y<y' = 
   proof x + y
-    〉 _≤_ 〉 x' + y  :by: ap (_+ y) x≤x'
+    〉 _≤_ 〉 x' + y  :by: ap (_+ y) x≤x'  [: _≤_ ]
     〉 _<_ 〉 x' + y' :by: ap (x' +_) y<y'
   qed
 
 UniversalPostfix.postfix (Postfix-+-left-< {n}) x =
   proof x
-    〉 _≤_ 〉 n + x    :by: postfix (n +_) x 
+    〉 _≤_ 〉 n + x    :by: postfix (n +_) x [: _≤_ ]
     〉 _<_ 〉 n + x +1 :by: -<self+1 (n + x)
   qed
 
 UniversalPostfix.postfix (Postfix-+-right-< {n}) x =
   proof x
     〉 _<_ 〉 (n +1) + x  :by: postfix (n +1 +_) x 
-    〉 _==_ 〉 x + (n +1) :by: comm (n +1) x
+    === x + (n +1) :by: comm (n +1) x
   qed
 
 UniversalPostfix.postfix (Postfix-+-left-≤ {zero}) x = refl x
@@ -135,7 +134,7 @@ UniversalPostfix.postfix (Postfix-+-left-≤ {n +1}) x =
 UniversalPostfix.postfix (Postfix-+-right-≤ {n}) x =
   proof x
     〉 _≤_ 〉 n + x :by: postfix (n +_) x
-    〉 _==_ 〉 x + n :by: comm n x
+    ===    x + n :by: comm n x
   qed
 
 UniversalPostfix.postfix (Postfix-*-left-≤ {n}) x =
@@ -144,7 +143,7 @@ UniversalPostfix.postfix (Postfix-*-left-≤ {n}) x =
 UniversalPostfix.postfix (Postfix-*-right-≤ {n}) x =
   proof x
     〉 _≤_ 〉 suc n * x :by: postfix (suc n *_) ⦃ Postfix-*-left-≤ {n} ⦄ x
-    〉 _==_ 〉 x * suc n :by: comm (suc n) x
+    ===    x * suc n :by: comm (suc n) x
   qed
 
 UniversalPrefix.prefix (Prefix-min-≤ {n}) = go n
@@ -161,7 +160,7 @@ UniversalPostfix.postfix (Postfix-max-≤ {n}) = go n
 
 UniversalPrefix.prefix (Prefix-min-2-≤ {n}) m =
   proof min m n
-    === min n m :by: comm m n
+    === min n m :by: comm m n          [: _==_ ]
     〉 _≤_ 〉 m    :by: prefix (min n) m
   qed
 

@@ -95,7 +95,8 @@ module Data.List.Operation.DecidableIdentity
     → ----------------------------------------
     index p +1 ≤ len l
   index≤ {x} {h ∷ t} p with decide (x == h) ⦃ d ⦄
-  index≤ {x} {h ∷ t} p | true p₁ = postfix (_+ len t) 1
+  index≤ {x} {h ∷ t} p | true p₁ =
+    postfix (_+ len t) ⦃ Postfix-+-right-≤ ⦄ 1
   index≤ {x} {h ∷ t} p | false ¬p = ap suc $ index≤ (prev ¬p p)
 
   module Multiplicity where
@@ -184,6 +185,7 @@ module Data.List.Operation.DecidableIdentity
       subrel ⦃ Subrelation-rtcR-R _==_ _ ⦄ $
       rel-preserv ⦃ Relating-rtc ⦃ Relating-multiplicity-swap-== ⦄ ⦄ p
       where open import Relation.Binary.ReflexiveTransitiveClosure.Transfer
+            instance _ = Id⊆rtc-empty; _ = rtc-empty⊆Id
 
   open Multiplicity using (multiplicity) public
 
@@ -199,8 +201,8 @@ module Data.List.Operation.DecidableIdentity
   recreate-is-uniq (h ∷ t) (x , p) with d {x}{h}
   recreate-is-uniq (x ∷ t) (x , s≤s p) | true (Id.refl x) with
     proof 1
-      〉 _≤_ 〉 multiplicity x (remove x l') :by: p
-      〉 _==_ 〉 0 :by: Multiplicity.∉→==0 $ x ∉remove l'
+      〉 _≤_ 〉 multiplicity x (remove x l') :by: p [: _≤_ ]
+      === 0 :by: Multiplicity.∉→==0 $ x ∉remove l'
     qed
     where l' = from-list-uniq (x ∷ t) t
   recreate-is-uniq (x ∷ t) (x , s≤s p) | true (Id.refl x) | ()
@@ -209,9 +211,9 @@ module Data.List.Operation.DecidableIdentity
       (proof 2
          〉 _≤_ 〉 multiplicity x (remove h (from-list-uniq (h ∷ t) t))
            :by: p
-         〉 _==_ 〉 multiplicity x (from-list-uniq (h ∷ t) t)
+         === multiplicity x (from-list-uniq (h ∷ t) t)
            :by: Multiplicity.remove-invariant (from-list-uniq (h ∷ t) t) x≠h 
-         〉 _==_ 〉 multiplicity x (recreate t)
+         === multiplicity x (recreate t)
            :by: lemma t t
        qed))
     where lemma : ∀ l t →
@@ -221,7 +223,7 @@ module Data.List.Operation.DecidableIdentity
           lemma [] _ | true x=h = ⊥-recursion _ $ x≠h x=h
           lemma [] _ | false ¬p = Id.refl _
           lemma (h' ∷ t') t with d {x}{h'}
-          lemma (x ∷ t') t | true (Id.refl x) = ap suc (
+          lemma (x ∷ t') t | true (Id.refl x) = ap suc {r = _==_} (
             proof multiplicity x (remove x (from-list-uniq (h ∷ t) t'))
               === 0
                 :by: Multiplicity.∉→==0 $ x

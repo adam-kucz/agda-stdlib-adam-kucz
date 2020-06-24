@@ -25,6 +25,6 @@ refl ⦃ Reflexive~ ⦄ f x = refl (f x)
 sym ⦃ Symmetric~ ⦄ p x = sym (p x)
 trans ⦃ Transitive~ ⦄ {f}{g}{h} p q x =
   proof f x
-    〉 Het._==_ 〉 g x :by: p x
-    〉 Het._==_ 〉 h x :by: q x
+    het== g x :by: p x
+    het== h x :by: q x
   qed

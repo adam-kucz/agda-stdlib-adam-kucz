@@ -31,10 +31,7 @@ fmap-id ⦃ ListFunctor ⦄ = subrel $ fun-ext go
   where go : map (𝑖𝑑 X) ~ 𝑖𝑑 (List X)
         go [] = refl []
         go (h ∷ t) = ap (h ∷_) (go t)
-fmap-∘ ⦃ ListFunctor ⦄ g f = subrel {_P_ = _==_} $ fun-ext go
-  where go : map (g ∘ f) ~ map g ∘ map f
-        go [] = refl []
-        go (h ∷ t) = ap (g (f h) ∷_) $ go t
+fmap-∘ ⦃ ListFunctor ⦄ g f = subrel {_P_ = _==_} $ fun-ext map-∘
 
 fmap-L++ : {X : 𝒰 ˙}{Y : 𝒱 ˙}
   (f : X → Y)(l l' : List X)

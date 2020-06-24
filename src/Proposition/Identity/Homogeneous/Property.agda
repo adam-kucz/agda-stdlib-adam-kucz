@@ -31,9 +31,13 @@ open import Relation.Binary.ReflexiveTransitiveClosure
 
 open import Logic
 
-instance
-  Id⊆rtc-empty : Id X ⊆ refl-trans-close (empty-rel X X)
-  rtc-empty⊆Id : refl-trans-close (empty-rel X X) ⊆ Id X 
+Id⊆rtc-empty : Id X ⊆ refl-trans-close (empty-rel X X)
+rtc-empty⊆Id : refl-trans-close (empty-rel X X) ⊆ Id X
+
+private
+  instance
+    _ = Id⊆rtc-empty
+    _ = rtc-empty⊆Id
 
 private
   equiv : ∀ {x y} → x == y ↔ refl-trans-close (empty-rel X X) x y
@@ -51,5 +55,10 @@ module TransferredProperties {X : 𝒰 ˙} where
     public
   instance
     SymmetricId = InheritsSymmetricR
-    RelatingId = InheritsRelatingR
+
+instance
+  Relating-all-Id : ∀{f : X → Y} → Relating f _==_ _==_
+  RelatingId = TransferredProperties.InheritsRelatingR
+
+Relating-all-Id = RelatingId    
 

@@ -64,12 +64,12 @@ instance
 
 rel-preserv-2 ⦃ Relating-2-∧ ⦄ {X}{X'}{Y}{Y'} X↔X' Y↔Y' =
   proof X ∧ Y
-    〉 _↔_ 〉 X' ∧ Y  :by: ap (_∧ Y) X↔X'
+    〉 _↔_ 〉 X' ∧ Y  :by: ap (_∧ Y) X↔X'  [: _↔_ ]
     〉 _↔_ 〉 X' ∧ Y' :by: ap (X' ∧_) Y↔Y'
   qed
 rel-preserv-2 ⦃ Relating-2-∨ ⦄ {X}{X'}{Y}{Y'} X↔X' Y↔Y' =
   proof X ∨ Y
-    〉 _↔_ 〉 X' ∨ Y  :by: ap (_∨ Y) X↔X'
+    〉 _↔_ 〉 X' ∨ Y  :by: ap (_∨ Y) X↔X'  [: _↔_ ]
     〉 _↔_ 〉 X' ∨ Y' :by: ap (X' ∨_) Y↔Y'
   qed
 

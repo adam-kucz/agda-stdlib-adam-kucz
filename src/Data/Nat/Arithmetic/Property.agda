@@ -37,17 +37,16 @@ right-unit ⦃ +-0 ⦄ (suc a) = ap suc $ right-unit a
 comm ⦃ Commutative+ ⦄ zero y = sym $ right-unit y
 comm ⦃ Commutative+ ⦄ (suc x) y =
   proof suc x + y
-    〉 _==_ 〉 suc (y + x) :by: ap suc $ comm x y
-    〉 _==_ 〉 y + suc x   :by: sym $ +-suc y x
+    === suc (y + x) :by: ap suc $ comm x y
+    === y + suc x   :by: sym $ +-suc y x
   qed
 
 *-suc : (a b : ℕ) → a * suc b == a + a * b
 *-suc zero _ = refl zero
-*-suc (suc a) b = ap suc
-  (proof
-    b + a * suc b
-      〉 _==_ 〉 b + (a + a * b) :by: ap (b +_) $ *-suc a b
-      〉 _==_ 〉 a + (b + a * b) :by: swap b a (a * b)
+*-suc (suc a) b = ap suc {r = _==_}
+  (proof b + a * suc b
+     === b + (a + a * b) :by: ap (b +_) $ *-suc a b
+     === a + (b + a * b) :by: swap b a (a * b)
   qed)
 
 private
@@ -56,13 +55,13 @@ private
 *-+-distrib zero _ _ = refl zero
 *-+-distrib (suc a) b c =
   proof b + c + a * (b + c)
-    〉 _==_ 〉 (b + c) + (a * b + a * c)
+    === (b + c) + (a * b + a * c)
       :by: ap (b + c +_) $ *-+-distrib a b c
-    〉 _==_ 〉 b + (c + (a * b + a * c))
+    === b + (c + (a * b + a * c))
       :by: sym $ assoc b c _
-    〉 _==_ 〉 b + (a * b + (c + a * c))
+    === b + (a * b + (c + a * c))
       :by: ap (b +_) $ swap c (a * b) _
-    〉 _==_ 〉 b + a * b + (c + a * c)
+    === b + a * b + (c + a * c)
       :by: assoc b _ _
   qed
 
@@ -83,19 +82,19 @@ right-zero ⦃ *-0 ⦄ (a +1) = right-zero a
 comm ⦃ Commutativeℕ* ⦄ zero b = sym $ right-zero b
 comm ⦃ Commutativeℕ* ⦄ (suc a) b = 
   proof b + a * b
-    〉 _==_ 〉 b + b * a :by: ap (b +_) $ comm a b
-    〉 _==_ 〉 b * suc a :by: sym $ *-suc b a
+    === b + b * a :by: ap (b +_) $ comm a b
+    === b * suc a :by: sym $ *-suc b a
   qed
 
 assoc ⦃ assoc* ⦄ zero _ _ = refl zero
 assoc ⦃ assoc* ⦄ (suc a) b c = 
   proof
     b * c + a * (b * c)
-      〉 _==_ 〉 b * c + (a * b) * c :by: ap (b * c +_) $ assoc a b c
-      〉 _==_ 〉 b * c + c * (a * b) :by: ap (b * c +_) $ comm (a * b) c
-      〉 _==_ 〉 c * b + c * (a * b) :by: ap (_+ c * (a * b)) $ comm b c
-      〉 _==_ 〉 c * (b + a * b)     :by: sym $ *-+-distrib c b (a * b)
-      〉 _==_ 〉 (b + a * b) * c     :by: comm c _
+      === b * c + (a * b) * c :by: ap (b * c +_) $ assoc a b c
+      === b * c + c * (a * b) :by: ap (b * c +_) $ comm (a * b) c
+      === c * b + c * (a * b) :by: ap (_+ c * (a * b)) (comm b c)
+      === c * (b + a * b)     :by: sym $ *-+-distrib c b (a * b)
+      === (b + a * b) * c     :by: comm c _
   qed
 
 left-unit ⦃ 1-* ⦄ = right-unit {_∙_ = _+_}
@@ -106,10 +105,10 @@ left-unit ⦃ 1-* ⦄ = right-unit {_∙_ = _+_}
 [+]*==*+* ⦃ FormHemiringℕ+* ⦄ a b c = 
   proof
     (a + b) * c
-      〉 _==_ 〉 c * (a + b)   :by: comm (a + b) c
-      〉 _==_ 〉 c * a + c * b :by: *[+]==*+* c a b
-      〉 _==_ 〉 c * a + b * c :by: ap (c * a +_) $ comm c b
-      〉 _==_ 〉 a * c + b * c :by: ap (_+ b * c) $ comm c a
+      === c * (a + b)   :by: comm (a + b) c
+      === c * a + c * b :by: *[+]==*+* c a b
+      === c * a + b * c :by: ap (c * a +_) (comm c b)
+      === a * c + b * c :by: ap (_+ b * c) (comm c a)
   qed
 
 Monoid+ : Monoid ℕ
@@ -137,15 +136,16 @@ open import Function.Property
 +-right-equiv {zero} x = subrel $ right-unit x
 +-right-equiv {m +1} x =
   proof x + (m +1)
-    〉 _==_ 〉     (x + m) +1        :by: +-suc x m
-    〉 Het._==_ 〉 repeat suc m x +1 :by: ap suc $ +-right-equiv {m} x
+    ===     (x + m) +1      :by: +-suc x m  [: _==_ ]
+    het== repeat suc m x +1 :by: ap suc $ +-right-equiv {m} x
   qed
+  where instance _ = Composable-==-==
 
 +-left-equiv : (m +_) ~ repeat suc m
 +-left-equiv {m} x =
   proof m + x
-    〉 _==_ 〉 x + m              :by: comm m x
-    〉 Het._==_ 〉 repeat suc m x :by: +-right-equiv x
+    === x + m              :by: comm m x       [: _==_ ]
+    het== repeat suc m x :by: +-right-equiv x
   qed
 
 instance

@@ -42,9 +42,10 @@ swap : {_∙_ : ClosedOp X}
   x ∙ (y ∙ z) == y ∙ (x ∙ z)
 swap {_∙_ = _∙_} x y z =
   proof x ∙ (y ∙ z)
-      〉 _==_ 〉 (x ∙ y) ∙ z :by: assoc x y z
-      〉 _==_ 〉 (y ∙ x) ∙ z :by: ap (_∙ z) $ comm x y
-      〉 _==_ 〉 y ∙ (x ∙ z) :by: sym $ assoc y x z
+      === (x ∙ y) ∙ z :by: assoc x y z
+-- TODO: figure out why the instance is not found with $ instead of ()
+      === (y ∙ x) ∙ z :by: ap (_∙ z) (comm x y)
+      === y ∙ (x ∙ z) :by: sym $ assoc y x z
   qed
 
 swap' : {_∙_ : ClosedOp X}
@@ -57,7 +58,7 @@ swap' {_∙_ = _∙_} x y z =
   proof (x ∙ y) ∙ z
     === x ∙ (y ∙ z) :by: sym $ assoc x y z
     === x ∙ (z ∙ y) :by: ap (x ∙_) $ comm y z
-    === (x ∙ z) ∙ y   :by: assoc x z y
+    === (x ∙ z) ∙ y :by: assoc x z y
   qed
 
 record _IsLeftUnitOf_ {X : 𝒰 ˙} {Y : 𝒱 ˙} (e : X) (_∙_ : Op X Y Y) : 𝒱 ᵖ where
@@ -98,8 +99,8 @@ right-unit-of-commutative-left-unit :
   e IsRightUnitOf op
 right-unit ⦃ right-unit-of-commutative-left-unit e _∙_ ⦄ a =
   proof a ∙ e
-    〉 _==_ 〉 e ∙ a :by: comm a e
-    〉 _==_ 〉 a     :by: left-unit a
+    === e ∙ a :by: comm a e
+    === a     :by: left-unit a
   qed
      
 left-unit-of-commutative-right-unit :
@@ -110,8 +111,8 @@ left-unit-of-commutative-right-unit :
   e IsLeftUnitOf op
 left-unit ⦃ left-unit-of-commutative-right-unit e _∙_ ⦄ a =
   proof e ∙ a
-    〉 _==_ 〉 a ∙ e :by: comm e a
-    〉 _==_ 〉 a     :by: right-unit a
+    === a ∙ e :by: comm e a
+    === a     :by: right-unit a
   qed
 
 left-of-flip :
@@ -219,8 +220,8 @@ right-zero-of-commutative-left-zero :
   z IsRightZeroOf op
 right-zero ⦃ right-zero-of-commutative-left-zero z _∙_ ⦄ a =
   proof a ∙ z
-    〉 _==_ 〉 z ∙ a :by: comm a z
-    〉 _==_ 〉 z     :by: left-zero a
+    === z ∙ a :by: comm a z
+    === z     :by: left-zero a
   qed
      
 left-zero-of-commutative-right-zero :
@@ -231,6 +232,6 @@ left-zero-of-commutative-right-zero :
   z IsLeftZeroOf op
 left-zero ⦃ left-zero-of-commutative-right-zero z _∙_ ⦄ a =
   proof z ∙ a
-    〉 _==_ 〉 a ∙ z :by: comm z a
-    〉 _==_ 〉 z     :by: right-zero a
+    === a ∙ z :by: comm z a
+    === z     :by: right-zero a
   qed

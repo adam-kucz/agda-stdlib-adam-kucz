@@ -6,7 +6,7 @@ open import PropUniverses
 open import Proposition.Empty
 
 data Idₚ (X : 𝒰 ˙) : (Y : 𝒰 ˙) (x : X) (y : Y) → 𝒰 ᵖ where
-  instance refl : (x : X) → Idₚ X X x x
+  refl : (x : X) → Idₚ X X x x
 
 infix 19 _==_ _≡_
 _==_ : {X Y : 𝒰 ˙}
@@ -15,6 +15,10 @@ _==_ : {X Y : 𝒰 ˙}
   → -------------
   𝒰 ᵖ
 x == y = Idₚ _ _ x y
+
+instance
+  refl-inst : {x : X} → x == x
+refl-inst = refl _
 
 {-# DISPLAY Idₚ X Y x y = x == y #-}
 

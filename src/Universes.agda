@@ -30,8 +30,12 @@ variable
   A B : (x : X) → 𝒱 ˙
 
 record Lift𝒰 {𝒱} (X : 𝒰 ˙) : 𝒰 ⊔ 𝒱 ˙ where
-  instance constructor ↑type
+  constructor ↑type
   field
     ↓type : X
 
 open Lift𝒰 public
+
+instance
+  ↑type-inst : ⦃ inst : X ⦄ → Lift𝒰 {𝒱 = 𝒱} X
+↑type-inst ⦃ inst ⦄ = ↑type inst

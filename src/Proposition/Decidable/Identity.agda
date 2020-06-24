@@ -21,4 +21,6 @@ apd :
   → ----------
   Decidable (f x Het.== f y)
 apd f x y ⦃ true p ⦄ = true (ap f p)
+-- TODO: remove this redundant instance when Agda fixes #4688
+  where instance _ = Relating-all-==-het==
 apd f x y ⦃ false ¬p ⦄ = false λ q → ¬p $ inj q

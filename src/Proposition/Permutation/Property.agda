@@ -34,7 +34,7 @@ open import Logic.Proof
         go (rfl a) q = q
         go (step aRb p) q = go p $ ∈-single-swap aRb q
 
-open import Data.List.Property
+open import Data.List.Property.Instance
 open import Data.List.Monoid
 open import Structure.Monoid
 open import Operation.Binary
@@ -79,14 +79,13 @@ open import Relation.Binary.Proof
 Relating-fold-f-~-== = Transferred.InheritsRelatingR
   where instance
           ==⊆rtc-== : rtc (_==_ {X = X}) ⊆ _==_
+          _ = Id⊆rtc-empty
         ==⊆rtc-== {X = X} =
           proof rtc _==_
             〉 _⊆_ 〉 rtc (rtc (empty-rel X X))
-              :by: Subrelation-2-Subrelation-rtc
-            〉 _⊆_ 〉 rtc (empty-rel X X)
-              :by: Subrelation-rtc2
-            〉 _⊆_ 〉 _==_
-              :by: from-instance
+              :by: Subrelation-2-Subrelation-rtc {R = _==_}   [: _⊆_ ]
+            〉 _⊆_ 〉 rtc (empty-rel X X) :by: Subrelation-rtc2 [: _⊆_ ]
+            〉 _⊆_ 〉 _==_                :by: rtc-empty⊆Id
           qed
 
 open import Data.Nat

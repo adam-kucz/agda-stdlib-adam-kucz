@@ -16,8 +16,7 @@ module Composable-⊆ {X : 𝒰 ˙}{Y : 𝒱 ˙}{𝒲 𝒯} where
 
   Composable.rel Composable-⊆-⊆ = _⊆_
   subrel ⦃ Composable.compose Composable-⊆-⊆ p q ⦄ xRy =
-    subrel $ subrel xRy
-    where instance _ = p; _ = q
+    subrel ⦃ q ⦄ $ subrel ⦃ p ⦄ xRy
 
 module Composable-~ {X : 𝒰 ˙}{Y : 𝒱 ˙}{𝒲 𝒯} where
   open MakeComposable (_~_ {𝒲 = 𝒲}{𝒯 = 𝒯}{X = X}{Y = Y}) public

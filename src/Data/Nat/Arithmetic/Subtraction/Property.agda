@@ -58,9 +58,9 @@ relating-sub-≤ (k +1) (s≤s q) = relating-sub-≤ k q
 
 open import Relation.Binary
 
-suc- : ∀{a b} p
+suc- : ∀{a b}(p : b ≤ a)
   → -------------------
-  a - b [ p ] +1 == a +1 - b [ trans p $ postfix suc a ]
+  a - b [ p ] +1 == a +1 - b [ trans p (postfix suc {_≤_} a) ]
 suc- (z≤ a) = Id.refl (a +1)
 suc- (s≤s p) = suc- p
 
@@ -68,12 +68,10 @@ suc- (s≤s p) = suc- p
   (p : b ≤ a)
   → -----------------------
   a - b [ p ] + c == a + c - b [ trans p $ postfix (_+ c) a ]
--+comm {a}{b}{c} p = sym $ +==→-== $ sym (
+-+comm {a}{b}{c} p = sym $ +==→-== $ sym {R = _==_} (
   proof a - b [ p ] + c + b
-    === a - b [ p ] + b + c
-      :by: swap' (a - b [ p ]) c b
-    === a + c
-      :by: ap (_+ c) $ -+ p
+    === a - b [ p ] + b + c :by: swap' (a - b [ p ]) c b
+    === a + c               :by: ap (_+ c) $ -+ p
   qed)
 
 relating---≤ : ∀ {a b c}
@@ -89,34 +87,31 @@ relating---≤ (s≤s p) (s≤s q) = relating---≤ p q
   (q : c + b ≤ a)
   → -----------------------------------------------
   let p₀ = proof c
-             〉 _==_ 〉 c + b - b [ postfix (c +_) b ]
-               :by: sym $ +==→-== (refl (c + b))
+             === c + b - b [ postfix (c +_) b ]
+               :by: sym $ +==→-== (refl (c + b))  [: _==_ ]
              〉 _≤_ 〉 a - b [ p ]
                :by: relating---≤ (postfix (c +_) b) q
            qed
       p' = trans (postfix (_+ b) c) q
       p₀' = proof b
-              〉 _==_ 〉 c + b - c [ _ ]
-                :by: sym $ +==→-== $ comm c b
+              === c + b - c [ _ ]
+                :by: sym $ +==→-== $ comm c b  [: _==_ ]
               〉 _≤_ 〉 a - c [ p' ]
                 :by: relating---≤  (postfix (_+ b) c) q
             qed
   in
   a - b [ p ] - c [ p₀ ] == a - c [ p' ] - b [ p₀' ]
--comm {a}{b}{c} p q = +==→-== $ +==→-== $ sym (
+-comm {a}{b}{c} p q = +==→-== $ +==→-== $ sym {R = _==_} (
   proof a - c [ p' ] - b [ p₀' ] + c + b
-    === a - c [ p' ] - b [ p₀' ] + b + c
-      :by: swap' _ c b
-    === a - c [ p' ] + c
-      :by: ap (_+ c) $ -+ p₀'
-    === a
-      :by: -+ p'
+    === a - c [ p' ] - b [ p₀' ] + b + c :by: swap' _ c b
+    === a - c [ p' ] + c                 :by: ap (_+ c) $ -+ p₀'
+    === a                                :by: -+ p'
   qed)
   where p' = trans (postfix (_+ b) c) q
         p₀' =
           proof b
-            〉 _==_ 〉 c + b - c [ _ ]
-              :by: sym $ +==→-== $ comm c b
+            === c + b - c [ _ ]
+              :by: sym $ +==→-== $ comm c b  [: _==_ ]
             〉 _≤_ 〉 a - c [ p' ]
               :by: relating---≤  (postfix (_+ b) c) q
           qed
@@ -130,18 +125,12 @@ open import Proposition.Proof
   b - a [ p ] == d - c [ q ] ↔ b + c == d + a
 ⟶ (-==-↔+==+ {a}{b}{c}{d} p q) p₁ =
   proof b + c
-    === b - a [ p ] + a + c
-      :by: ap (_+ c) $ sym $ -+ p
-    === b - a [ p ] + (a + c)
-      :by: sym $ assoc _ a c
-    === d - c [ q ] + (a + c)
-      :by: ap (_+ (a + c)) $ p₁
-    === d - c [ q ] + (c + a)
-      :by: ap (d - c [ q ] +_) $ comm a c
-    === d - c [ q ] + c + a
-      :by: assoc _ c a
-    === d + a
-      :by: ap (_+ a) $ -+ q
+    === b - a [ p ] + a + c   :by: ap (_+ c) $ sym $ -+ p
+    === b - a [ p ] + (a + c) :by: sym $ assoc _ a c
+    === d - c [ q ] + (a + c) :by: ap (_+ (a + c)) $ p₁
+    === d - c [ q ] + (c + a) :by: ap (d - c [ q ] +_) $ comm a c
+    === d - c [ q ] + c + a   :by: assoc _ c a
+    === d + a                 :by: ap (_+ a) $ -+ q
   qed
 ⟵ (-==-↔+==+ {a}{b}{c}{d} p q) q₁ =
   proof b - a [ p ]
