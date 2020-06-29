@@ -1,27 +1,30 @@
-{-# OPTIONS --exact-split --prop #-}
-module Proposition.Sum.Property where
+{-# OPTIONS --exact-split --safe --prop #-}
+open import Universes
+open import Relation.Binary.Definition
 
-open import PropUniverses
-open import Operation.Binary
-open import Logic
+module Proposition.Sum.Property {R₀ : BinRel 𝒰 X}{R₁ : BinRel 𝒱 X} where
+
+open import Proposition.Sum.Definition
+
+open import Relation.Binary.Property
 
 instance
-  ⊤-∨ : ⊤ IsLeftZeroOf _∨_
-  ∨-⊤ : ⊤ IsRightZeroOf _∨_
-  Lift⊤-∨ : Lift𝒰ᵖ ⊤ IsLeftZeroOf (_∨_ {𝒰}{𝒰})
-  ∨-Lift⊤ : Lift𝒰ᵖ ⊤ IsRightZeroOf (_∨_ {𝒰}{𝒰})
-  ⊥-∧ : ⊥ IsLeftZeroOf _∧_
-  ∧-⊥ : ⊥ IsRightZeroOf _∧_
-  Lift⊥-∧ : Lift𝒰ᵖ ⊥ IsLeftZeroOf (_∧_ {𝒰}{𝒰})
-  ∧-Lift⊥ : Lift𝒰ᵖ ⊥ IsRightZeroOf (_∧_ {𝒰}{𝒰})
+  Reflexive∧ :
+    ⦃ refl-R₀ : Reflexive R₀ ⦄
+    ⦃ refl-R₁ : Reflexive R₁ ⦄
+    → --------------------------
+    Reflexive (λ x y → R₀ x y ∧ R₁ x y)
+  Symmetric∧ :
+    ⦃ refl-R₀ : Symmetric R₀ ⦄
+    ⦃ refl-R₁ : Symmetric R₁ ⦄
+    → --------------------------
+    Symmetric (λ x y → R₀ x y ∧ R₁ x y)
+  Transitive∧ :
+    ⦃ refl-R₀ : Transitive R₀ ⦄
+    ⦃ refl-R₁ : Transitive R₁ ⦄
+    → --------------------------
+    Transitive (λ x y → R₀ x y ∧ R₁ x y)
 
-open import Axiom.PropositionExtensionality
-
-left-zero ⦃ ⊤-∨ ⦄ y = prop-ext ((λ _ → ⋆ₚ) , λ _ → ∨left ⋆ₚ) 
-right-zero ⦃ ∨-⊤ ⦄ y = prop-ext ((λ _ → ⋆ₚ) , λ _ → ∨right ⋆ₚ) 
-left-zero ⦃ Lift⊤-∨ ⦄ y = prop-ext ((λ _ → ↑prop ⋆ₚ) , λ _ → ∨left (↑prop ⋆ₚ))
-right-zero ⦃ ∨-Lift⊤ ⦄ y = prop-ext ((λ _ → ↑prop ⋆ₚ) , λ _ → ∨right (↑prop ⋆ₚ))
-left-zero ⦃ ⊥-∧ ⦄ y = prop-ext ((λ {((), _)}) , λ ())
-right-zero ⦃ ∧-⊥ ⦄ y = prop-ext ((λ {(_ , ())}) , λ ())
-left-zero ⦃ Lift⊥-∧ ⦄ y = prop-ext ((λ {(() , _)}) , λ ())
-right-zero ⦃ ∧-Lift⊥ ⦄ y = prop-ext ((λ {(_ , ())}) , λ ())
+refl ⦃ Reflexive∧ ⦄ x = refl x , refl x
+sym ⦃ Symmetric∧ ⦄ (p , q) = sym p , sym q
+trans ⦃ Transitive∧ ⦄ (p , q) (p' , q') = trans p p' , trans q q'

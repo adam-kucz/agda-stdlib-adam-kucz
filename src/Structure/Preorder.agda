@@ -26,4 +26,4 @@ module Composable⊑ (P : Preorder 𝒰 X) where
   open import Proof
 
   private instance _ = P
-  open TransMakeComposable _⊑_ ⦃ FormPreorder.transitive def ⦄ public
+  open MakeTransComposable _⊑_ ⦃ FormPreorder.transitive def ⦄ public

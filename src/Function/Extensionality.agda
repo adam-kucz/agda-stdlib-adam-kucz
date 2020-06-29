@@ -29,15 +29,21 @@ het-==→~ :
   (p' : ∀ x → A x == B (coe p x))
   → -----------------
   ∀ x → f x Het.== g (coe p x)
-het-==→~ {A = A}{B = B}{f}{g} _ (Id.refl X) p' _ with p''
-  where p'' : A Het.== B
-        p'' = fun-ext $ λ x →
+het-==→~ {X = X}{A = A}{B = B}{f}{g} q (Id.refl X) p' x = with' q p″ x
+  where p″ : A Het.== B
+        p″ = fun-ext $ λ x →
           proof A x
-            === B (coe (refl X) x) :by: p' x
+            === B (coe (refl X) x) :by: p' x [: _==_ ]
             het== B x              :by: ap B $ coe-eval (refl X) x
           qed
-het-==→~ (Het.refl f)(Id.refl X) _  x
-  | Het.refl A = ap f $ sym $ coe-eval (refl X) x
+        with' :
+          (q : f Het.== g)
+          (p : A Het.== B)
+          (x : X)
+          → -------------------------------
+          f x Het.== g (coe (Id.refl X) x)
+        with' (Het.refl f)(Het.refl A) x =
+          ap f $ isym $ coe-eval (Id.refl X) x
 
 -- open import Logic
 

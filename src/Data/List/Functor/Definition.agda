@@ -31,7 +31,7 @@ fmap-id ⦃ ListFunctor ⦄ = subrel $ fun-ext go
   where go : map (𝑖𝑑 X) ~ 𝑖𝑑 (List X)
         go [] = refl []
         go (h ∷ t) = ap (h ∷_) (go t)
-fmap-∘ ⦃ ListFunctor ⦄ g f = subrel {_P_ = _==_} $ fun-ext map-∘
+fmap-∘ ⦃ ListFunctor ⦄ g f = subrel {_P_ = _==_} $ fun-ext $ map-∘ g f
 
 fmap-L++ : {X : 𝒰 ˙}{Y : 𝒱 ˙}
   (f : X → Y)(l l' : List X)
@@ -83,7 +83,8 @@ fmap-def ⦃ ListApplicative ⦄ f x =
     === fmap (uncurry _$'_) (fmap (f ,_) x)
       :by: subrel $ ==→~ (fmap-∘ (uncurry _$'_) (f ,_)) x
     === fmap (uncurry _$'_) (fmap (f ,_) x ++ [])
-      :by: ap (fmap (uncurry _$'_)) $ sym $ right-unit (fmap (f ,_) x)
+      :by: ap (fmap (uncurry _$'_)) $ sym {R = _==_} $
+           right-unit {e = []} (fmap (f ,_) x)
   qed
 naturality ⦃ ListApplicative ⦄ f g [] v = refl []
 naturality ⦃ ListApplicative ⦄ f g (u₀ ∷ u) v =
@@ -94,7 +95,7 @@ naturality ⦃ ListApplicative ⦄ f g (u₀ ∷ u) v =
       :by: ap (fmap [ f × g ] (fmap (u₀ ,_) v) ++_) $
            naturality f g u v
     === fmap (f u₀ ,_) (fmap g v) ++ (fmap f u ⋆ fmap g v)
-      :by: ap (λ — → — v ++ (fmap f u ⋆ fmap g v)) (
+      :by: ap (λ — → — v ++ (fmap f u ⋆ fmap g v)){r = _==_}(
         proof fmap [ f × g ] ∘ fmap (u₀ ,_)
           === fmap ([ f × g ] ∘ (u₀ ,_))
             :by: sym {R = _==_} $ fmap-∘ [ f × g ] (u₀ ,_)
@@ -156,7 +157,7 @@ right-identity ⦃ ListApplicative ⦄ u =
             === fmap (Σ-assoc ∘ (h ,_)) (fmap (v₀ ,_) w) ++ (fmap (h ,_) v L⋆ w)
               :by: ap (fmap (Σ-assoc ∘ (h ,_)) (fmap (v₀ ,_) w) ++_) $ go v
             === fmap (h , v₀ ,_) w ++ (fmap (h ,_) v L⋆ w)
-              :by: ap (_++ (fmap (h ,_) v L⋆ w)) (
+              :by: ap (_++ (fmap (h ,_) v L⋆ w)){r = _==_}(
                 proof fmap (Σ-assoc ∘ (h ,_)) (fmap (v₀ ,_) w)
                   === fmap (Σ-assoc ∘ (h ,_) ∘ (v₀ ,_)) w
                     :by: subrel {_P_ = _==_} $
@@ -179,12 +180,12 @@ associativity ⦃ ListMonad ⦄ = subrel $ fun-ext go
         go [] = Het.refl []
         go ([] ∷ t) = go t
         go (([] ∷ t₀) ∷ t₁) = go (t₀ ∷ t₁)
-        go (((h ∷ t₀) ∷ t₁) ∷ t₂) = subrel $ ap (h ∷_) (
+        go (((h ∷ t₀) ∷ t₁) ∷ t₂) = subrel $ ap (h ∷_){r = _==_}(
           proof t₀ ++ mconcat t₁ ++ mconcat (mconcat <$> t₂)
             === t₀ ++ (mconcat t₁ ++ mconcat (mconcat <$> t₂))
               :by: sym $ assoc t₀ _ _
             === t₀ ++ mconcat (t₁ ++ mconcat t₂)
-              :by: ap (t₀ ++_) (
+              :by: ap (t₀ ++_){r = _==_}(
                 proof mconcat t₁ ++ mconcat (fmap mconcat t₂)
                   === mconcat t₁ ++ mconcat (mconcat t₂)
                     :by: ap (mconcat t₁ ++_) (subrel $ go t₂)

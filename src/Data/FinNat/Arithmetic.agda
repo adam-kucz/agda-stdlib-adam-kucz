@@ -4,7 +4,7 @@ module Data.FinNat.Arithmetic where
 open import Data.Nat
 open import Data.FinNat.Definition
 open import Data.FinNat.Property
-open import Function using (_∘_) renaming (_$_ to _$'_)
+open import Function renaming (_$_ to _$'_)
 open import Logic
 
 open import Relation.Binary.Property
@@ -22,7 +22,7 @@ open import Proposition.Identity renaming (Idₚ to Id) using (_==_)
 -- return n if n fits in Finℕ (m + 1) [i.e. when n ≤ m]
 -- otherwise return the largest element of Finℕ (m + 1)
 cap : (m n : ℕ) → Finℕ (suc m)
-cap m n = toFinℕ {suc m} (min m n) (ap suc $ prefix (λ — → min — n) m)
+cap m n = toFinℕ {suc m} (min m n) (ap suc $ prefix (flip min n) m)
 
 -- instance
 --   Relating-maxFinℕ : Relating (λ n → maxFinℕ {n}) _<_ _<ₛ_
@@ -40,25 +40,26 @@ cap m n = toFinℕ {suc m} (min m n) (ap suc $ prefix (λ — → min — n) m)
 --   Relating-cap : Relating (λ m → toℕ $ cap m n) _≤_ _≤_
 --   rel-preserv ⦃ Relating-cap {n} ⦄ {m} {m'} m≤m' = 
 --     proof toℕ $ cap m n
---       〉 _==_ 〉 toℕ $ toFinℕ (min m n) min<s :by: refl
---       〉 _==_ 〉 min m n :by: toℕ-toFinℕ min<s
+--       === toℕ $ toFinℕ (min m n) min<s :by: refl
+--       === min m n :by: toℕ-toFinℕ min<s
 --       〉 _≤_ 〉 min m' n :by: rel-preserv m≤m'
---       〉 _==_ 〉 toℕ $ toFinℕ (min m' n) min<s :by: ← toℕ-toFinℕ min<s
---       〉 _==_ 〉 toℕ $ cap m' n :by: refl
+--       === toℕ $ toFinℕ (min m' n) min<s :by: ← toℕ-toFinℕ min<s
+--       === toℕ $ cap m' n :by: refl
 --     qed
 
 cap== : ∀ {l m n} → m == n → cap l m == cap l n
 cap== {l} (Id.refl m) = Id.refl (cap l m)
 
+open import Proposition.Sum
+
 cap-n-zero==zero : ∀ {n} → cap n zero == Finℕ.zero {n}
-cap-n-zero==zero {n} = 
+cap-n-zero==zero {n} =
   proof cap n zero
     === toFinℕ (min n 0) _
       :by: Id.refl (cap n zero)
     === toFinℕ zero (ap suc $ z≤ n)
-      :by: subrel $
-           toFinℕ== (right-zero n)(Id.refl (n +1))
-                     (ap suc $ prefix (λ — → min — 0) n)
+      :by: subrel {_P_ = _==_} $
+           toFinℕ== (right-zero {_∙_ = min} n)(Id.refl (n +1))_ 
     === zero
       :by: Id.refl zero
   qed
@@ -142,17 +143,17 @@ instance
   assoc+ₛ : ∀ {n} → Associative (_+ₛ_ {n})
   assoc ⦃ assoc+ₛ {suc n} ⦄ a b c = 
     proof a +ₛ (b +ₛ c)
-      〉 _==_ 〉 cap n $' toℕ a + toℕ (cap n $' toℕ b + toℕ c)
+      === cap n $' toℕ a + toℕ (cap n $' toℕ b + toℕ c)
         :by: refl (a +ₛ (b +ₛ c))
-      〉 _==_ 〉 cap n $' toℕ a + (toℕ b + toℕ c)
+      === cap n $' toℕ a + (toℕ b + toℕ c)
         :by: cap-thm (toℕ a +_) $ postfix (toℕ a +_)
-      〉 _==_ 〉 cap n $' (toℕ a + toℕ b) + toℕ c
+      === cap n $' (toℕ a + toℕ b) + toℕ c
         :by: ap (cap n) $ assoc (toℕ a) (toℕ b) (toℕ c)
-      〉 _==_ 〉 cap n $' toℕ (cap n $' toℕ a + toℕ b) + toℕ c
+      === cap n $' toℕ (cap n $' toℕ a + toℕ b) + toℕ c
         :by: sym $
                cap-thm (_+ toℕ c) $
                postfix (_+ toℕ c)
-      〉 _==_ 〉 a +ₛ b +ₛ c :by: refl (a +ₛ b +ₛ c)
+      === a +ₛ b +ₛ c :by: refl (a +ₛ b +ₛ c)
     qed
   
   0-+ₛ : ∀ {n} → 0 IsLeftUnitOf (_+ₛ_ {suc n})
@@ -162,39 +163,40 @@ instance
   +ₛ-0 = right-unit-of-commutative-left-unit 0 _+ₛ_
   
   CommutativeFinℕ* : ∀ {n} → Commutative (_*ₛ_ {n})
-  comm ⦃ CommutativeFinℕ* {suc n} ⦄ a b = ap (cap n) $ comm (toℕ a) (toℕ b)
+  comm ⦃ CommutativeFinℕ* {suc n} ⦄ a b =
+    ap (cap n) {r = _==_}{r' = _==_} $ comm (toℕ a) (toℕ b)
 
   assoc*ₛ : ∀ {n} → Associative (_*ₛ_ {n})
   assoc ⦃ assoc*ₛ {suc n} ⦄ zero b c =
     proof cap n zero
-      〉 _==_ 〉 cap n (toℕ (Finℕ.zero {n}) * toℕ c) :by: refl (cap n zero)
-      〉 _==_ 〉 cap n (toℕ (cap n zero) * toℕ c)
+      === cap n (toℕ (Finℕ.zero {n}) * toℕ c) :by: refl (cap n zero)
+      === cap n (toℕ (cap n zero) * toℕ c)
         :by: ap (λ – → cap n (toℕ – * toℕ c)) $ sym $ cap-n-zero==zero {n}
     qed
     where 
-  assoc ⦃ assoc*ₛ {suc n} ⦄ (suc a) b zero = ap (cap n) $
+  assoc ⦃ assoc*ₛ {suc n} ⦄ (suc a) b zero = ap (cap n){r = _==_} $
     (proof toℕ (suc a) * toℕ (cap n (toℕ b * 0))
-      〉 _==_ 〉 toℕ (suc a) * toℕ (cap n 0)
+      === toℕ (suc a) * toℕ (cap n 0)
         :by: ap (λ – → toℕ (suc a) * toℕ (cap n –)) $ right-zero (toℕ b)
-      〉 _==_ 〉 toℕ (suc a) * 0
+      === toℕ (suc a) * 0
         :by: ap (λ – → toℕ (suc a) * toℕ –) $ cap-n-zero==zero {n}
-      〉 _==_ 〉 0                    :by: right-zero (toℕ $' suc a)
-      〉 _==_ 〉 toℕ (suc a *ₛ b) * 0 :by: sym $ right-zero (toℕ (suc a *ₛ b))
+      === 0                    :by: right-zero (toℕ $' suc a)
+      === toℕ (suc a *ₛ b) * 0 :by: sym $ right-zero (toℕ (suc a *ₛ b))
     qed)
   assoc ⦃ assoc*ₛ {suc n} ⦄ (suc a) b (suc c) =
     proof suc a *ₛ (b *ₛ suc c)
-      〉 _==_ 〉 cap n $' suc (toℕ a) * toℕ (cap n $' toℕ b * suc (toℕ c))
+      === cap n $' suc (toℕ a) * toℕ (cap n $' toℕ b * suc (toℕ c))
         :by: refl (suc a *ₛ (b *ₛ suc c))
-      〉 _==_ 〉 cap n $' suc (toℕ a) * (toℕ b * suc (toℕ c))
+      === cap n $' suc (toℕ a) * (toℕ b * suc (toℕ c))
         :by: cap-thm (suc (toℕ a) *_) $
              postfix (suc (toℕ a) *_) ⦃ Postfix-*-left-≤ {toℕ a} ⦄
-      〉 _==_ 〉 cap n $' (suc (toℕ a) * toℕ b) * suc (toℕ c)
+      === cap n $' (suc (toℕ a) * toℕ b) * suc (toℕ c)
         :by: ap (cap n) $ assoc (suc $' toℕ a) (toℕ b) (suc $' toℕ c)
-      〉 _==_ 〉 cap n $' toℕ (cap n $' suc (toℕ a) * toℕ b) * suc (toℕ c)
+      === cap n $' toℕ (cap n $' suc (toℕ a) * toℕ b) * suc (toℕ c)
         :by: sym $
                cap-thm (_* suc (toℕ c)) $
                postfix (_* suc (toℕ c))
-      〉 _==_ 〉 suc a *ₛ b *ₛ suc c
+      === suc a *ₛ b *ₛ suc c
         :by: refl (suc a *ₛ b *ₛ suc c)
     qed
   
@@ -204,9 +206,9 @@ instance
   *ₛ-1 : ∀ {n : ℕ} → (suc (zero {n})) IsRightUnitOf (_*ₛ_ {suc (suc n)})
   right-unit ⦃ *ₛ-1 {n} ⦄ a = 
     proof a *ₛ (suc (zero {n}))
-      〉 _==_ 〉 cap (suc n) (toℕ a * 1) :by: refl (a *ₛ (suc (zero {n})))
-      〉 _==_ 〉 cap (suc n) (toℕ a) :by: ap (cap (suc n)) $ right-unit {_∙_ = _*_} (toℕ a)
-      〉 _==_ 〉 a                   :by: cap-toℕ
+      === cap (suc n) (toℕ a * 1) :by: refl (a *ₛ (suc (zero {n})))
+      === cap (suc n) (toℕ a) :by: ap (cap (suc n)) $ right-unit {_∙_ = _*_} (toℕ a)
+      === a                   :by: cap-toℕ
     qed
 
   0-*ₛ : 0 IsLeftUnitOf (_*ₛ_ {1})
@@ -240,39 +242,38 @@ right-zero ⦃ 0-IsRightZeroOf-*ₛ ⦄ a =
 instance
   FormHemiringFinℕ+* : ∀ {n} → FormHemiring (_+ₛ_ {suc n}) _*ₛ_ 0
 
-*[+]==*+* ⦃ FormHemiringFinℕ+* {n} ⦄ zero b c = ap (cap n) $ sym $
+*[+]==*+* ⦃ FormHemiringFinℕ+* {n} ⦄ zero b c = ap (cap n) $ sym {R = _==_} $
   (proof toℕ (cap n zero) + toℕ (cap n zero)
-    〉 _==_ 〉 toℕ (cap n zero)
+    === toℕ (cap n zero)
       :by: ap (λ – → toℕ – + toℕ (cap n zero)) $ cap-n-zero==zero {n}
-    〉 _==_ 〉 zero
+    === zero
       :by: ap toℕ $ cap-n-zero==zero {n}
   qed)
 *[+]==*+* ⦃ FormHemiringFinℕ+* {n} ⦄ (suc a) b c =
   proof suc a *ₛ (b +ₛ c)
-    〉 _==_ 〉 cap n (suc (toℕ a) * toℕ (cap n $' toℕ b + toℕ c))
+    === cap n (suc (toℕ a) * toℕ (cap n $' toℕ b + toℕ c))
       :by: refl (suc a *ₛ (b +ₛ c))
-    〉 _==_ 〉 cap n (suc (toℕ a) * (toℕ b + toℕ c))
+    === cap n (suc (toℕ a) * (toℕ b + toℕ c))
       :by: cap-thm (suc (toℕ a) *_) $
            postfix (suc (toℕ a) *_) ⦃ Postfix-*-left-≤ {toℕ a} ⦄
-    〉 _==_ 〉 cap n (suc (toℕ a) * toℕ b + suc (toℕ a) * toℕ c)
+    === cap n (suc (toℕ a) * toℕ b + suc (toℕ a) * toℕ c)
       :by: ap (cap n) $ *[+]==*+* (suc $' toℕ a) (toℕ b) (toℕ c)
-    〉 _==_ 〉 cap n (toℕ (cap n $' suc (toℕ a) * toℕ b) + suc (toℕ a) * toℕ c)
+    === cap n (toℕ (cap n $' suc (toℕ a) * toℕ b) + suc (toℕ a) * toℕ c)
       :by: sym $
              cap-thm (_+ suc (toℕ a) * toℕ c) $
              postfix (_+ suc (toℕ a) * toℕ c)
-    〉 _==_ 〉 cap n (toℕ (suc a *ₛ b) + toℕ (cap n $' suc (toℕ a) * toℕ c))
+    === cap n (toℕ (suc a *ₛ b) + toℕ (cap n $' suc (toℕ a) * toℕ c))
       :by: sym $
              cap-thm (toℕ (suc a *ₛ b) +_) $
              postfix (toℕ (suc a *ₛ b) +_)
-    〉 _==_ 〉 suc a *ₛ b +ₛ suc a *ₛ c :by: refl (suc a *ₛ b +ₛ suc a *ₛ c)
+    === suc a *ₛ b +ₛ suc a *ₛ c :by: refl (suc a *ₛ b +ₛ suc a *ₛ c)
   qed
 [+]*==*+* ⦃ FormHemiringFinℕ+* ⦄ a b c =
-  proof
-    (a +ₛ b) *ₛ c
-      〉 _==_ 〉 c *ₛ (a +ₛ b) :by: comm (a +ₛ b) c
-      〉 _==_ 〉 c *ₛ a +ₛ c *ₛ b :by: *[+]==*+* c a b
-      〉 _==_ 〉 c *ₛ a +ₛ b *ₛ c :by: ap (c *ₛ a +ₛ_) $ comm c b
-      〉 _==_ 〉 a *ₛ c +ₛ b *ₛ c :by: ap (_+ₛ b *ₛ c) $ comm c a
+  proof (a +ₛ b) *ₛ c
+    === c *ₛ (a +ₛ b)    :by: comm (a +ₛ b) c
+    === c *ₛ a +ₛ c *ₛ b :by: *[+]==*+* c a b
+    === c *ₛ a +ₛ b *ₛ c :by: ap (c *ₛ a +ₛ_){r = _==_}{r' = _==_} $ comm c b
+    === a *ₛ c +ₛ b *ₛ c :by: ap (_+ₛ b *ₛ c){r = _==_}{r' = _==_} $ comm c a
   qed
 
 HemiringFinℕ+* : Hemiring (Finℕ (suc n))

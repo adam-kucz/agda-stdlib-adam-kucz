@@ -35,7 +35,7 @@ open import Type.Sum
 
 functor ⦃ BinaryTreeApplicative ⦄ = BinaryTreeFunctor
 unit ⦃ BinaryTreeApplicative ⦄ = leaf ⋆
-_⋆_ ⦃ BinaryTreeApplicative ⦄ (leaf x) = map (x Σ.,_)
+_⋆_ ⦃ BinaryTreeApplicative ⦄ (leaf x) = map (x ,_)
 _⋆_ ⦃ BinaryTreeApplicative ⦄ (l /\ r) y =
   _⋆_ ⦃ BinaryTreeApplicative ⦄ l y /\
   _⋆_ ⦃ BinaryTreeApplicative ⦄ r y

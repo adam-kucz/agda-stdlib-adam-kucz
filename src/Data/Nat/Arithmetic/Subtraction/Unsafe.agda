@@ -17,7 +17,7 @@ open import Proof
 
 unsafe-is-safe : ∀{m n}(p : n ≤ m) → m - n == (m - n [ p ])
 unsafe-is-safe {m}{zero} p = Id.refl m
-unsafe-is-safe {m +1}{n +1} p = unsafe-is-safe {m} (ap pred p)
+unsafe-is-safe {m +1}{n +1} p = unsafe-is-safe {m} $ ap pred p
 
 open import Function hiding (_$_)
 open import Data.Nat.Arithmetic.Definition
@@ -44,7 +44,8 @@ right-unit ⦃ RightUnitOf- ⦄ = Id.refl
 open import Data.Nat.Arithmetic.Property
 left-inv ⦃ LeftInverseUnsafeSub {m} ⦄ zero = subrel $ m -self==
 left-inv ⦃ LeftInverseUnsafeSub {0} ⦄ (n +1) = subrel $ right-unit (n +1)
-left-inv ⦃ LeftInverseUnsafeSub {m +1} ⦄ (n +1) = subrel {_P_ = Het._==_} (
+left-inv ⦃ LeftInverseUnsafeSub {m +1} ⦄ (n +1) =
+  subrel {_R_ = _==_}{_P_ = Het._==_} (
   proof n + (m +1) - m
     === (n +1) + m - m
       :by: ap (_- m) $ +-suc n m
@@ -54,7 +55,7 @@ left-inv ⦃ LeftInverseUnsafeSub {m +1} ⦄ (n +1) = subrel {_P_ = Het._==_} (
 
 rel-preserv ⦃ RelatingUnsafeSub-≤-≤ {n} ⦄ (z≤ m) =
   proof 0 - n
-    === 0        :by: left-zero n
+    === 0        :by: left-zero n [: _==_ ]
     〉 _≤_ 〉 m - n :by: z≤ (m - n)
   qed
 rel-preserv ⦃ RelatingUnsafeSub-≤-≤ {zero} ⦄ q@(s≤s _) = q

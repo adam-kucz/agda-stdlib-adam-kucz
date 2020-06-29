@@ -7,7 +7,7 @@ open import Proposition.Identity.Definition using (_==_; refl)
 open import Proposition.Unit using (⊤; ⋆ₚ) public
 open import Proposition.Empty
   using (⊥; ¬_) renaming (⊥-recursionₚ to ⊥-recursion) public
-open import Proposition.Sum
+open import Proposition.Sum.Definition
   using (∃; _∧_; _,_) renaming (left to ∧left; right to ∧right) public
 open import Proposition.BinarySum
   using (_∨_; ∨-contract)

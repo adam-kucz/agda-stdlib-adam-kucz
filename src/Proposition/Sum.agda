@@ -2,3 +2,4 @@
 module Proposition.Sum where
 
 open import Proposition.Sum.Definition public
+open import Proposition.Sum.Property public

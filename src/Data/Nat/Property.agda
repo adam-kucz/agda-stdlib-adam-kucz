@@ -184,5 +184,5 @@ Comparable< {m +1} {n +1} = suc-step Comparable<
 
 open import Structure.Monoid.Definition
 
-MaxMonoid : Monoid ℕ
-MaxMonoid = record { e = 0; _∙_ = max }
+Monoid⊔ : Monoid ℕ
+Monoid⊔ = record { e = 0; _∙_ = _⊔_ }
