@@ -19,8 +19,9 @@ open Nat ⦃ ... ⦄ public using (fromℕ)
 
 instance
   Natℕ : Nat 𝒰₀ ℕ
-  Nat.Constraint Natℕ _ = ⊤
-  Nat.fromℕ Natℕ n = n
+
+Nat.Constraint Natℕ _ = ⊤
+Nat.fromℕ Natℕ n = n
 
 module Pattern where
   infixl 130 _+1 _+2 _+3

@@ -33,9 +33,9 @@ mk-Σ-implicit {x = x} y = x , y
   (x : X) → Y × Z
 〈 f , g 〉 x = f x , g x
 
-[_×_] :
+〈_×_〉 :
   (f : (x : X₀) → X₁)
   (g : (y : Y₀) → Y₁)
   → -----------------------
   (xy : X₀ × Y₀) → X₁ × Y₁
-[ f × g ] (x , y) = f x , g y
+〈 f × g 〉 (x , y) = f x , g y

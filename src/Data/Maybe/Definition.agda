@@ -40,13 +40,13 @@ partial X A = (x : X) → Maybe (A x)
 _⇀_ : (X : 𝒰 ˙)(Y : 𝒱 ˙) → 𝒰 ⊔ 𝒱 ˙
 X ⇀ Y = X → Maybe Y
 
-syntax partial X A = [x: X ]⇀ A x
+syntax partial X (λ x → A) = [ x ∶ X ]⇀ A
 
 open import Proposition.Identity
 open import Proposition.Empty
 
 _∈dom_ _∉dom_ : {A : X → 𝒰 ˙}
-  (x : X)(f : [x: X ]⇀ A x) → 𝒰 ᵖ
+  (x : X)(f : [ x ∶ X ]⇀ A x) → 𝒰 ᵖ
 _∉dom_ {A = A} x f = f x == nothing {X = A x}
 x ∈dom f = ¬ x ∉dom f
 

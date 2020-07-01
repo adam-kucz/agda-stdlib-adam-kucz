@@ -25,8 +25,8 @@ from-Σ== (Id.refl σ) = Id.refl (pr₁ σ) ,, Het.refl (pr₂ σ)
 
 open import Function
 
-[id×id]~id : [ 𝑖𝑑 X × 𝑖𝑑 Y ] ~ id
-[id×id]~id = Het.refl
+〈id×id〉~id : 〈 𝑖𝑑 X × 𝑖𝑑 Y 〉 ~ id
+〈id×id〉~id = Het.refl
 
 〈pr₁,pr₂〉~id : 〈 pr₁ , pr₂ 〉 ~ 𝑖𝑑 (X × Y)
 〈pr₁,pr₂〉~id = Het.refl

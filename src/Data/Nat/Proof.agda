@@ -17,7 +17,7 @@ open import Function.Proof
 open Composable ⦃ ... ⦄ public
 
 module Composable-< where
-  open MakeComposable _<_ public
+  open MakeTransComposable _<_ ⦃ Transitive< ⦄ public
 
 instance
   Composable-<-≤ : Composable 𝒰₀ _<_ _≤_

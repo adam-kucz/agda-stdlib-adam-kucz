@@ -32,7 +32,7 @@ record Applicative
     naturality : ∀ {X₀ : 𝒰 ˙}{X₁ : 𝒱 ˙}{Y₀ : 𝒲 ˙}{Y₁ : 𝒯 ˙}
       (f : X₀ → X₁)(g : Y₀ → Y₁) u v
       → ---------------------------------------------
-      [ f × g ] <$> (u ⋆ v) == fmap f u ⋆ fmap g v
+      〈 f × g 〉 <$> (u ⋆ v) == fmap f u ⋆ fmap g v
     left-identity : {X : 𝒰 ˙}(v : A X)
       → ------------------------------
       fmap pr₂ (unit ⋆ v) == v
