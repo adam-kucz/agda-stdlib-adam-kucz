@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Data.Nat.Arithmetic where
 
 open import Data.Nat.Arithmetic.Definition public

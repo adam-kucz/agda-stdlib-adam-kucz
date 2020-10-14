@@ -1,18 +1,18 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Structure.Hemiring where
 
 open import Structure.Semigroup.Definition
 open import Structure.Monoid.Definition
 open import Operation.Binary.Property using (Commutative)
 
-open import PropUniverses
-open import Proposition.Identity using (_==_)
+open import Universes
+open import Type.Identity using (_==_)
 open import Operation.Binary
   renaming (ClosedOp to Op) hiding (Op)
 
 open Monoid renaming (e to zero) using ()
 
-record FormHemiring {X : 𝒰 ˙} (_+_ _*_ : Op X) (zero : X) : 𝒰 ᵖ where
+record FormHemiring {X : 𝒰 ˙} (_+_ _*_ : Op X) (zero : X) : 𝒰 ˙ where
   -- TODO: figure out why this has no effect
   -- infixl 160 _⁻¹
   -- infixl 130 _∙_

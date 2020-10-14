@@ -1,12 +1,12 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Data.Nat.Arithmetic.Property where
 
-open import PropUniverses
+open import Universes
 open import Data.Nat.Arithmetic.Definition
 open import Data.Nat.Definition
 open import Data.Nat.Syntax
 open Pattern
-open import Proposition.Function using (_$_)
+open import Function.Basic using (_$_)
 
 open import Relation.Binary.Property hiding (_~_)
 open import Operation.Binary.Property
@@ -154,11 +154,11 @@ instance
 
 open import Data.Nat.BasicProperty
 
-Injective-right-+ {m} = injective-equiv (sym $ +-right-equiv)
-  where instance _ = injective-repeat suc m
+Injective-right-+ {m} = injective-equiv $ sym $ +-right-equiv
+  where instance _ = injective-repeat suc m ⦃ Injective-suc ⦄
 
-Injective-left-+ {m} = injective-equiv (sym $ +-left-equiv)
-  where instance _ = injective-repeat suc m
+Injective-left-+ {m} = injective-equiv $ sym $ +-left-equiv
+  where instance _ = injective-repeat suc m ⦃ Injective-suc ⦄
 
 Hemiringℕ+* : Hemiring ℕ
 Hemiring._+_ Hemiringℕ+* = _+_

@@ -1,27 +1,16 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Type.Identity.Property where
 
-open import Type.Identity.Definition
+open import Type.Identity.Homogeneous.Definition hiding (refl)
+import Type.Identity.Heterogeneous as Het
 
 open import Universes
-open import Proposition.Identity
+open import Relation.Binary.Property
 
-≡→het== : {x : X} {y : Y}
-  (id : x ≡ y)
-  → ------------
-  x Het.== y
-≡→het== (refl x) = Het.refl x
+instance
+  hom⊆het : (_==_ {X = X}) ⊆ Het._==_
+  het⊆hom : Het._==_ ⊆ (_==_ {X = X})
 
-trans : {x : X} {y : Y} {z : Z}
-  (p : x ≡ y)
-  (q : y ≡ z)
-  → --------------
-  x ≡ z
-trans (refl _) q = q
+subrel⊆ hom⊆het (Id.refl x) = Het.refl x
+subrel⊆ het⊆hom (Het.refl x) = Id.refl x
 
-transport== :
-  (x : X)
-  (p : X ≡ Y)
-  → -----------------
-  transport p x Het.== x
-transport== x (refl _) = Het.refl x

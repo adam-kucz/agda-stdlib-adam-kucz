@@ -1,8 +1,8 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Function.Proof where
 
-open import PropUniverses
-open import Proposition.Identity.Definition
+open import Universes
+open import Type.Identity.Definition
 open import Logic.Basic
 open import Relation.Binary.Definition
 
@@ -11,7 +11,7 @@ record Relating {X : 𝒰 ˙} {A : (x : X) → 𝒱 ˙}
     (r : BinRel 𝒲 X)
     (r' : {x y : X} → Rel 𝒯 (A x) (A y))
     : --------------------
-    𝒰 ⊔ 𝒲 ⊔ 𝒯 ᵖ
+    𝒰 ⊔ 𝒲 ⊔ 𝒯 ˙
     where
   field
     rel-preserv :
@@ -39,7 +39,7 @@ record Relating-2 {X : 𝒰 ˙}{Y : 𝒱 ˙}{K : (x : X)(y : Y) → 𝒲 ˙}
     (r' : BinRel 𝒴 Y)
     (r″ : ∀ {x₀ x₁ y₀ y₁} → Rel 𝒵 (K x₀ y₀) (K x₁ y₁))
     : --------------------
-    𝒰 ⊔ 𝒱 ⊔ 𝒳 ⊔ 𝒴 ⊔ 𝒵 ᵖ
+    𝒰 ⊔ 𝒱 ⊔ 𝒳 ⊔ 𝒴 ⊔ 𝒵 ˙
     where
   field
     rel-preserv-2 : ∀ {x x' y y'}
@@ -67,7 +67,7 @@ record UniversalPostfix {X : 𝒰 ˙} {Y : 𝒱 ˙}
     (f : (x : X) → Y)
     (_⊑_ : Rel 𝒲 X Y)
     : --------------------
-    𝒰 ⊔ 𝒲 ᵖ where
+    𝒰 ⊔ 𝒲 ˙ where
   field
     postfix : ∀ x → x ⊑ f x
 
@@ -84,7 +84,7 @@ record UniversalPrefix {X : 𝒰 ˙} {Y : 𝒱 ˙}
     (f : (x : X) → Y)
     (_⊑_ : Rel 𝒲 Y X)
     : --------------------
-    𝒰 ⊔ 𝒲 ᵖ where
+    𝒰 ⊔ 𝒲 ˙ where
   field
     prefix : ∀ x → f x ⊑ x
 
@@ -124,8 +124,6 @@ instance
     Relating f (_≠_ {X = X}) (λ {x}{y} → Het._≠_ {X = A x}{Y = A y})
   Relating-∘-~ : {f : (y : Y) → A y} → Relating (f ∘_) (_~_ {X = X}) _~_
 
-open import Proposition.Function renaming (_$_ to _$ₚ_)
-
 rel-preserv ⦃ Relating-all-==-het== {f = f} ⦄
   (refl x) = Het.refl (f x)
 rel-preserv ⦃ Relating-all-het== {f = f} ⦄
@@ -135,9 +133,9 @@ rel-preserv-2 ⦃ Relating-2-all-== {f = f} ⦄
 rel-preserv-2 ⦃ Relating-2-all-het== {f = f} ⦄
   (Het.refl x) (Het.refl y) = Het.refl (f x y)
 Relating.rel-preserv RelatingInjective a≠b fa==fb =
-  a≠b $ₚ inj $ₚ ==→het== fa==fb 
+  a≠b $ inj $ ==→het== fa==fb 
 Relating.rel-preserv RelatingInjectiveHet a≠b fa==fb =
-  a≠b $ₚ inj fa==fb
+  a≠b $ inj fa==fb
 rel-preserv ⦃ Relating-∘-~ {f = f} ⦄ p x = ap f (p x)
 
   -- TODO (low priority): think of a different approach, this produces too many choice points

@@ -1,7 +1,7 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Operation.Binary.Definition where
 
-open import PropUniverses
+open import Universes
 
 Op : (X : 𝒰 ˙) (Y : 𝒱 ˙) (Z : 𝒲 ˙) → 𝒰 ⊔ 𝒱 ⊔ 𝒲 ˙
 Op X Y Z = (x : X) (y : Y) → Z

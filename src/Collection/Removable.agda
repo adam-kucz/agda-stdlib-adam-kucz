@@ -1,10 +1,10 @@
-{-# OPTIONS --exact-split --prop --safe #-}
+{-# OPTIONS --exact-split --safe #-}
 module Collection.Removable where
 
 open import Collection.Definition
 
 open import Universes
-open import Proposition.Identity
+open import Type.Identity
 open import Logic
 open import Data.List.Definition
 open import Data.List.Collection

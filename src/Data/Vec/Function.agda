@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --exact-split --prop  #-}
+{-# OPTIONS --safe --exact-split  #-}
 module Data.Vec.Function where
 
 open import Data.Vec.Definition
@@ -108,8 +108,7 @@ vec-to-nonempty-list [ h ] = NL.[ h ]
 vec-to-nonempty-list (h ∷ h₁ ∷ v) = h ∷ vec-to-nonempty-list (h₁ ∷ v)
 
 -- open import Proposition.Identity hiding (refl)
-open import Proposition.Empty renaming (⊥-recursion to ⊥ₜ-recursion)
-open import Proposition.Decidable
+open import Type.Decidable
 open import Relation.Binary hiding (_~_)
 open import Proof
 
@@ -123,13 +122,13 @@ vec-remove :
 vec-remove x (h ∷ v) p with decide (h == x)
 vec-remove x (h ∷ v) p | true _ = v
 vec-remove {m = zero} x [ h ] p | false ¬p =
-  ⊥ₜ-recursion (Vec _ 0) (contradiction p)
+  ⊥-recursion (Vec _ 0) (contradiction p)
   where contradiction : (p : x ∈ [ h ]) → ⊥
         contradiction (x∈x∷ t) = ¬p $ Id.refl x
 vec-remove {m = m +1} x (h ∷ v) p | false ¬p =
   h ∷ vec-remove x v (p' p)
   where p' : (p : x ∈ h ∷ v) → x ∈ v
-        p' (x∈x∷ t) = ⊥-recursionₚ (x ∈ v) $ ¬p $ Id.refl x
+        p' (x∈x∷ t) = ⊥-recursion (x ∈ v) $ ¬p $ Id.refl x
         p' (x∈tail h p) = p
 
 open import Function hiding (_$_)
@@ -137,10 +136,10 @@ open import Function hiding (_$_)
 to-vec-to-list : to-vec ∘ (to-list {Col = Vec X m}) ~ id
 to-vec-to-list [] = refl []
 to-vec-to-list {X = X} (h ∷ v) =
-  Het.Id.ap2 {K = λ m v → Vec X (m +1)}
-             (λ m (v : Vec X m) → h ∷ v)
-             (subrel $ vec-to-list-len v)
-             (to-vec-to-list v)
+  Het.Id'.ap2 {K = λ m v → Vec X (m +1)}
+              (λ m (v : Vec X m) → h ∷ v)
+              (subrel $ vec-to-list-len v)
+              (to-vec-to-list v)
 
 to-list-to-vec : to-list ∘ (to-vec {X = X}) ~ id
 to-list-to-vec [] = refl []
@@ -150,8 +149,8 @@ reverse : (v : Vec X m) → Vec X m
 reverse [] = []
 reverse v@(_ ∷ _) = last v ∷ reverse (drop-last v)
 
-open import Type.Sum hiding (_,_)
+open import Type.Sum
 
 zip : (v₀ : Vec X m)(v₁ : Vec Y m) → Vec (X × Y) m
 zip [] [] = []
-zip (h₀ ∷ v₀) (h₁ ∷ v₁) = (h₀ Σ., h₁) ∷ zip v₀ v₁
+zip (h₀ ∷ v₀) (h₁ ∷ v₁) = (h₀ , h₁) ∷ zip v₀ v₁

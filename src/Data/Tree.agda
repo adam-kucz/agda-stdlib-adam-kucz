@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --exact-split --prop  #-}
+{-# OPTIONS --safe --exact-split  #-}
 module Data.Tree where
 
 open import Data.Tree.Definition public

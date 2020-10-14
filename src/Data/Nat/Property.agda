@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Data.Nat.Property where
 
 open import Data.Nat.Definition
@@ -7,9 +7,8 @@ open import Data.Nat.Order
 open import Data.Nat.Syntax
 open Pattern
 
-open import Proposition.Identity hiding (refl)
-open import Proposition.Decidable
-open import Proposition.Comparable
+open import Type.Decidable
+open import Type.Comparable
 open import Function.Property
 
 open import Operation.Binary.Property
@@ -124,27 +123,10 @@ UniversalPostfix.postfix (Postfix-+-right-< {n}) x =
     === x + (n +1) :by: comm (n +1) x
   qed
 
-UniversalPostfix.postfix (Postfix-+-left-≤ {zero}) x = refl x
-UniversalPostfix.postfix (Postfix-+-left-≤ {n +1}) x =
-  proof x
-    〉 _≤_ 〉 n + x    :by: postfix (n +_) x
-    〉 _≤_ 〉 n + x +1 :by: -≤self+1 (n + x)
-  qed
-
-UniversalPostfix.postfix (Postfix-+-right-≤ {n}) x =
-  proof x
-    〉 _≤_ 〉 n + x :by: postfix (n +_) x
-    ===    x + n :by: comm n x
-  qed
-
-UniversalPostfix.postfix (Postfix-*-left-≤ {n}) x =
-  postfix (_+ n * x) ⦃ Postfix-+-right-≤ ⦄ x
-
-UniversalPostfix.postfix (Postfix-*-right-≤ {n}) x =
-  proof x
-    〉 _≤_ 〉 suc n * x :by: postfix (suc n *_) ⦃ Postfix-*-left-≤ {n} ⦄ x
-    ===    x * suc n :by: comm (suc n) x
-  qed
+Postfix-+-left-≤ = Postfix+-
+Postfix-+-right-≤ = Postfix-+
+Postfix-*-left-≤ {m} = Postfix*- {m}
+Postfix-*-right-≤ = Postfix-*
 
 UniversalPrefix.prefix (Prefix-min-≤ {n}) = go n
   where go : ∀ n m → min n m ≤ m
@@ -161,7 +143,7 @@ UniversalPostfix.postfix (Postfix-max-≤ {n}) = go n
 UniversalPrefix.prefix (Prefix-min-2-≤ {n}) m =
   proof min m n
     === min n m :by: comm m n          [: _==_ ]
-    〉 _≤_ 〉 m    :by: prefix (min n) m
+    〉 _≤_ 〉 m    :by: prefix (min n) ⦃ Prefix-min-≤ ⦄ m
   qed
 
 UniversalPostfix.postfix (Postfix-max-2-≤ {n}) m =

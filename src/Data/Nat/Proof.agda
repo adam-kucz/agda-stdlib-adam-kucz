@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Data.Nat.Proof where
 
 open import Data.Nat.Definition
@@ -6,12 +6,11 @@ open import Data.Nat.Syntax
 open Pattern
 open import Data.Nat.Order
 
-open import PropUniverses
+open import Universes
 open import Relation.Binary.Property
 open import Operation.Binary.Property
 open import Logic
 open import Proof
-open import Proposition.Proof
 open import Function.Proof
 
 open Composable ⦃ ... ⦄ public
@@ -61,6 +60,7 @@ instance
   Postfix-+ : UniversalPostfix (_+ m) _≤_
   Postfix*- : UniversalPostfix ((m +1) *_) _≤_
   Postfix-* : UniversalPostfix (_* (m +1)) _≤_
+  Prefix- : UniversalPrefix (_- m) _≤_
 
 UniversalPostfix.postfix (Postfix+- {zero}) n = refl n
 UniversalPostfix.postfix (Postfix+- {m +1}) n =
@@ -75,10 +75,18 @@ UniversalPostfix.postfix (Postfix-+ {m}) n =
     〉 _==_ 〉 n + m :by: comm m n
   qed
 
-UniversalPostfix.postfix (Postfix*- {m}) n = postfix (_+ m * n) n
+UniversalPostfix.postfix (Postfix*- {m}) n =
+  postfix (_+ m * n) ⦃ Postfix-+ ⦄ n
 
 UniversalPostfix.postfix (Postfix-* {m}) n =
   proof n
     〉 _≤_ 〉 (m +1) * n  :by: postfix ((m +1) *_) ⦃ Postfix*- {m} ⦄ n
     〉 _==_ 〉 n * (m +1) :by: comm (m +1) n
+  qed
+
+UniversalPrefix.prefix (Prefix- {0}) = refl
+UniversalPrefix.prefix (Prefix- {m +1}) 0 = refl 0
+UniversalPrefix.prefix (Prefix- {m +1}) (n +1) =
+  proof n - m 〉 _≤_ 〉 n    :by: prefix (_- m) ⦃ Prefix- {m} ⦄ n
+              〉 _≤_ 〉 n +1 :by: postfix suc n
   qed

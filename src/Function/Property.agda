@@ -1,10 +1,10 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Function.Property where
 
-open import PropUniverses
-open import Proposition.Identity.Definition
-import Proposition.Identity.Heterogeneous as Het
-open import Proposition.Sum
+open import Universes
+open import Type.Identity.Definition
+import Type.Identity.Heterogeneous as Het
+open import Type.Sum.Definition
 open import Logic.Basic
 open import Function.Basic hiding (_$_)
 open import Function.Equivalence.Definition
@@ -13,7 +13,7 @@ record LeftInverse {X : 𝒰 ˙}{Y : 𝒱 ˙}
     (f : X → Y)
     (f⁻¹ : Y → X)
     : --------------
-    𝒰 ⊔ 𝒱 ᵖ
+    𝒰 ⊔ 𝒱 ˙
     where
   field
      left-inv : f⁻¹ ∘ f ~ id
@@ -32,7 +32,7 @@ record RightInverse {X : 𝒰 ˙}{Y : 𝒱 ˙}
     (f : X → Y)
     (f⁻¹ : Y → X)
     : --------------
-    𝒰 ⊔ 𝒱 ᵖ
+    𝒰 ⊔ 𝒱 ˙
     where
   field
      right-inv : f ∘ f⁻¹ ~ id
@@ -51,7 +51,7 @@ record Inverse {X : 𝒰 ˙}{Y : 𝒱 ˙}
     (f : X → Y)
     (f⁻¹ : Y → X)
     : --------------
-    𝒰 ⊔ 𝒱 ᵖ
+    𝒰 ⊔ 𝒱 ˙
     where
   field
      ⦃ inverse-left ⦄ : LeftInverse f f⁻¹
@@ -79,13 +79,13 @@ instance
     Inverse f f⁻¹
 DefaultInverse = record {}
 
-record Injective {X : 𝒰 ˙} {A : (x : X) → 𝒱 ˙} (f : (x : X) → A x) : 𝒰 ⊔ 𝒱 ᵖ where
+record Injective {X : 𝒰 ˙} {A : (x : X) → 𝒱 ˙} (f : (x : X) → A x) : 𝒰 ⊔ 𝒱 ˙ where
   field
     inj : ∀ {x y} (p : f x Het.== f y) → x == y
 
 open Injective ⦃ ... ⦄ public
 
-record Surjective {X : 𝒰 ˙} {Y : 𝒱 ˙} (f : (x : X) → Y) : 𝒰 ⊔ 𝒱 ᵖ where
+record Surjective {X : 𝒰 ˙} {Y : 𝒱 ˙} (f : (x : X) → Y) : 𝒰 ⊔ 𝒱 ˙ where
   field
     surj : ∀ (y : Y) → ∃ λ x → f x == y
 
@@ -98,7 +98,7 @@ sur :
   → ∃ λ x → f x == y
 sur _ y = surj y
 
-record Bijective {X : 𝒰 ˙} {Y : 𝒱 ˙} (f : (x : X) → Y) : 𝒰 ⊔ 𝒱 ᵖ where
+record Bijective {X : 𝒰 ˙} {Y : 𝒱 ˙} (f : (x : X) → Y) : 𝒰 ⊔ 𝒱 ˙ where
   field
     ⦃ injective ⦄ : Injective f
     ⦃ surjective ⦄ : Surjective f
@@ -131,7 +131,7 @@ inj ⦃ Injective-id ⦄ (Het.refl x) = refl x
 Surjective-id : Surjective (𝑖𝑑 X)
 surj ⦃ Surjective-id ⦄ y = y , refl y
 
-Involutive : {X : 𝒰 ˙}(f : X → X) → 𝒰 ᵖ
+Involutive : {X : 𝒰 ˙}(f : X → X) → 𝒰 ˙
 Involutive f = Inverse f f
 
 module mkInvolutive {f : X → X}(p : f ∘ f ~ id) where
@@ -144,7 +144,7 @@ module mkInvolutive {f : X → X}(p : f ∘ f ~ id) where
 module IdInvolutive {𝒰}{X : 𝒰 ˙} where
   open mkInvolutive {X = X}{f = id} Het.refl
 
-record Idempotent {X : 𝒰 ˙}(f : (x : X) → X) : 𝒰 ᵖ where
+record Idempotent {X : 𝒰 ˙}(f : (x : X) → X) : 𝒰 ˙ where
   field
     idemp : ∀ x → f (f x) == f x 
 

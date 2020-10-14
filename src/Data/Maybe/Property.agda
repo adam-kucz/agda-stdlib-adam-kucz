@@ -1,10 +1,10 @@
-{-# OPTIONS --exact-split --prop --safe #-}
+{-# OPTIONS --exact-split --safe #-}
 module Data.Maybe.Property where
 
 open import Data.Maybe.Definition
 
-open import PropUniverses
-open import Proposition.Decidable
+open import Universes
+open import Type.Decidable
 open import Proof
 
 instance
@@ -41,7 +41,7 @@ open import Data.List.Collection
 open import Logic
 open import Logic.Proof
 
-_∈_ ⦃ MaybeCollection ⦄ x nothing = Lift𝒰ᵖ ⊥
+_∈_ ⦃ MaybeCollection ⦄ x nothing = Lift𝒰 ⊥
 _∈_ ⦃ MaybeCollection ⦄ x (just y) = x == y
 ∅ ⦃ MaybeEmpty ⦄ = nothing
 _∉∅ ⦃ MaybeEmpty ⦄ _ ()
@@ -58,7 +58,7 @@ remove ⦃ MaybeRemovable ⦄ x (just y) = if y == x then ∅ else just y
   Id.refl x , ¬p
 ⟵ (remove-valid ⦃ MaybeRemovable ⦃ d ⦄ ⦄ {_}{y}{just x}) (Id.refl x , x≠y)
   with d {x}{y}
-⟵ (remove-valid MaybeRemovable) (Id.refl x , x≠y) | true p = ↑prop $ x≠y p
+⟵ (remove-valid MaybeRemovable) (Id.refl x , x≠y) | true p = ↑ $ x≠y p
 ⟵ (remove-valid MaybeRemovable) (Id.refl x , x≠y) | false ¬p = Id.refl x
 _∩_ ⦃ MaybeIntersection ⦄ nothing _ = nothing
 _∩_ ⦃ MaybeIntersection ⦄ (just x) nothing = nothing
@@ -72,5 +72,5 @@ _∩_ ⦃ MaybeIntersection ⦄ (just x) (just y) =
   (Id.refl x , Id.refl x) with d {x}{x}
 ⟵ (∩-valid MaybeIntersection) (Id.refl x , Id.refl x) | true p = Id.refl x
 ⟵ (∩-valid MaybeIntersection) (Id.refl x , Id.refl x) | false ¬p =
-  ↑prop $ ¬p $ Id.refl x
+  ↑ $ ¬p $ Id.refl x
 

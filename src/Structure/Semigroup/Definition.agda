@@ -1,10 +1,10 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Structure.Semigroup.Definition where
 
-open import PropUniverses
+open import Universes
 open import Operation.Binary using (ClosedOp; Associative)
 
-FormSemigroup : {X : 𝒰 ˙} (_∙_ : ClosedOp X) → 𝒰 ᵖ
+FormSemigroup : {X : 𝒰 ˙} (_∙_ : ClosedOp X) → 𝒰 ˙
 FormSemigroup = Associative
 
 record Semigroup (X : 𝒰 ˙) : 𝒰 ˙ where

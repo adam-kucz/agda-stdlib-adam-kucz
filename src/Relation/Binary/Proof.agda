@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Relation.Binary.Proof where
 
 open import Relation.Binary.Property
@@ -15,7 +15,7 @@ module Composable-⊆ {X : 𝒰 ˙}{Y : 𝒱 ˙}{𝒲 𝒯} where
                  (_⊆_ {𝒲 = 𝒯}{𝒯 = 𝒵}{X = X}{Y = Y})
 
   Composable.rel Composable-⊆-⊆ = _⊆_
-  subrel ⦃ Composable.compose Composable-⊆-⊆ p q ⦄ xRy =
+  subrel⊆ (Composable.compose Composable-⊆-⊆ p q) xRy =
     subrel ⦃ q ⦄ $ subrel ⦃ p ⦄ xRy
 
 module Composable-~ {X : 𝒰 ˙}{Y : 𝒱 ˙}{𝒲 𝒯} where

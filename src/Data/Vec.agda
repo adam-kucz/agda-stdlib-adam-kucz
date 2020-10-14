@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --exact-split --prop  #-}
+{-# OPTIONS --safe --exact-split  #-}
 module Data.Vec where
 
 open import Data.Vec.Definition public

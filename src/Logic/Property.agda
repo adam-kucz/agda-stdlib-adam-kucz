@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --prop --safe  #-}
+{-# OPTIONS --exact-split --safe  #-}
 module Logic.Property where
 
-open import Proposition.Sum.Property public
+open import Type.Sum.Property public

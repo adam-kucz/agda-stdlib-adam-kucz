@@ -1,16 +1,15 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Relation.Binary.Property where
 
-open import PropUniverses
+open import Universes
 open import Relation.Binary.Definition
-open import Proposition.Identity.Definition using (_==_; _≠_)
-open import Proposition.Empty
-open import Proposition.BinarySum
-  renaming (left to ∨left; right to ∨right)
+open import Type.Identity.Definition using (_==_; _≠_)
+open import Type.Empty
+open import Logic.Basic
 
 private
   module RelProp (property : RelProperty) where
-    record Property {X : 𝒰 ˙} (R : BinRel 𝒱 X) : 𝒰 ⊔ 𝒱 ᵖ where
+    record Property {X : 𝒰 ˙} (R : BinRel 𝒱 X) : 𝒰 ⊔ 𝒱 ˙ where
       field
         prop-name : property R
 
@@ -45,7 +44,7 @@ instance
     Semiconnex R
   semicon ⦃ DefaultSemiconnex ⦄ {x} {y} _ = total x y
 
-record Equivalence {X : 𝒱 ˙} (R : BinRel 𝒰 X) : 𝒰 ⊔ 𝒱 ᵖ where
+record Equivalence {X : 𝒱 ˙} (R : BinRel 𝒰 X) : 𝒰 ⊔ 𝒱 ˙ where
   field
     ⦃ equiv-reflexive ⦄ : Reflexive R
     ⦃ equiv-symmetric ⦄ : Symmetric R
@@ -53,7 +52,7 @@ record Equivalence {X : 𝒱 ˙} (R : BinRel 𝒰 X) : 𝒰 ⊔ 𝒱 ᵖ where
 
 open Equivalence ⦃ … ⦄ public
 
-record QuasiReflexive {X : 𝒱 ˙} (R : BinRel 𝒰 X) : 𝒰 ⊔ 𝒱 ᵖ where
+record QuasiReflexive {X : 𝒱 ˙} (R : BinRel 𝒰 X) : 𝒰 ⊔ 𝒱 ˙ where
   field
     ⦃ qr-left ⦄ : LeftQuasiReflexive R
     ⦃ qr-right ⦄ : RightQuasiReflexive R
@@ -86,40 +85,54 @@ total-other :
   → -------------------
   y R x
 total-other {x = x}{y} p with total x y
-total-other {_R_ = _R_}{x = x} {y} p | ∨left q =
-  ⊥-recursionₚ (y R x) (p q)
-total-other {x = x} {y} p | ∨right q = q
+total-other {_R_ = _R_}{x = x} {y} p | ∨left q = 𝟘-recursion (y R x) (p q)
+total-other {x = x} {y} p            | ∨right q = q
 
-record Minimal {X : 𝒰 ˙} (_≼_ : BinRel 𝒱 X) (⊥ : X) : 𝒰 ⊔ 𝒱 ᵖ where
+record Minimal {X : 𝒰 ˙} (_≼_ : BinRel 𝒱 X) (⊥ : X) : 𝒰 ⊔ 𝒱 ˙ where
   field
     minimality : ∀ {x} (p : x ≼ ⊥) → x == ⊥
 
 open Minimal ⦃ … ⦄ public
 
-open import Proposition.Decidable.Definition using (Decidable)
+open import Type.Decidable.Definition using (Decidable)
 
 infix 21 _⊆_
-record _⊆_ {X : 𝒰 ˙} {Y : 𝒱 ˙} (_R_ : Rel 𝒲 X Y) (_P_ : Rel 𝒯 X Y) : 𝒰 ⊔ 𝒱 ⊔ 𝒲 ⊔ 𝒯 ᵖ
+record _⊆_ {X : 𝒰 ˙}{Y : 𝒱 ˙}(sub : Rel 𝒲 X Y)(sup : Rel 𝒯 X Y)
+  : 𝒰 ⊔ 𝒱 ⊔ 𝒲 ⊔ 𝒯 ˙
   where
+  private
+    _R_ = sub
+    _P_ = sup
   field
-    subrel : ∀ {x} {y} (xRy : x R y) → x P y
+    subrel⊆ : ∀{x}{y}(xRy : x R y) → x P y
 
-open _⊆_ ⦃ … ⦄ public
+open _⊆_ public
+
+subrel :
+  {sup : Rel 𝒰 X Y}
+  {sub : Rel 𝒱 X Y}
+  ⦃ sub-⊆-sup : sub ⊆ sup ⦄
+  → let _R_ = sub; _P_ = sup in
+  ∀{x y}
+  (p : x R y)
+  → ----------------------------------------
+  x P y
+subrel ⦃ sub-⊆-sup ⦄ = subrel⊆ sub-⊆-sup
 
 instance
   Reflexive⊆ : Reflexive (_⊆_ {𝒲 = 𝒰}{X = X}{Y})
   Transitive⊆ : Transitive (_⊆_ {𝒲 = 𝒰}{X = X}{Y})
 
-open import Proposition.Function using (_$_; _∘_; id)
+open import Function.Basic using (_$_; _∘_; id)
 
-subrel ⦃ refl ⦃ Reflexive⊆ ⦄ R ⦄ = id
-subrel ⦃ trans ⦃ Transitive⊆ ⦄ P⊆Q Q⊆R ⦄ = subrel ∘ subrel
+subrel⊆ (refl ⦃ Reflexive⊆ ⦄ R) = id
+subrel⊆ (trans ⦃ Transitive⊆ ⦄ P⊆Q Q⊆R) = subrel ∘ subrel
   where instance
           _ = P⊆Q
           _ = Q⊆R
 
 infix 19 _~_
-record _~_ {X : 𝒰 ˙} {Y : 𝒱 ˙} (R : Rel 𝒲 X Y) (P : Rel 𝒯 X Y) : 𝒰 ⊔ 𝒱 ⊔ 𝒲 ⊔ 𝒯 ᵖ
+record _~_ {X : 𝒰 ˙} {Y : 𝒱 ˙} (R : Rel 𝒲 X Y) (P : Rel 𝒯 X Y) : 𝒰 ⊔ 𝒱 ⊔ 𝒲 ⊔ 𝒯 ˙
   where
   field
     ⦃ ~-⊆ ⦄ : R ⊆ P
@@ -150,8 +163,8 @@ open import Logic.Iff.Definition
   → --------------------------------
   _P_ ⊆ _R_
 
-subrel ⦃ ↔-→-⊆ equiv ⦄ = ⟶ equiv
-subrel ⦃ ↔-→-⊇ equiv ⦄ = ⟵ equiv
+subrel⊆ (↔-→-⊆ equiv) = ⟶ equiv
+subrel⊆ (↔-→-⊇ equiv) = ⟵ equiv
 
 instance
   Reflexive~ : Reflexive (_~_ {𝒲 = 𝒰}{X = X}{Y})

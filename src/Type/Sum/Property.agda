@@ -1,9 +1,9 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Type.Sum.Property where
 
 open import Universes
 open import Type.Sum.Definition
-open import Proof
+open import Type.Identity.Definition
 
 Σ== :
   {A : (x : X) → 𝒰 ˙}
@@ -14,16 +14,17 @@ open import Proof
   σ == ρ
 Σ== {σ = σ} (Id.refl _) (Het.refl _) = Id.refl σ
 
-open import Proposition.Sum renaming (_,_ to _,,_)
+open import Logic.Basic
 
 from-Σ== :
   {σ ρ : Σ A}
   (p : σ == ρ)
   → ------------------
   pr₁ σ == pr₁ ρ ∧ pr₂ σ Het.== pr₂ ρ
-from-Σ== (Id.refl σ) = Id.refl (pr₁ σ) ,, Het.refl (pr₂ σ)
+from-Σ== (Id.refl σ) = Id.refl (pr₁ σ) , Het.refl (pr₂ σ)
 
-open import Function
+open import Function.Basic
+open import Function.Equivalence.Definition
 
 〈id×id〉~id : 〈 𝑖𝑑 X × 𝑖𝑑 Y 〉 ~ id
 〈id×id〉~id = Het.refl

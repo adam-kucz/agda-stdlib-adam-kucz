@@ -1,8 +1,8 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Data.Functor.Definition where
 
 open import Universes
-open import Proposition.Identity
+open import Type.Identity
 open import Function
 
 record Functor

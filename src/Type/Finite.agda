@@ -1,7 +1,7 @@
-{-# OPTIONS --exact-split --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --exact-split --safe #-}
 module Type.Finite where
 
-open import PropUniverses
+open import Universes
 open import Data.List
 open import Data.Vec
 open import Collection
@@ -13,17 +13,16 @@ contains-all :
   (l : Col)
   ⦃ col : Collection 𝒲 Col X ⦄
   → ------------------------
-  𝒰 ⊔ 𝒲 ᵖ
+  𝒰 ⊔ 𝒲 ˙
 contains-all X l = ∀ (x : X) → x ∈ l
 
-is-finite : (X : 𝒰 ˙) → 𝒰 ᵖ
+is-finite : (X : 𝒰 ˙) → 𝒰 ˙
 is-finite X = ∃ λ (l : List X) → contains-all X l
   
-
-open import Proposition.Sum
+open import Type.Sum
 
 Finite : (𝒰 : Universe) → 𝒰 ⁺ ˙
-Finite 𝒰 = Σₚ λ (X : 𝒰 ˙) → is-finite X
+Finite 𝒰 = Σ λ (X : 𝒰 ˙) → is-finite X
 
 {-
 open import Data.Nat

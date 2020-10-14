@@ -1,14 +1,12 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Data.Nat.Order where
 
-open import PropUniverses hiding (_⊔_)
+open import Universes hiding (_⊔_)
 open import Data.Nat.Definition
 open import Data.Nat.Syntax
 open Pattern
 
-open import Proposition.Identity
-  renaming (refl to Id-refl) using (_==_; ap)
-open import Proposition.Decidable.Definition
+open import Type.Decidable.Definition
 open import Function hiding (_$_; _~_)
 open import Relation.Binary
 open import Operation.Binary
@@ -36,7 +34,7 @@ _rtc-≤_ = refl-trans-close suc_==_
 instance
   Relating-suc-≤-single : Relating suc suc_==_ suc_==_
 
-rel-preserv ⦃ Relating-suc-≤-single ⦄ (Id-refl (m +1)) = refl (m +2)
+rel-preserv ⦃ Relating-suc-≤-single ⦄ (Id.refl (m +1)) = refl (m +2)
 
 open import Data.Nat.Arithmetic.Definition
 
@@ -52,11 +50,11 @@ rtc-≤-↔-∃+ = forw-dir , λ { (k , p) → back-dir k p}
   where open MakeComposable _rtc-≤_
         forw-dir : (p : m rtc-≤ n) → ∃ λ k → k + m == n
         forw-dir (rfl m) = 0 , refl m
-        forw-dir (step {b = b +1} (Id-refl _) b+1≤n) with forw-dir b+1≤n
-        forw-dir (step {_} {b +1} (Id-refl _) b+1≤n) | k , Id-refl _ =
+        forw-dir (step {b = b +1} (Id.refl _) b+1≤n) with forw-dir b+1≤n
+        forw-dir (step {_} {b +1} (Id.refl _) b+1≤n) | k , Id.refl _ =
           k +1 , sym $ +-suc k b
         back-dir : ∀ k (p : k + m == n) → m rtc-≤ n
-        back-dir zero (Id-refl m) = refl m
+        back-dir zero (Id.refl m) = refl m
         back-dir {m = m}{n} (k +1) p =
           proof m
             〉 _rtc-≤_ 〉 k + m    :by: back-dir k $ refl (k + m)
@@ -69,12 +67,12 @@ open import Logic.Proof
 ≤-↔-∃+ : ∀ {n m} → n ≤ m ↔ ∃+ n m
 ⟶ ≤-↔-∃+ (z≤ m) = m , left-unit m
 ⟶ ≤-↔-∃+ (s≤s p) with ⟶ ≤-↔-∃+ p
-⟶ ≤-↔-∃+ (s≤s p) | k , Id-refl .(k + _) = k , +-suc k _
-⟵ ≤-↔-∃+ (zero , Id-refl zero) = z≤ 0
-⟵ ≤-↔-∃+ (zero , Id-refl (m +1)) =
+⟶ ≤-↔-∃+ (s≤s p) | k , Id.refl .(k + _) = k , +-suc k _
+⟵ ≤-↔-∃+ (zero , Id.refl zero) = z≤ 0
+⟵ ≤-↔-∃+ (zero , Id.refl (m +1)) =
   s≤s $ ⟵ (≤-↔-∃+ {m}{m}) (0 , refl m)
-⟵ (≤-↔-∃+ {zero}) (k +1 , Id-refl .(k + 0 +1)) = z≤ k + 0 +1
-⟵ (≤-↔-∃+ {n +1}) (k +1 , Id-refl .(k + (n +1) +1)) =
+⟵ (≤-↔-∃+ {zero}) (k +1 , Id.refl .(k + 0 +1)) = z≤ k + 0 +1
+⟵ (≤-↔-∃+ {n +1}) (k +1 , Id.refl .(k + (n +1) +1)) =
   s≤s $ ⟵ (≤-↔-∃+ {n}) (k +1 , sym $ +-suc k n)
 
 instance
@@ -109,13 +107,13 @@ instance
 antisym ⦃ Antisym≤ ⦄ (z≤ 0) (z≤ 0) = refl 0
 antisym ⦃ Antisym≤ ⦄ (s≤s p) (s≤s q) = ap suc $ antisym p q
 
-total ⦃ Connex≤ ⦄ zero y = ∨left $ z≤ y
-total ⦃ Connex≤ ⦄ (x +1) zero = ∨right $ z≤ x +1
-total ⦃ Connex≤ ⦄ (x +1) (y +1) = ∨[ s≤s ⸴ s≤s ] (total x y)
+total ⦃ Connex≤ ⦄ zero y = ∨left (z≤ y)
+total ⦃ Connex≤ ⦄ (x +1) zero = ∨right (z≤ x +1)
+total ⦃ Connex≤ ⦄ (x +1) (y +1) = [ s≤s + s≤s ] (total x y)
 
 UniversalPrefix.prefix Prefix-pred-≤ zero = refl 0
 UniversalPrefix.prefix Prefix-pred-≤ (x +1) =
-  subrel {_R_ = _rtc-≤_} $ subrel {_R_ = suc_==_} $ Id.refl (x +1)
+  subrel {sub = _rtc-≤_} $ subrel {sub = suc_==_} $ Id.refl (x +1)
 
 rel-preserv ⦃ Relating-pred-≤ ⦄ {zero} {zero} rab = refl 0
 rel-preserv ⦃ Relating-pred-≤ ⦄ {zero} {b +1} rab = z≤ b
@@ -134,7 +132,7 @@ Decidable≤ {m +1} {n +1} | false ¬p = false (λ p' → ¬p $ ap pred p')
 -≤self+1 : ∀ m → m ≤ m +1
 -≤self+1 m = -≤s $ refl m
 
-open import Proposition.Comparable
+open import Type.Comparable
 
 instance
   Irreflexive< : Irreflexive _<_
@@ -292,6 +290,6 @@ min== (suc m) (suc n) | ∨right min-m-n==n = ∨right $ ap suc min-m-n==n
 --   WellFounded≤ : WellFounded _≤_ least-elem
 --   well-founded ⦃ WellFounded≤ ⦄ 𝐴 (elem , prop) = minimal
 --     where minimal : Minimal (on-elems _≤_) (least-elem 𝐴 (elem , prop))
---           minimality ⦃ minimal ⦄ {x} (∨left (Id-refl y)) = {!!}
+--           minimality ⦃ minimal ⦄ {x} (∨left (Id.refl y)) = {!!}
 --           minimality ⦃ minimal ⦄ {x} (∨right q) = {!!}
 

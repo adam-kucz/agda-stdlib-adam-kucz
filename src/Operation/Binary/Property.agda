@@ -1,31 +1,30 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Operation.Binary.Property where
 
-open import PropUniverses as Univ
+open import Universes as Univ
 open import Operation.Binary.Definition
 
-open import Proposition.Identity
+open import Proof
 
-record Commutative {X : 𝒰 ˙} {Y : 𝒱 ˙} (_∙_ : Op X X Y) : 𝒰 ⊔ 𝒱 ᵖ where
+record Commutative {X : 𝒰 ˙} {Y : 𝒱 ˙} (_∙_ : Op X X Y) : 𝒰 ⊔ 𝒱 ˙ where
   field
     comm : ∀ x y → x ∙ y == y ∙ x
 
 open Commutative ⦃ ... ⦄ public
 
-record Associative {X : 𝒰 ˙} (_∙_ : ClosedOp X) : 𝒰 ᵖ where
+record Associative {X : 𝒰 ˙} (_∙_ : ClosedOp X) : 𝒰 ˙ where
   field
     assoc : ∀ x y z → x ∙ (y ∙ z) == (x ∙ y) ∙ z
 
 open Associative ⦃ ... ⦄ public
 
-record Idempotent {X : 𝒰 ˙}(_∙_ : ClosedOp X) : 𝒰 ᵖ where
+record Idempotent {X : 𝒰 ˙}(_∙_ : ClosedOp X) : 𝒰 ˙ where
   field
     idemp : ∀ x → x ∙ x == x
 
 open Idempotent ⦃ ... ⦄ public
 
 open import Function.Basic using (flip)
-open import Proof
 
 assoc-of-flip :
   (op : ClosedOp X)
@@ -43,8 +42,7 @@ swap : {_∙_ : ClosedOp X}
 swap {_∙_ = _∙_} x y z =
   proof x ∙ (y ∙ z)
       === (x ∙ y) ∙ z :by: assoc x y z
--- TODO: figure out why the instance is not found with $ instead of ()
-      === (y ∙ x) ∙ z :by: ap (_∙ z) (comm x y)
+      === (y ∙ x) ∙ z :by: ap (_∙ z) $ comm x y
       === y ∙ (x ∙ z) :by: sym $ assoc y x z
   qed
 
@@ -61,19 +59,19 @@ swap' {_∙_ = _∙_} x y z =
     === (x ∙ z) ∙ y :by: assoc x z y
   qed
 
-record _IsLeftUnitOf_ {X : 𝒰 ˙} {Y : 𝒱 ˙} (e : X) (_∙_ : Op X Y Y) : 𝒱 ᵖ where
+record _IsLeftUnitOf_ {X : 𝒰 ˙} {Y : 𝒱 ˙} (e : X) (_∙_ : Op X Y Y) : 𝒱 ˙ where
   field
     left-unit : ∀ y → e ∙ y == y
 
 open _IsLeftUnitOf_ ⦃ ... ⦄ public
 
-record _IsRightUnitOf_ {X : 𝒰 ˙} {Y : 𝒱 ˙} (e : X) (_∙_ : Op Y X Y) : 𝒱 ᵖ where
+record _IsRightUnitOf_ {X : 𝒰 ˙} {Y : 𝒱 ˙} (e : X) (_∙_ : Op Y X Y) : 𝒱 ˙ where
   field
     right-unit : ∀ y → y ∙ e == y
 
 open _IsRightUnitOf_ ⦃ ... ⦄ public
 
-record _IsUnitOf_ {X : 𝒰 ˙} (e : X) (op : Op X X X) : 𝒰 ᵖ where
+record _IsUnitOf_ {X : 𝒰 ˙} (e : X) (op : Op X X X) : 𝒰 ˙ where
   field
     ⦃ unit-left ⦄ : e IsLeftUnitOf op
     ⦃ unit-right ⦄ : e IsRightUnitOf op
@@ -88,8 +86,6 @@ instance
     → -------------------------
     e IsUnitOf op
   DefaultUnit = record {}
-
-open import Proof
 
 right-unit-of-commutative-left-unit :
   (e : X) (op : Op X X X)
@@ -133,7 +129,7 @@ record LeftInverse {X : 𝒰 ˙}
     (_⁻¹ : (x : X) → X) (_∙_ : ClosedOp X) {e : X}
     ⦃ _ : e IsUnitOf _∙_ ⦄
     : --------------------------------------------
-    𝒰 ᵖ where
+    𝒰 ˙ where
   field
     left-inverse : ∀ x → (x ⁻¹) ∙ x == e
 
@@ -143,7 +139,7 @@ record RightInverse {X : 𝒰 ˙}
     (_⁻¹ : (x : X) → X) (_∙_ : ClosedOp X) {e : X}
     ⦃ _ : e IsUnitOf _∙_ ⦄
     : --------------------------------------------
-    𝒰 ᵖ where
+    𝒰 ˙ where
   field
     right-inverse : ∀ x → x ∙ (x ⁻¹) == e
 
@@ -153,7 +149,7 @@ record Inverse {X : 𝒰 ˙}
     (_⁻¹ : (x : X) → X) (_∙_ : ClosedOp X) {e : X}
     ⦃ unit : e IsUnitOf _∙_ ⦄
     : ------------------------------------------
-    𝒰 ᵖ where
+    𝒰 ˙ where
   field
     ⦃ inverse-left ⦄ : LeftInverse _⁻¹ _∙_ ⦃ unit ⦄
     ⦃ inverse-right ⦄ : RightInverse _⁻¹ _∙_ ⦃ unit ⦄
@@ -184,19 +180,19 @@ record ClosedUnder
 
 open ClosedUnder ⦃ … ⦄ public
 
-record _IsLeftZeroOf_ {X : 𝒰 ˙}{Y : 𝒱 ˙}(z : X)(_∙_ : Op X Y X) : 𝒰 ⊔ 𝒱 ᵖ where
+record _IsLeftZeroOf_ {X : 𝒰 ˙}{Y : 𝒱 ˙}(z : X)(_∙_ : Op X Y X) : 𝒰 ⊔ 𝒱 ˙ where
   field
     left-zero : ∀ y → z ∙ y == z
 
 open _IsLeftZeroOf_ ⦃ ... ⦄ public
 
-record _IsRightZeroOf_ {X : 𝒰 ˙}{Y : 𝒱 ˙}(z : X)(_∙_ : Op Y X X) : 𝒰 ⊔ 𝒱 ᵖ where
+record _IsRightZeroOf_ {X : 𝒰 ˙}{Y : 𝒱 ˙}(z : X)(_∙_ : Op Y X X) : 𝒰 ⊔ 𝒱 ˙ where
   field
     right-zero : ∀ y → y ∙ z == z
 
 open _IsRightZeroOf_ ⦃ ... ⦄ public
 
-record _IsZeroOf_ {X : 𝒰 ˙} (z : X) (op : ClosedOp X) : 𝒰 ᵖ where
+record _IsZeroOf_ {X : 𝒰 ˙} (z : X) (op : ClosedOp X) : 𝒰 ˙ where
   field
     ⦃ zero-left ⦄ : z IsLeftZeroOf op
     ⦃ zero-right ⦄ : z IsRightZeroOf op

@@ -1,5 +1,5 @@
-{-# OPTIONS --safe --exact-split --prop  #-}
-open import PropUniverses
+{-# OPTIONS --safe --exact-split  #-}
+open import Universes
 
 module Data.List.Insertable {𝒰 : Universe} where
 
@@ -7,7 +7,6 @@ open import Data.List.Definition {𝒰}
 open import Data.List.Collection {𝒰}
 
 open import Collection.Insertable public
-open import Proposition.Identity hiding (refl)
 open import Proof
 open import Logic
 

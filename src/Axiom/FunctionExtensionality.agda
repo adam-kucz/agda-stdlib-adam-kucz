@@ -1,8 +1,8 @@
-{-# OPTIONS --exact-split --prop #-}
+{-# OPTIONS --exact-split #-}
 module Axiom.FunctionExtensionality where
 
-open import PropUniverses
-open import Proposition.Identity.Heterogeneous using (_==_)
+open import Universes
+open import Type.Identity.Heterogeneous using (_==_)
 open import Function.Equivalence
 
 postulate
@@ -20,9 +20,9 @@ postulate
     → ----------------------------------------
     (λ {x} → f {x}) == (λ {x} → f' {x})
 
-  fun-extₚ : {A B : 𝑋 → 𝒰 ˙}
-    {f : (x : 𝑋) → A x}
-    {f' : (x : 𝑋) → B x}
-    (equiv : (x : 𝑋) → f x == f' x)
-    → -------------------------------
-    f == f'
+  -- fun-extₚ : {A B : X → 𝒰 ˙}
+  --   {f : (x : X) → A x}
+  --   {f' : (x : X) → B x}
+  --   (equiv : (x : X) → f x == f' x)
+  --   → -------------------------------
+  --   f == f'

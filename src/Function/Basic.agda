@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Function.Basic where
 
 open import Universes
@@ -36,7 +36,7 @@ uncurry : {K : (x : X)(y : A x) → 𝒰 ˙}
   (xy : Σ A) → K (pr₁ xy) (pr₂ xy)
 uncurry f (x , y) = f x y
 
-infixr 100 _$_
+infixr 16 _$_
 _$_ : {A : 𝒰 ˙} {B : A → 𝒱 ˙}
   (f : (x : A) → B x)
   (x : A)

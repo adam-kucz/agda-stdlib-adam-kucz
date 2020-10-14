@@ -1,12 +1,12 @@
-{-# OPTIONS --exact-split --prop --safe #-}
+{-# OPTIONS --exact-split --safe #-}
 module Collection.Insertable where
 
 open import Collection.Definition
 
-open import PropUniverses
+open import Universes
 open import Data.List.Definition
 open import Data.List.Collection
-open import Proposition.Identity
+open import Type.Identity
 open import Logic
 
 record Insertable

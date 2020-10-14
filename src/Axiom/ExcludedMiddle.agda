@@ -1,24 +1,26 @@
-{-# OPTIONS --exact-split --prop #-}
+{-# OPTIONS --exact-split #-}
 module Axiom.ExcludedMiddle where
 
-open import PropUniverses
-open import Proposition.Decidable
+open import Universes
+open import Type.Decidable
 
 postulate
-  excluded-middle : (𝑋 : 𝒰 ᵖ) → Decidable 𝑋
+  excluded-middle : (X : 𝒰 ˙) → Decidable X
 
 open import Logic
 
-dne : ¬ (¬ 𝑋) → 𝑋
-dne {𝑋 = 𝑋} p with excluded-middle 𝑋
+dne : ¬ (¬ X) → X
+dne {X = X} p with excluded-middle X
 dne p | true q = q
-dne {𝑋 = 𝑋} p | false ¬q = ⊥-recursion 𝑋 (p ¬q)
+dne {X = X} p | false ¬q = ⊥-recursion X (p ¬q)
 
 open import Logic
 
-classic-→ : (𝑋 → 𝑌) ↔ ¬ 𝑋 ∨ 𝑌
-⟶ (classic-→ {𝑋 = 𝑋}) p with excluded-middle 𝑋
+classic-→ : (X → Y) ↔ ¬ X ∨ Y
+⟶ (classic-→ {X = X}) p with excluded-middle X
 ⟶ classic-→ p | true q = ∨right (p q)
 ⟶ classic-→ p | false ¬q = ∨left ¬q
 ⟵ classic-→ (∨left ¬p) p = ⊥-recursion _ (¬p p)
 ⟵ classic-→ (∨right q) p = q
+
+

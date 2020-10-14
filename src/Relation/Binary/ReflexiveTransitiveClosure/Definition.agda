@@ -1,7 +1,7 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Relation.Binary.ReflexiveTransitiveClosure.Definition where
 
-open import PropUniverses
+open import Universes
 open import Relation.Binary.Definition
 
 data refl-trans-close {X : 𝒰 ˙}(R : BinRel 𝒱 X) : BinRel (𝒰 ⊔ 𝒱) X where

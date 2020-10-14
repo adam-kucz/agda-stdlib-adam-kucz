@@ -1,10 +1,10 @@
-{-# OPTIONS --exact-split --safe --prop #-}
-open import PropUniverses renaming (_⊔_ to _⨿_)
+{-# OPTIONS --exact-split --safe #-}
+open import Universes renaming (_⊔_ to _⨿_)
 open import Relation.Binary.Definition
 
 module Relation.Binary.Order {X : 𝒰 ˙} (_⊑_ : Rel 𝒱 X X) where
 
-record IsBottom (⊥ : X) : 𝒰 ⨿ 𝒱 ᵖ where
+record IsBottom (⊥ : X) : 𝒰 ⨿ 𝒱 ˙ where
   field
     bot : ∀ x → ⊥ ⊑ x
 
@@ -12,7 +12,7 @@ open IsBottom ⦃ ... ⦄ public
 
 open import Relation.Binary.Property
 
-record FormPreorder : 𝒰 ⨿ 𝒱 ᵖ where
+record FormPreorder : 𝒰 ⨿ 𝒱 ˙ where
   field
     ⦃ reflexive ⦄ : Reflexive _⊑_
     ⦃ transitive ⦄ : Transitive _⊑_
@@ -25,7 +25,7 @@ instance
     FormPreorder
 DefaultPreorder = record {}
 
-record FormPartialOrder : 𝒰 ⨿ 𝒱 ᵖ where
+record FormPartialOrder : 𝒰 ⨿ 𝒱 ˙ where
   field
     ⦃ preord ⦄ : FormPreorder
     ⦃ antisymmetric ⦄ : Antisymmetric _⊑_
@@ -39,7 +39,7 @@ instance
     FormPartialOrder
 DefaultPartialOrder = record {}
 
-record FormTotalOrder : 𝒰 ⨿ 𝒱 ᵖ where
+record FormTotalOrder : 𝒰 ⨿ 𝒱 ˙ where
   field
     ⦃ partial-order ⦄ : FormPartialOrder
     ⦃ total ⦄ : Connex _⊑_
@@ -54,7 +54,7 @@ instance
     FormTotalOrder
 DefaultTotalOrder = record {}
 
-record FormAscendingChain (⊥ : X) : 𝒰 ⨿ 𝒱 ᵖ where
+record FormAscendingChain (⊥ : X) : 𝒰 ⨿ 𝒱 ˙ where
   field
     ⦃ bottom ⦄ : IsBottom ⊥
     ⦃ total-order ⦄ : FormTotalOrder 

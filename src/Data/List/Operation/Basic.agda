@@ -1,19 +1,17 @@
-{-# OPTIONS --safe --exact-split --prop  #-}
+{-# OPTIONS --safe --exact-split  #-}
 module Data.List.Operation.Basic where
 
 open import Data.List.Definition
 open import Data.List.Collection
 open import Data.List.Insertable
 
-open import PropUniverses
-open import Proposition.Identity hiding (refl)
-open import Proposition.Empty
-open import Proposition.Decidable.Definition
+open import Universes
+open import Type.Decidable.Definition
 open import Data.Nat.Definition
 open import Data.Maybe.Definition
 open import Data.Functor
 open import Collection.Definition
-open import Logic hiding (⊥-recursion)
+open import Logic
 open import Proof
 
 head : (l : List X)(p : l ≠ [] {X = X}) → X
@@ -50,9 +48,9 @@ right-unit ⦃ ++-[] ⦄ (h ∷ t) = ap (h ∷_) $ right-unit t
   x ∈ l ++ l' ↔ x ∈ l ∨ x ∈ l'
 ⟶ (∈++ [] l') p = ∨right p
 ⟵ (∈++ [] l') (∨right q) = q
-⟶ (∈++ (h ∷ l) l') (x∈x∷ .(l ++ l')) = ∨left $ x∈x∷ l
+⟶ (∈++ (h ∷ l) l') (x∈x∷ .(l ++ l')) = ∨left (x∈x∷ l)
 ⟶ (∈++ (h ∷ l) l') (x∈tail h p) with ⟶ (∈++ l l') p
-⟶ (∈++ (h ∷ l) l') (x∈tail h p) | ∨left q = ∨left $ x∈tail h q
+⟶ (∈++ (h ∷ l) l') (x∈tail h p) | ∨left q = ∨left (x∈tail h q)
 ⟶ (∈++ (h ∷ l) l') (x∈tail h p) | ∨right q = ∨right q
 ⟵ (∈++ (h ∷ l) l') (∨left (x∈x∷ l)) = x∈x∷ l ++ l'
 ⟵ (∈++ (h ∷ l) l') (∨left (x∈tail h p)) = x∈tail h $ ⟵ (∈++ l l') $ ∨left p
@@ -103,7 +101,7 @@ map++ [] l' f = Id.refl (map f l')
 map++ (h ∷ l) l' f = ap (f h ∷_) $ map++ l l' f
 
 filter :
-  (p : X → 𝒰 ᵖ)
+  (p : X → 𝒰 ˙)
   ⦃ d : ∀ {x} → Decidable (p x) ⦄
   (l : List X)
   → --------------------
@@ -114,7 +112,7 @@ filter p (h ∷ l) | true _ = h ∷ filter p l
 filter p (_ ∷ l) | false _ = filter p l
 
 ∈filter : 
-  (p : X → 𝒰 ᵖ)
+  (p : X → 𝒰 ˙)
   ⦃ d : ∀ {x} → Decidable (p x) ⦄
   (l : List X)
   (x : X)
@@ -132,7 +130,7 @@ filter p (_ ∷ l) | false _ = filter p l
 ∈filter p (h ∷ l) x | false ¬q =
   (λ p₁ → let ih = ⟶ (∈filter p l x) p₁ in
      x∈tail h (∧left ih) , ∧right ih) ,
-  λ { (x∈x∷ _ , ph) → ⊥-recursionₚ (h ∈ filter p l) (¬q ph)
+  λ { (x∈x∷ _ , ph) → ⊥-recursion (h ∈ filter p l) (¬q ph)
     ; (x∈tail _ x∈l , px) → ⟵ (∈filter p l x) (x∈l , px) }
 
 drop-last : (l : List X)(p : l ≠ [] {X = X}) → List X
@@ -144,7 +142,7 @@ drop-last++last== : ∀ l
   (p : l ≠ [] {X = X})
   → -----------------------------------
   drop-last l p ++ [ last l p ] == l
-drop-last++last==  [] p = ⊥-recursionₚ _ (p (refl [])) 
+drop-last++last==  [] p = ⊥-recursion _ (p (refl [])) 
 drop-last++last== [ h ] p = refl [ h ]
 drop-last++last== (h₀ ∷ h₁ ∷ t) p =
   ap (h₀ ∷_) $ drop-last++last== (h₁ ∷ t) λ ()

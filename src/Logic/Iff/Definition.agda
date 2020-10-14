@@ -1,12 +1,12 @@
-{-# OPTIONS --exact-split --safe --prop  #-}
+{-# OPTIONS --exact-split --safe  #-}
 module Logic.Iff.Definition where
 
-open import PropUniverses
-open import Proposition.Identity.Definition using (_==_; refl)
+open import Universes
+open import Type.Identity.Definition using (_==_; refl)
 
 infix 11 _↔_
 infixl 11 _,_
-record _↔_ (𝑋 : 𝒰 ᵖ) (𝑌 : 𝒱 ᵖ) : 𝒰 ⊔ 𝒱 ᵖ where
+record _↔_ (𝑋 : 𝒰 ˙)(𝑌 : 𝒱 ˙) : 𝒰 ⊔ 𝒱 ˙ where
   constructor _,_
   field
     ⟶ : (p : 𝑋) → 𝑌
@@ -15,18 +15,18 @@ record _↔_ (𝑋 : 𝒰 ᵖ) (𝑌 : 𝒱 ᵖ) : 𝒰 ⊔ 𝒱 ᵖ where
 open _↔_ public
 
 ==→↔ :
-  (p : 𝑋 == 𝑌)
+  (p : X == Y)
   → -------------------
-  𝑋 ↔ 𝑌
+  X ↔ Y
 ==→↔ (refl x) = id , id
   where id = λ p → p
 
-open import Proposition.Empty
+open import Type.Empty
 
 -↔-→¬↔¬ : 
-  (p : 𝑋 ↔ 𝑌)
+  (p : X ↔ Y)
   → -------------------
-  ¬ 𝑋 ↔ ¬ 𝑌
+  ¬ X ↔ ¬ Y
 -↔-→¬↔¬ (X→Y , Y→X) =
   (λ ¬X Y → ¬X (Y→X Y)) ,
   (λ ¬Y X → ¬Y (X→Y X))

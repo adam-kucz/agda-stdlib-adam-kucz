@@ -1,16 +1,17 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Data.Nat.Syntax where
 
 open import Data.Nat.Definition
 
-open import PropUniverses
-open import Proposition.Unit public
+open import Universes
+open import Type.Unit
+open import Type.Unit using (⋆) public
 
 {-# BUILTIN NATURAL ℕ #-}
 
 record Nat 𝒰 (X : 𝒱 ˙) : 𝒰 ⁺ ⊔ 𝒱 ⁺ ˙ where
   field
-    Constraint : (n : ℕ) → 𝒱 ᵖ
+    Constraint : (n : ℕ) → 𝒱 ˙
     fromℕ : (n : ℕ) ⦃ p : Constraint n ⦄ → X
 
 open Nat ⦃ ... ⦄ public using (fromℕ)
@@ -20,7 +21,7 @@ open Nat ⦃ ... ⦄ public using (fromℕ)
 instance
   Natℕ : Nat 𝒰₀ ℕ
 
-Nat.Constraint Natℕ _ = ⊤
+Nat.Constraint Natℕ _ = 𝟙
 Nat.fromℕ Natℕ n = n
 
 module Pattern where

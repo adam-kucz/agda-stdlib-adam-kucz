@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --safe --prop  #-}
+{-# OPTIONS --exact-split --safe  #-}
 module Logic where
 
 open import Logic.Basic public

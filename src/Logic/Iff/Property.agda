@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --safe --prop  #-}
+{-# OPTIONS --exact-split --safe  #-}
 module Logic.Iff.Property where
 
 open import Logic.Iff.Definition
@@ -11,7 +11,7 @@ instance
   Transitive↔ : Transitive (_↔_ {𝒰})
   Symmetric↔ : Symmetric (_↔_ {𝒰})
 
-open import Proposition.Function
+open import Function.Basic
 
 refl ⦃ Reflexive↔ ⦄ _ = id , id
 trans ⦃ Transitive↔ ⦄ (𝑋→𝑌 , 𝑌→𝑋) (𝑌→𝑍 , 𝑍→𝑌) = 𝑌→𝑍 ∘ 𝑋→𝑌 , 𝑌→𝑋 ∘ 𝑍→𝑌

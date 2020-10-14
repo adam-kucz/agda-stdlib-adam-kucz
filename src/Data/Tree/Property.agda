@@ -1,14 +1,15 @@
-{-# OPTIONS --safe --exact-split --prop  #-}
+{-# OPTIONS --safe --exact-split  #-}
+-- TODO: fix termination
 module Data.Tree.Property where
 
 open import Data.Tree.Definition
 
-open import PropUniverses
+open import Universes
 open import Data.List hiding (member)
 open import Logic
 open import Collection hiding (_++_)
 
-data member {X : 𝒰 ˙} : (x : X)(t : Tree X) → 𝒰 ᵖ where
+data member {X : 𝒰 ˙} : (x : X)(t : Tree X) → 𝒰 ˙ where
   _∈leaf : (x : X) → member x (leaf x)
   _∈branch_ :
     (x : X)
@@ -17,7 +18,7 @@ data member {X : 𝒰 ˙} : (x : X)(t : Tree X) → 𝒰 ᵖ where
     → -----------------------------------------------
     member x (branch l)
 
-open import Proposition.Decidable
+open import Type.Decidable
 
 instance
   TreeCollection : {X : 𝒰 ˙} → Collection 𝒰 (Tree X) X
@@ -107,8 +108,7 @@ remove ⦃ TreeRemovable {X = X} ⦄ x' = trim ∘ go
   x ∈branch (t , (x∈tail h t∈br , x∈t))
 
 TreeDecidable∈ {x = x} {leaf y} with decide (x == y)
-TreeDecidable∈ {x = x} {leaf y} | true p =
-  true (Id.coe (ap (_∈ leaf y) $ sym p) $ y ∈leaf)
+TreeDecidable∈ {x = x} {leaf x} | true (Id.refl x) = true $ x ∈leaf
 TreeDecidable∈ {x = x} {leaf y} | false ¬p = false λ { (x ∈leaf) → ¬p $ Id.refl x}
 TreeDecidable∈ {x = x} {◻} = false (x ∉∅)
 TreeDecidable∈ {x = x} {branch (h ∷ br)} with TreeDecidable∈ {x = x} {h}

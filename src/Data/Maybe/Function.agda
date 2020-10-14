@@ -1,14 +1,14 @@
-{-# OPTIONS --exact-split --prop --safe #-}
+{-# OPTIONS --exact-split --safe #-}
 module Data.Maybe.Function where
 
 open import Data.Maybe.Definition
 
-open import PropUniverses
-open import Proposition.Unit
+open import Universes
+open import Type.Unit
 
-dmap : {𝐴 : Maybe X → 𝒰 ᵖ}
-  (f : (x : X)(p : 𝐴 (just x)) → Y)
+dmap : {A : Maybe X → 𝒰 ˙}
+  (f : (x : X)(p : A (just x)) → Y)
   → ----------------------------------------------
-  (mx : Maybe X)(p : 𝐴 mx) → Maybe Y
+  (mx : Maybe X)(p : A mx) → Maybe Y
 dmap f nothing p = nothing
 dmap f (just x) p = just (f x p)

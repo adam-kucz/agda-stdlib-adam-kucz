@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Data.Nat.Arithmetic.Subtraction.Property where
 
 open import Data.Nat.Arithmetic.Subtraction.Definition
@@ -10,136 +10,125 @@ open import Data.Nat.Arithmetic
 open import Data.Nat.Order
 open import Data.Nat.Property
 
-open import Operation.Binary
+open import Operation.Binary hiding (LeftInverse)
 open import Logic
 open import Proof
 open import Function.Proof
 
-relating-sub-≤ : ∀ {m n} k {p p'}
-  (q : m ≤ n)
-  → --------------------
-  m - k [ p ] ≤ n - k [ p' ]
-relating-sub-≤ zero q = q
-relating-sub-≤ (k +1) (s≤s q) = relating-sub-≤ k q
-
--+ : (p : k ≤ m) → m - k [ p ] + k == m
--+ {0}{m} p = right-unit m
--+ {k +1}{m +1} p =
-  proof m - k [ ap pred p ] + (k +1)
-    === m - k [ ap pred p ] + k +1
-      :by: +-suc (m - k [ ap pred p ]) k
-    === m +1
-      :by: ap suc $ -+ {k}{m} $ ap pred p
-  qed
+-+ : (p : k ≤ m) → m - k + k == m
+-+ (z≤ m) = right-unit m
+-+ {k +1}{m +1}(s≤s p) = proof m - k + (k +1)
+                           === m - k + k +1   :by: +-suc (m - k) k
+                           === m +1           :by: ap suc $ -+ p
+                         qed
 
 +==→-== :
   (q : m == k + n)
   → ---------------
-  let p = Id.coe (ap (n ≤_) $ sym q) $ postfix (k +_) n in
-  m - n [ p ] == k
-+==→-== {.(k + 0)}{k}{zero} (Id.refl .(k + 0)) = right-unit k
-+==→-== {.(k + (n +1))}{k} {n +1} (Id.refl .(k + (n +1))) =
-  proof k + (n +1) - (n +1) [ p ]
-    === k + n +1 - (n +1) [ Id.coe (ap (n +1 ≤_) (+-suc k n)) p  ]
-      :by: -== (+-suc k n) (refl (n +1))
-    === k + n - n [ postfix (k +_) n  ]
-      :by: Id.refl _
-    === k
-      :by: +==→-== (refl (k + n))
+  m - n == k
++==→-== {_}{k}{0}(Id.refl .(k + 0)) = right-unit k
++==→-== {_}{k}{n +1}(Id.refl .(k + (n +1))) =
+  proof k + (n +1) - (n +1)
+    === k + n - n           :by: ap (_- (n +1)) $ +-suc k n
+    === k                   :by: +==→-== $ Id.refl $ k + n
   qed
-  where p = postfix (k +_) (n +1)
 
--==0 : ∀ {a b p}
-  → ------------------
-  a - b [ p ] == 0 ↔ a == b
-⟶ (-==0 {p = z≤ m}) q = q
-⟶ (-==0 {p = s≤s p}) q = ap suc $ ⟶ -==0 q
-⟵ -==0 = +==→-==
+-==0 : (p : n ≤ m) → m - n == 0 ↔ m == n
+⟶ (-==0 (z≤ _)) q = q
+⟶ (-==0 (s≤s p)) q = ap suc $ ⟶ (-==0 p) q
+⟵ (-==0 p) (Id.refl m) = +==→-== (Id.refl m)
 
-open import Relation.Binary
+_-self== : ∀ m → m - m == 0
+m -self== = ⟵ (-==0 (refl m)) $ refl m
 
-suc- : ∀{a b}(p : b ≤ a)
+suc- : (p : n ≤ m)
   → -------------------
-  a - b [ p ] +1 == a +1 - b [ trans p (postfix suc {_≤_} a) ]
-suc- (z≤ a) = Id.refl (a +1)
+  m - n +1 == m +1 - n
+suc- (z≤ m) = Id.refl (m +1)
 suc- (s≤s p) = suc- p
 
--+comm : ∀ {a b c}
-  (p : b ≤ a)
+-+comm : ∀ k
+  (p : n ≤ m)
   → -----------------------
-  a - b [ p ] + c == a + c - b [ trans p $ postfix (_+ c) a ]
--+comm {a}{b}{c} p = sym $ +==→-== $ sym {R = _==_} (
-  proof a - b [ p ] + c + b
-    === a - b [ p ] + b + c :by: swap' (a - b [ p ]) c b
-    === a + c               :by: ap (_+ c) $ -+ p
+  m - n + k == m + k - n
+-+comm {n}{m} k p = sym $ +==→-== (
+  proof m + k
+    === m - n + n + k :by: ap (_+ k) $ sym $ -+ p
+    === m - n + k + n :by: swap' (m - n) n k
   qed)
 
-relating---≤ : ∀ {a b c}
-  (p : b ≤ c)
-  (q : c ≤ a)
-  → -----------------------
-  c - b [ p ] ≤ a - b [ trans p q ]
-relating---≤ (z≤ m) q = q
-relating---≤ (s≤s p) (s≤s q) = relating---≤ p q
+-suc : ∀ m n → m - (n +1) == m - n - 1
+-suc m zero = Id.refl (m - 1)
+-suc zero (n +1) = Id.refl 0
+-suc (m +1) (n +1) = -suc m n
 
--comm : ∀ {a b c}
-  (p : b ≤ a)
-  (q : c + b ≤ a)
-  → -----------------------------------------------
-  let p₀ = proof c
-             === c + b - b [ postfix (c +_) b ]
-               :by: sym $ +==→-== (refl (c + b))  [: _==_ ]
-             〉 _≤_ 〉 a - b [ p ]
-               :by: relating---≤ (postfix (c +_) b) q
-           qed
-      p' = trans (postfix (_+ b) c) q
-      p₀' = proof b
-              === c + b - c [ _ ]
-                :by: sym $ +==→-== $ comm c b  [: _==_ ]
-              〉 _≤_ 〉 a - c [ p' ]
-                :by: relating---≤  (postfix (_+ b) c) q
-            qed
-  in
-  a - b [ p ] - c [ p₀ ] == a - c [ p' ] - b [ p₀' ]
--comm {a}{b}{c} p q = +==→-== $ +==→-== $ sym {R = _==_} (
-  proof a - c [ p' ] - b [ p₀' ] + c + b
-    === a - c [ p' ] - b [ p₀' ] + b + c :by: swap' _ c b
-    === a - c [ p' ] + c                 :by: ap (_+ c) $ -+ p₀'
-    === a                                :by: -+ p'
-  qed)
-  where p' = trans (postfix (_+ b) c) q
-        p₀' =
-          proof b
-            === c + b - c [ _ ]
-              :by: sym $ +==→-== $ comm c b  [: _==_ ]
-            〉 _≤_ 〉 a - c [ p' ]
-              :by: relating---≤  (postfix (_+ b) c) q
-          qed
-
-open import Proposition.Proof
-
--==-↔+==+ : ∀ {a b c d}
-  (p : a ≤ b)
-  (q : c ≤ d)
-  → ------------------
-  b - a [ p ] == d - c [ q ] ↔ b + c == d + a
-⟶ (-==-↔+==+ {a}{b}{c}{d} p q) p₁ =
-  proof b + c
-    === b - a [ p ] + a + c   :by: ap (_+ c) $ sym $ -+ p
-    === b - a [ p ] + (a + c) :by: sym $ assoc _ a c
-    === d - c [ q ] + (a + c) :by: ap (_+ (a + c)) $ p₁
-    === d - c [ q ] + (c + a) :by: ap (d - c [ q ] +_) $ comm a c
-    === d - c [ q ] + c + a   :by: assoc _ c a
-    === d + a                 :by: ap (_+ a) $ -+ q
+-comm : ∀ m n k → m - n - k == m - k - n
+-comm m 0 k = Id.refl (m - k)
+-comm m (n +1) 0 = Id.refl (m - (n +1))
+-comm zero (n +1) (k +1) = Id.refl 0
+-comm (m +1) (n +1) (k +1) =
+  proof m - n - (k +1)
+    === m - n - k - 1  :by: -suc (m - n) k
+    === m - k - n - 1  :by: ap (_- 1) $ -comm m n k
+    === m - k - (n +1) :by: sym $ -suc (m - k) n
   qed
-⟵ (-==-↔+==+ {a}{b}{c}{d} p q) q₁ =
-  proof b - a [ p ]
-    === b - a [ p ] + c - c [ _ ]
-      :by: sym $ +==→-== $ refl (b - a [ p ] + c)
-    === b + c - a [ _ ] - c [ _ ]
-      :by: -== (-+comm p) (refl c)
-    === d + a - a [ _ ] - c [ _ ]
-      :by: -== (-== q₁ (refl a)) (refl c)
-    === d - c [ q ]
-      :by: -== (+==→-== $ refl (d + a)) (refl c)
+
+open import Function hiding (_$_)
+
+instance
+  LeftZeroOf- : 0 IsLeftZeroOf _-_
+  RightUnitOf- : 0 IsRightUnitOf _-_
+  RelatingSub-≤-≤ : Relating (_- m) _≤_ _≤_
+  RelatingSub-≤-≥ : Relating (m -_) _≤_ _≥_
+  LeftInverseSub : LeftInverse (_+ m) (_- m)
+
+left-zero ⦃ LeftZeroOf- ⦄ 0 = Id.refl 0
+left-zero ⦃ LeftZeroOf- ⦄ (n +1) = Id.refl 0
+right-unit ⦃ RightUnitOf- ⦄ = Id.refl
+rel-preserv ⦃ RelatingSub-≤-≤ {0} ⦄ p = p
+rel-preserv ⦃ RelatingSub-≤-≤ {m +1} ⦄ (z≤ k) = z≤ (k - (m +1))
+rel-preserv ⦃ RelatingSub-≤-≤ {m +1} ⦄ (s≤s p) =
+  rel-preserv ⦃ RelatingSub-≤-≤ {m} ⦄ p
+left-inv ⦃ LeftInverseSub {0} ⦄ = subrel ∘ right-unit
+left-inv ⦃ LeftInverseSub {m +1} ⦄ 0 = subrel $ m -self==
+left-inv ⦃ LeftInverseSub {m +1} ⦄ (n +1) =
+  proof (n +1) + (m +1) - (m +1)
+    === n + (m +1) - m           :by: refl _
+    === n + m +1 - m             :by: ap (_- m) $ +-suc n m
+    === n + m - m +1             :by: sym $ suc- $ postfix (n +_) m
+    het== n +1
+      :by: ap suc $ left-inv ⦃ LeftInverseSub {m} ⦄ n
+  qed
+
+open import Data.Nat.Proof
+
+rel-preserv ⦃ RelatingSub-≤-≥ {m} ⦄ {0}{n} p =
+  prefix (_- n) ⦃ Prefix- {n} ⦄ m
+rel-preserv ⦃ RelatingSub-≤-≥ ⦄ {a +1}{0} ()
+rel-preserv ⦃ RelatingSub-≤-≥ {0} ⦄ {a +1}{b +1} p = refl 0
+rel-preserv ⦃ RelatingSub-≤-≥ {m +1} ⦄ {a +1}{b +1}(s≤s p) =
+  rel-preserv ⦃ RelatingSub-≤-≥ {m} ⦄ p
+
+-==-↔+==+ :
+  (p : n ≤ m)
+  (q : l ≤ k)
+  → ------------------
+  m - n == k - l ↔ m + l == k + n
+⟶ (-==-↔+==+ {n}{m}{l}{k} n≤m l≤k) p =
+  proof m + l
+    === m - n + n + l :by: ap (_+ l) $ sym $ -+ n≤m
+    === k - l + n + l :by: ap (λ — → (— + n) + l) p
+    === k + n - l + l :by: ap (_+ l) $ -+comm n l≤k
+    === k + n         :by: -+ p'
+  qed
+  where p' : l ≤ k + n
+        p' = proof l 〉 _≤_ 〉 k     :by: l≤k
+                     〉 _≤_ 〉 k + n :by: postfix (_+ n) k
+⟵ (-==-↔+==+ {n}{m}{l}{k} n≤m l≤k) p =
+  proof m - n
+    === m + l - l - n
+      :by: ap (_- n) $ sym $ subrel $ left-inverse-of (_+ l) m
+    === k + n - l - n :by: ap (λ — → — - l - n) p
+    === k + n - n - l :by: -comm (k + n) l n
+    === k - l         :by: ap (_- l) $ subrel $ left-inverse-of (_+ n) k
   qed

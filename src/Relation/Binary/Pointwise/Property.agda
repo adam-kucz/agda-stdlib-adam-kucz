@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --prop --safe #-}
+{-# OPTIONS --exact-split --safe #-}
 module Relation.Binary.Pointwise.Property where
 
 open import Relation.Binary.Pointwise.Definition

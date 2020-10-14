@@ -1,13 +1,13 @@
-{-# OPTIONS --exact-split --prop --safe #-}
+{-# OPTIONS --exact-split --safe #-}
 module Data.List.Property.Instance where
 
 open import Data.List.Definition
 open import Data.List.Collection
 open import Data.List.Operation.Basic
 
-open import PropUniverses
-open import Proposition.Identity hiding (refl)
-open import Proposition.Decidable
+open import Universes
+open import Type.Identity hiding (refl)
+open import Type.Decidable
 open import Collection.Definition
 open import Collection.Basic
 open import Collection.Removable
@@ -129,11 +129,10 @@ open import Relation.Binary
 
 ListDecidable∈ {l = []} = false (λ ())
 ListDecidable∈ {x = x}{h ∷ l} with decide (x == h)
-ListDecidable∈ {x = x} {h ∷ l} | true p =
-  true (Id.coe (ap (λ — → x ∈ — ∷ l) p) (x∈x∷ l))
-ListDecidable∈ {x = x} {h ∷ l} | false ¬p with decide (x ∈ l)
-ListDecidable∈ {x = x} {h ∷ l} | false ¬p | true p = true (x∈tail h p)
-ListDecidable∈ {x = x} {h ∷ l} | false ¬p | false ¬p₁ =
+ListDecidable∈ {x = h}{h ∷ l} | true (Id.refl h) = true $ x∈x∷ l
+ListDecidable∈ {x = x}{h ∷ l} | false ¬p with decide (x ∈ l)
+ListDecidable∈ {x = x}{h ∷ l} | false ¬p | true p = true $ x∈tail h p
+ListDecidable∈ {x = x}{h ∷ l} | false ¬p | false ¬p₁ =
   false (λ { (x∈x∷ t) → ¬p (Id.refl x) ; (x∈tail h q) → ¬p₁ q })
 
 ListDecidable== {x = []} {[]} = true (Id.refl [])
@@ -142,7 +141,7 @@ ListDecidable== {x = h ∷ x} {[]} = false λ ()
 ListDecidable== {x = h₀ ∷ x} {h₁ ∷ y} with ListDecidable== {x = x}{y}
 ListDecidable== ⦃ d = _ ⦄ {h₀ ∷ x} {h₁ ∷ y} | true q =
   dif h₀ == h₁
-    then (λ p → true (ap2 _∷_ p q))
+    then (λ p → true $ ap2 _∷_ p q)
     else (λ ¬p → false λ { (Id.refl _) → ¬p $ Id.refl h₀})
 ListDecidable== ⦃ d = _ ⦄ {h₀ ∷ x} {h₁ ∷ y} | false ¬q =
   false λ { (Id.refl _) → ¬q $ Id.refl x}

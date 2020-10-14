@@ -1,10 +1,10 @@
-{-# OPTIONS --exact-split --prop --safe #-}
+{-# OPTIONS --exact-split --safe #-}
 module Collection.Listable.Definition where
 
 open import Collection.Definition
 open import Collection.Insertable
 
-open import PropUniverses
+open import Universes
 open import Logic
 open import Data.List.Definition
 open import Data.List.Collection

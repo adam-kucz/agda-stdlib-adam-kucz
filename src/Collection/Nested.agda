@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --prop --safe #-}
+{-# OPTIONS --exact-split --safe #-}
 open import Universes
 open import Collection.Definition
 

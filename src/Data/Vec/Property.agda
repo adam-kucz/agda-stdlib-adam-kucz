@@ -1,15 +1,15 @@
-{-# OPTIONS --safe --exact-split --prop  #-}
+{-# OPTIONS --safe --exact-split  #-}
 module Data.Vec.Property where
 
 open import Data.Vec.Definition
 
-open import PropUniverses
+open import Universes
 open import Logic
 open import Proof
 
 open import Data.Nat
 
-data member {X : 𝒰 ˙} (x : X) : {n : ℕ} (l : Vec X n) → 𝒰₀ ᵖ where
+data member {X : 𝒰 ˙} (x : X) : {n : ℕ} (l : Vec X n) → 𝒰₀ ˙ where
   x∈x∷_ : ∀ {n} (t : Vec X n) → member x (x ∷ t)
   x∈tail : ∀ {n} (h : X) {t : Vec X n} (p : member x t) → member x (h ∷ t)
 
@@ -28,9 +28,9 @@ _∈_ ⦃ VecCollection ⦄ x = member x
   → ----------------------------
   x ∈ v ++ v' ↔ x ∈ v ∨ x ∈ v'
 ⟶ (∈++ [] v') p = ∨right p
-⟶ (∈++ (h ∷ v) v') (x∈x∷ .(v ++ v')) = ∨left $ x∈x∷ v
+⟶ (∈++ (h ∷ v) v') (x∈x∷ .(v ++ v')) = ∨left (x∈x∷ v)
 ⟶ (∈++ (h ∷ v) v') (x∈tail h p) with ⟶ (∈++ v v') p
-⟶ (∈++ (h ∷ v) v') (x∈tail h p) | ∨left q = ∨left $ x∈tail h q
+⟶ (∈++ (h ∷ v) v') (x∈tail h p) | ∨left q = ∨left (x∈tail h q)
 ⟶ (∈++ (h ∷ v) v') (x∈tail h p) | ∨right q = ∨right q
 ⟵ (∈++ (_ ∷ t) v') (∨left (x∈x∷ t)) = x∈x∷ (t ++ v')
 ⟵ (∈++ (h ∷ t) v') (∨left (x∈tail h p)) = x∈tail h $ ⟵ (∈++ t v') $ ∨left p
@@ -57,3 +57,18 @@ to-list ⦃ VecListable ⦄ (h ∷ S) = h ∷ to-list S
 vec-to-list-len : (v : Vec X m) → len (to-list v) == m
 vec-to-list-len [] = Id.refl 0
 vec-to-list-len (h ∷ v) = ap suc (vec-to-list-len v)
+
+open import Type.Decidable
+
+instance
+  DecidableVec∈ : ⦃ d : HasDecidableIdentity X ⦄
+    → -------------------------------------------
+    ∀{n}{x : X}{v : Vec X n} → Decidable (x ∈ v)
+
+DecidableVec∈ {v = []} = false λ ()
+DecidableVec∈ {x = x}{h ∷ v} with decide (x == h)
+... | true (Id.refl x) = true $ x∈x∷ v
+... | false ¬p with DecidableVec∈ {x = x}{v}
+... | true p = true $ x∈tail h p
+... | false ¬p' = false λ { (x∈x∷ v) → ¬p $ Id.refl x
+                          ; (x∈tail x p') → ¬p' p'}

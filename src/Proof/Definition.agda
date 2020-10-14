@@ -1,15 +1,17 @@
-{-# OPTIONS --exact-split --safe --prop  #-}
+{-# OPTIONS --exact-split --safe  #-}
 module Proof.Definition where
 
-open import PropUniverses
+open import Universes
 
 open import Type.Sum.Definition using (Σ; _,_; pr₁; pr₂; _×_)
-import Proposition.Identity as Identity
+import Type.Identity as Identity
 open import Relation.Binary hiding (_~_)
 
-open import Proposition.Identity hiding (refl) public
-open import Proposition.Function using (_$_) public
-open import Proposition.Identity.Homogeneous.Property public
+open import Type.Identity hiding (refl) public
+open import Function.Basic using (_$_) public
+open import Type.Identity.Homogeneous.Property public
+open import Type.Identity.Heterogeneous.Property public
+open import Type.Identity.Property public
 open import Function.Proof
   using (
     ap; ap2;
@@ -135,12 +137,12 @@ proof_ : (x : X) → x == x
 proof_ = Id.refl
 
 infix 5 _qed
-_qed : (x : 𝑋) → 𝑋
+_qed : (x : X) → X
 x qed = x
 
 infix 5 qed:
-qed: : (𝑋 : 𝒰 ᵖ)(x : 𝑋) → 𝑋
-qed: 𝑋 x = x
+qed: : (X : 𝒰 ˙)(x : X) → X
+qed: X x = x
 
 syntax qed: 𝑋 x = x qed[ 𝑋 ]
 
@@ -218,5 +220,5 @@ data Singleton {X Y : 𝒰 ˙}(x : X) : 𝒰 ˙ where
 inspect : {X : 𝒰 ˙} (x : X) → Singleton x
 inspect x = x with== Het.refl x
 
-from-instance : ⦃ p : 𝑋 ⦄ → 𝑋
+from-instance : ⦃ p : X ⦄ → X
 from-instance ⦃ p ⦄ = p

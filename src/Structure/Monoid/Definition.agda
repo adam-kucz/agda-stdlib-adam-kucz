@@ -1,13 +1,13 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Structure.Monoid.Definition where
 
 open import Structure.Semigroup.Definition hiding (_∙_)
 
-open import PropUniverses
+open import Universes
 open import Operation.Binary
   renaming (ClosedOp to Op) hiding (Op)
 
-record FormMonoid {X : 𝒰 ˙} (_∙_ : Op X) (e : X) : 𝒰 ᵖ where
+record FormMonoid {X : 𝒰 ˙} (_∙_ : Op X) (e : X) : 𝒰 ˙ where
   field
     ⦃ form-semigroup ⦄ : FormSemigroup _∙_
     ⦃ unit ⦄ : e IsUnitOf _∙_

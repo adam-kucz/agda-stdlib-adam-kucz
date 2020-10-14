@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --prop --safe #-}
+{-# OPTIONS --exact-split --safe #-}
 module Collection.Operation where
 
 open import Collection.Operation.Definition public

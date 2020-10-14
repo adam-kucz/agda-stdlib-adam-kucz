@@ -1,54 +1,44 @@
-{-# OPTIONS --safe --exact-split --prop  #-}
+{-# OPTIONS --safe --exact-split  #-}
 module Data.List.Operation.AfterProperty where
 
 open import Data.List.Definition
 open import Data.List.Property
 
 open import Universes
-open import Type.Sum renaming (_,_ to _Σ,_)
+open import Type.Sum
 open import Collection
 open import Data.Nat
+open import Data.Maybe
 open import Proof
 
-infixr 110 _!_[_]
-_!_[_] : (l : List X)(n : ℕ)(p : n +1 ≤ len l) → X
-h ∷ _ ! zero [ _ ] = h
-_ ∷ l ! suc n [ p ] = l ! n [ ap pred p ]
+infixr 110 _!_
+_!_ : (l : List X)(n : ℕ) → Maybe X
+[] ! _ = nothing
+h ∷ _ ! 0 = just h
+_ ∷ l ! (n +1) = l ! n
 
-zip : (l₀ : List X)(l₁ : List Y)(p : len l₀ == len l₁) → List (X × Y)
-zip [] [] p = []
-zip (h₀ ∷ l₀) (h₁ ∷ l₁) p = (h₀ Σ, h₁) ∷ zip l₀ l₁ (ap pred p)
+zip : (l₀ : List X)(l₁ : List Y) → List (X × Y)
+zip [] _ = []
+zip (_ ∷ _) [] = []
+zip (h₀ ∷ l₀)(h₁ ∷ l₁) = (h₀ , h₁) ∷ zip l₀ l₁
 
-open import Proposition.Sum
 open import Data.List.Collection
 open import Logic
 
 ∈-zip : ∀{X : 𝒰 ˙}{Y : 𝒱 ˙}
   (l₀ : List X)
   (l₁ : List Y)
-  (p : len l₀ == len l₁)
   {x : X}{y : Y}
   → -----------------------
-  let p' : ∀{i}(p : i +1 ≤ len l₀) → i +1 ≤ len l₁
-      p' {i} = Id.coe (ap (i +1 ≤_) p) in
-  x Σ, y ∈ zip l₀ l₁ p
+  (x , y) ∈ zip l₀ l₁
   ↔
-  ∃ λ i →
-    i +1 ≤ len l₀ ∧ᵈ
-    λ p → l₀ ! i [ p ] == x ∧ l₁ ! i [ p' p ] == y
-⟶ (∈-zip [] [] p) ()
-⟵ (∈-zip [] [] p) (_ , ())
-⟶ (∈-zip (h₀ ∷ l₀) (h₁ ∷ l₁) p) (x∈x∷ _) =
-  0 , (s≤s $ z≤ len l₀ , (Id.refl h₀ , Id.refl h₁))
-⟶ (∈-zip l₀@(_ ∷ t₀) l₁@(_ ∷ t₁) p {x}{y}) (x∈tail _ q) =
-  f $ ⟶ (∈-zip t₀ t₁ (ap pred p)) q
-  where f : (p : ∃ λ i → i +1 ≤ len t₀ ∧ᵈ
-                         λ p₁ → t₀ ! i [ _ ] == x ∧ t₁ ! i [ _ ] == y)
-            → ------------------------------------------------------------
-            ∃ λ i → i +1 ≤ len l₀ ∧ᵈ
-                    λ p → l₀ ! i [ p ] == x ∧ l₁ ! i [ _ ] == y
-        f (i , (i+1≤len-l₀ , eqs)) = i +1 , (s≤s i+1≤len-l₀ , eqs)
-⟵ (∈-zip (h₀ ∷ l₀) (h₁ ∷ l₁) p) (zero , (_ , (Id.refl _ , Id.refl _))) =
-  x∈x∷ (zip l₀ l₁ (ap pred p))
-⟵ (∈-zip (h₀ ∷ l₀) (h₁ ∷ l₁) p) (i +1 , (s≤s i+1≤len , eqs)) =
-  x∈tail (h₀ Σ, h₁) $ ⟵ (∈-zip l₀ l₁ (ap pred p)) (i , (i+1≤len , eqs))
+  ∃ λ i → i + 1 ≤ len l₀ ∧ (l₀ ! i == just x ∧ l₁ ! i == just y)
+⟶ (∈-zip (h₀ ∷ l₀) (h₁ ∷ l₁)) (x∈x∷ .(zip l₀ l₁)) =
+  0 , (s≤s (z≤ len l₀) , (Id.refl (just h₀) , Id.refl (just h₁)))
+⟶ (∈-zip (h₀ ∷ l₀) (h₁ ∷ l₁)) (x∈tail .(h₀ , h₁) p) with ⟶ (∈-zip l₀ l₁) p
+... | i , (q , q') =
+  i +1 , (ap suc ⦃ Relating-+-left-≤ ⦄ q , q')
+⟵ (∈-zip (h ∷ l₀) (h₁ ∷ l₁))
+  (0 , (_ , (Id.refl .(just h) , Id.refl .(just h₁)))) = x∈x∷ (zip l₀ l₁)
+⟵ (∈-zip (h₀ ∷ l₀) (h₁ ∷ l₁)) (i +1 , (s≤s q , eqs)) =
+  x∈tail (h₀ , h₁) $ ⟵ (∈-zip l₀ l₁) (i , (q , eqs))

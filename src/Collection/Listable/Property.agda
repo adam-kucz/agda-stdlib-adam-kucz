@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --prop --safe #-}
+{-# OPTIONS --exact-split --safe #-}
 module Collection.Listable.Property where
 
 open import Collection.Definition
@@ -6,8 +6,8 @@ open import Collection.Listable.Definition
 open import Collection.Listable.Function
 
 open import Universes
-import Proposition.Permutation as Perm
-import Proposition.Permutation.Class as PermClass
+import Type.Permutation as Perm
+import Type.Permutation.Class as PermClass
 open import Relation.Binary
   hiding (_~_; Reflexive~; Transitive~; Symmetric~)
 open import Data.List.Definition

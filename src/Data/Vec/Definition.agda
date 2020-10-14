@@ -1,7 +1,7 @@
-{-# OPTIONS --safe --exact-split --prop  #-}
+{-# OPTIONS --safe --exact-split  #-}
 module Data.Vec.Definition where
 
-open import PropUniverses
+open import Universes
 open import Data.Nat
 
 infixr 115 _∷_
@@ -18,18 +18,19 @@ tail : ∀ {m}(v : Vec X (m +1)) → Vec X m
 tail (_ ∷ t) = t
 
 open import Proof
+open import Data.Maybe
 
-infixr 110 _!_[_]
-_!_[_] : ∀ {m} (l : Vec X m) (n : ℕ) (p : n +1 ≤ m) → X
-h ∷ _ ! zero [ _ ] = h
-_ ∷ l ! suc n [ p ] = l ! n [ ap pred p ]
+infixr 110 _!_
+_!_ : (l : Vec X m) → [ n ∶ ℕ ]⇀ X
+[] ! _ = nothing
+h ∷ _ ! zero = just h
+_ ∷ l ! n +1 = l ! n
 
 pattern [_] a₀ = a₀ ∷ []
 pattern [_⸴_] a₀ a₁ = a₀ ∷ a₁ ∷ []
 pattern [_⸴_⸴_] a₀ a₁ a₂ = a₀ ∷ a₁ ∷ a₂ ∷ []
 pattern [_⸴_⸴_⸴_] a₀ a₁ a₂ a₃ = a₀ ∷ a₁ ∷ a₂ ∷ a₃ ∷ []
 
-open import Proposition.Identity hiding (refl)
 open import Logic
 
 Vec== : ∀ {m}
@@ -47,9 +48,9 @@ drop-last : (v : Vec X (m +1)) → Vec X m
 drop-last [ _ ] = []
 drop-last (h₀ ∷ h₁ ∷ v) = h₀ ∷ drop-last (h₁ ∷ v)
 
-delete-nth : (k : ℕ)(p : k ≤ m)(v : Vec X (m +1)) → Vec X m
-delete-nth zero p (h ∷ v) = v
-delete-nth {m +1} (k +1) p (h ∷ v) = h ∷ delete-nth k (ap pred p) v
+-- delete-nth : (k : ℕ)(p : k ≤ m)(v : Vec X (m +1)) → Vec X m
+-- delete-nth zero p (h ∷ v) = v
+-- delete-nth {m +1} (k +1) p (h ∷ v) = h ∷ delete-nth k (ap pred p) v
 
 infixl 105 _++_
 _++_ : ∀ {m n}(v : Vec X m)(v' : Vec X n) → Vec X (m + n)

@@ -65,6 +65,8 @@ infix 19 _~_ -- Type.Quotient.Class
 
 -- Logic (18 - 10)
 
+infixr 16 _$_
+
 infix 18 ¬_ -- Prop'.Empty
 infixl 17 _∧_ -- Prop'.Sum
 infixl 15 _∨_ -- Prop'.BinarySum

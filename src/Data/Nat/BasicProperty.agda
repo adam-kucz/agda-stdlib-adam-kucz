@@ -1,11 +1,11 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Data.Nat.BasicProperty where
 
 open import Data.Nat.Definition
 open import Data.Nat.Syntax
 open Pattern
 
-open import Proposition.Identity
+open import Type.Identity
 open import Function hiding (_$_; _~_)
 
 instance

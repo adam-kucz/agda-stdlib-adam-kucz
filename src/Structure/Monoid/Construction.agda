@@ -1,10 +1,10 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Structure.Monoid.Construction where
 
 open import Structure.Monoid.Definition
 
 open import Universes
-open import Proposition.Identity
+open import Type.Identity
 open import Function
 open import Operation.Binary
 

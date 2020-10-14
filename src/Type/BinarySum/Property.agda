@@ -1,10 +1,10 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Type.BinarySum.Property where
 
 open import Type.BinarySum.Definition
 
 open import Universes
-open import Proposition.Identity
+open import Type.Identity
 open import Function
 
 [_,_]∘[_+_] :

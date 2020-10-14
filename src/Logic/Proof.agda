@@ -1,10 +1,10 @@
-{-# OPTIONS --exact-split --prop --safe  #-}
+{-# OPTIONS --exact-split --safe  #-}
 module Logic.Proof where
 
 open import Logic.Basic
 open import Logic.Iff
 
-open import PropUniverses
+open import Universes
 open import Relation.Binary.Property
 
 instance
@@ -32,17 +32,17 @@ module WithUniverse {𝒰}{𝒱} where
     (λ z → y→x (z→y z))
 
 instance
-  IndexedSymmetric↔ : IndexedSymmetric {F = _ᵖ} _↔_
+  IndexedSymmetric↔ : IndexedSymmetric {F = _˙} _↔_
 
 isym ⦃ IndexedSymmetric↔ ⦄ (x→y , y→x) = y→x , x→y
 
 open import Function.Proof
 
 instance
-  Relating-∧-left-↔ : Relating (𝑋 ∧_) (_↔_ {𝒰}) _↔_
-  Relating-∧-right-↔ : Relating (_∧ 𝑋) (_↔_ {𝒰}) _↔_
-  Relating-∨-left-↔ : Relating (𝑋 ∨_) (_↔_ {𝒰}) _↔_
-  Relating-∨-right-↔ : Relating (_∨ 𝑋) (_↔_ {𝒰}) _↔_
+  Relating-∧-left-↔ : Relating (X ∧_) (_↔_ {𝒰}) _↔_
+  Relating-∧-right-↔ : Relating (_∧ X) (_↔_ {𝒰}) _↔_
+  Relating-∨-left-↔ : Relating (X ∨_) (_↔_ {𝒰}) _↔_
+  Relating-∨-right-↔ : Relating (_∨ X) (_↔_ {𝒰}) _↔_
   Relating-2-∧ : Relating-2 (_∧_ {𝒰}{𝒱}) _↔_ _↔_ _↔_
   Relating-2-∨ : Relating-2 (_∨_ {𝒰}{𝒱}) _↔_ _↔_ _↔_
 
@@ -73,16 +73,16 @@ rel-preserv-2 ⦃ Relating-2-∨ ⦄ {X}{X'}{Y}{Y'} X↔X' Y↔Y' =
     〉 _↔_ 〉 X' ∨ Y' :by: ap (X' ∨_) Y↔Y'
   qed
 
--↔-∧- : (p : 𝑋 → 𝑌) → 𝑋 ↔ 𝑋 ∧ 𝑌
+-↔-∧- : (p : X → Y) → X ↔ X ∧ Y
 ⟶ (-↔-∧- p) x = x , p x
 ⟵ (-↔-∧- p) (x , _) = x
 
--↔-∨- : (p : 𝑌 → 𝑋) → 𝑋 ↔ 𝑋 ∨ 𝑌
+-↔-∨- : (p : Y → X) → X ↔ X ∨ Y
 ⟶ (-↔-∨- p) x = ∨left x
 ⟵ (-↔-∨- p) (∨left x) = x
 ⟵ (-↔-∨- p) (∨right y) = p y
 
-[∨]∧↔∧∨∧ : (𝑋 ∨ 𝑌) ∧ 𝑍 ↔ 𝑋 ∧ 𝑍 ∨ 𝑌 ∧ 𝑍
+[∨]∧↔∧∨∧ : (X ∨ Y) ∧ Z ↔ X ∧ Z ∨ Y ∧ Z
 ⟶ [∨]∧↔∧∨∧ (∨left x , z) = ∨left (x , z)
 ⟶ [∨]∧↔∧∨∧ (∨right y , z) = ∨right (y , z)
 ⟵ [∨]∧↔∧∨∧ (∨left (x , z)) = ∨left x , z

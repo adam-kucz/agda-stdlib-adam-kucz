@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --prop --safe #-}
+{-# OPTIONS --exact-split --safe #-}
 module Collection.Operation.Function where
 
 open import Collection.Operation.Definition
@@ -80,7 +80,7 @@ recreate :
   Col
 recreate S = from-list-uniq S (to-list S)
 
-open import Proposition.Decidable
+open import Type.Decidable
 open import Logic
 open import Proof
 open import Data.List.Collection
@@ -103,10 +103,10 @@ recreate-prop :
           (q : x ∈ l)
           → --------------------
           x ∈ from-list-uniq S l
-        go (h ∷ t) (x∈x∷ t) = ⟵ insert-valid $ ∨right $ Id.refl h
+        go (h ∷ t) (x∈x∷ t) = ⟵ insert-valid $ ∨right (Id.refl h)
         go (h ∷ t) (x∈tail h q) with decide (x == h)
         go (h ∷ t) (x∈tail h q) | true (Id.refl h) =
-          ⟵ insert-valid $ ∨right $ Id.refl h
+          ⟵ insert-valid $ ∨right (Id.refl h)
         go (h ∷ t) (x∈tail h q) | false ¬p =
           ⟵ insert-valid $ ∨left $ ⟵ remove-valid (go t q , ¬p)
 ⟶ (recreate-prop ⦃ ls = ls ⦄{x = x}{S}) p with ⟵ (to-list-valid ⦃ ls ⦄ {S}{x})

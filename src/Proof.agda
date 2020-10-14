@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --safe --prop  #-}
+{-# OPTIONS --exact-split --safe  #-}
 module Proof where
 
 open import Proof.Definition public

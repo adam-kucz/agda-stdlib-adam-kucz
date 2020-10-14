@@ -1,13 +1,13 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Operation.Binary.Lattice where
 
 open import Operation.Binary.Definition
 open import Operation.Binary.Property
 
-open import PropUniverses as Univ
+open import Universes as Univ
 open import Relation.Binary.Definition renaming (Rel to BinRel) using ()
 
-record FormSemilattice {X : 𝒰 ˙}(_∙_ : ClosedOp X) : 𝒰 ᵖ where
+record FormSemilattice {X : 𝒰 ˙}(_∙_ : ClosedOp X) : 𝒰 ˙ where
   field
     ⦃ semilattice-assoc ⦄ : Associative _∙_
     ⦃ semilattice-comm ⦄ : Commutative _∙_
@@ -24,7 +24,7 @@ instance
     FormSemilattice _∙_
 DefaultSemilattice = record {}
 
-record FormBoundedSemilattice {X : 𝒰 ˙}(_∙_ : ClosedOp X)(bound : X) : 𝒰 ᵖ where
+record FormBoundedSemilattice {X : 𝒰 ˙}(_∙_ : ClosedOp X)(bound : X) : 𝒰 ˙ where
   field
     ⦃ semilattice ⦄ : FormSemilattice _∙_
     ⦃ bounded ⦄ : bound IsUnitOf _∙_

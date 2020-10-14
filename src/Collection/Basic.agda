@@ -1,9 +1,9 @@
-{-# OPTIONS --exact-split --prop --safe #-}
+{-# OPTIONS --exact-split --safe #-}
 module Collection.Basic where
 
 open import Collection.Definition
 
-open import PropUniverses
+open import Universes
 open import Logic
 
 record Empty

@@ -1,7 +1,7 @@
-{-# OPTIONS --exact-split --prop --safe #-}
+{-# OPTIONS --exact-split --safe #-}
 module Data.Maybe.Definition where
 
-open import PropUniverses
+open import Universes
 
 data Maybe (X : 𝒰 ˙) : 𝒰 ˙ where
   nothing : Maybe X
@@ -15,15 +15,6 @@ from-maybe :
   A mx
 from-maybe f y nothing = y
 from-maybe f y (just x) = f x
-
-from-maybeₚ : {𝐴 : Maybe X → 𝒰 ᵖ}
-  (p : (x : X) → 𝐴 (just x))
-  (q : 𝐴 nothing)
-  (mx : Maybe X)
-  → -------------------------
-  𝐴 mx
-from-maybeₚ p q  nothing = q
-from-maybeₚ p q (just x) = p x
 
 from-maybe' :
   (f : (x : X) → Y)
@@ -42,11 +33,11 @@ X ⇀ Y = X → Maybe Y
 
 syntax partial X (λ x → A) = [ x ∶ X ]⇀ A
 
-open import Proposition.Identity
-open import Proposition.Empty
+open import Type.Identity
+open import Type.Empty
 
 _∈dom_ _∉dom_ : {A : X → 𝒰 ˙}
-  (x : X)(f : [ x ∶ X ]⇀ A x) → 𝒰 ᵖ
+  (x : X)(f : [ x ∶ X ]⇀ A x) → 𝒰 ˙
 _∉dom_ {A = A} x f = f x == nothing {X = A x}
 x ∈dom f = ¬ x ∉dom f
 

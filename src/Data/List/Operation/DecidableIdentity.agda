@@ -1,6 +1,6 @@
-{-# OPTIONS --safe --exact-split --prop  #-}
-open import PropUniverses
-open import Proposition.Decidable
+{-# OPTIONS --safe --exact-split #-}
+open import Universes
+open import Type.Decidable
 
 module Data.List.Operation.DecidableIdentity
   {X : 𝒰 ˙} ⦃ d : HasDecidableIdentity X ⦄
@@ -65,7 +65,7 @@ module Data.List.Operation.DecidableIdentity
   ⟶ (find-just x (h ∷ t)) (m +1 , Id.refl _) | false ¬p | false ¬p' | just m =
     ⊥-recursion _ $ ¬p' $ Id.refl (just m)
   ⟵ (find-just x (h ∷ t)) p with decide (x == h) ⦃ d ⦄
-  ⟵ (find-just x (h ∷ t)) p | true p = 0 , Id.refl (just zero)
+  ⟵ (find-just x (h ∷ t)) p | true q = 0 , Id.refl (just zero)
   ⟵ (find-just x (x ∷ t)) (x∈x∷ t) | false ¬p = ⊥-recursion _ $ ¬p $ Id.refl x
   ⟵ (find-just x (h ∷ t)) (x∈tail h q) | false ¬p
     with ⟵ (find-just x t) q
@@ -97,7 +97,8 @@ module Data.List.Operation.DecidableIdentity
   index≤ {x} {h ∷ t} p with decide (x == h) ⦃ d ⦄
   index≤ {x} {h ∷ t} p | true p₁ =
     postfix (_+ len t) ⦃ Postfix-+-right-≤ ⦄ 1
-  index≤ {x} {h ∷ t} p | false ¬p = ap suc $ index≤ (prev ¬p p)
+  index≤ {x} {h ∷ t} p | false ¬p =
+    ap suc ⦃ Relating-+-left-≤ ⦄ $ index≤ $ prev ¬p p
 
   module Multiplicity where
     multiplicity : (x : X)(l : List X) → ℕ
@@ -145,7 +146,7 @@ module Data.List.Operation.DecidableIdentity
       | false x≠h | false h≠y | false ¬p = remove-invariant t p
 
     open import Function.Proof
-    open import Proposition.Permutation.Definition
+    open import Type.Permutation.Definition
     
     Relating-multiplicity-swap-== : {x : X} →
       Relating (multiplicity x) single-swap _==_
@@ -189,11 +190,11 @@ module Data.List.Operation.DecidableIdentity
 
   open Multiplicity using (multiplicity) public
 
-  is-uniq : (l : List X) → 𝒰 ᵖ
+  is-uniq : (l : List X) → 𝒰 ˙
   is-uniq l = ¬ ∃ λ (x : X) → 2 ≤ multiplicity x l
     where open import Data.Nat using (_≤_)
 
-  open import Proposition.Sum
+  open import Type.Sum
   open import Data.List.Insertable
   open import Data.List.Property
 
@@ -243,7 +244,7 @@ module Data.List.Operation.DecidableIdentity
             qed
 
   uniq : (l : List X) →
-    Σₚ λ (l' : List X) →
+    Σ λ (l' : List X) →
       (∀ {x : X}(p : x ∈ l) → x ∈ l') ∧
       is-uniq l'
   uniq l = recreate l , (⟵ recreate-prop , recreate-is-uniq l)

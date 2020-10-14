@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Type.BinarySum.Definition where
 
 open import Universes
@@ -7,6 +7,9 @@ infixl 55 _+_
 data _+_ (X : 𝒰 ˙) (Y : 𝒱 ˙) : 𝒰 ⊔ 𝒱 ˙ where
   inl : (x : X) → X + Y
   inr : (y : Y) → X + Y
+
+pattern left x = inl x
+pattern right x = inr x
 
 [_,_] :
   (f : (x : X) → Z)

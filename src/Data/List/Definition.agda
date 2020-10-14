@@ -1,5 +1,5 @@
-{-# OPTIONS --safe --exact-split --prop  #-}
-open import PropUniverses
+{-# OPTIONS --safe --exact-split  #-}
+open import Universes
 
 module Data.List.Definition {𝒰 : Universe} where
 
@@ -13,11 +13,11 @@ open import Data.Nat.Syntax
 open Pattern
 open import Data.Nat.Order
 
-open import Proposition.Identity
-open import Proposition.Empty
+open import Type.Identity
+open import Type.Empty
 
 last : (l : List X)(p : l ≠ []) → X
-last {X = X} [] p = ⊥-recursion X (p (refl []))
+last {X = X} [] p = 𝟘-recursion X (p (refl []))
 last (x ∷ []) p = x
 last (_ ∷ h ∷ l) p = last (h ∷ l) λ ()
 

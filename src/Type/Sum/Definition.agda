@@ -1,9 +1,9 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Type.Sum.Definition where
 
 open import Universes
 
-infixl 51 _,_
+infixl 11 _,_
 record Σ {X : 𝒰 ˙} (A : (x : X) → 𝒱 ˙) : 𝒰 ⊔ 𝒱 ˙ where
   constructor _,_
   field

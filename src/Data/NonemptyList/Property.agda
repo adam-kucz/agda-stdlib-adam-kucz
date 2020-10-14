@@ -1,12 +1,12 @@
-{-# OPTIONS --safe --exact-split --prop  #-}
+{-# OPTIONS --safe --exact-split  #-}
 module Data.NonemptyList.Property where
 
 open import Data.NonemptyList.Definition
 
-open import PropUniverses
+open import Universes
 open import Collection
 
-data member : (x : X)(l : NonemptyList X) → 𝒰₀ ᵖ where
+data member : (x : X)(l : NonemptyList X) → 𝒰₀ ˙ where
   ∈[_] : (x : X) → member x [ x ]
   _∈head_ : (x : X)(t : NonemptyList X) → member x (x ∷ t)
   _∈⦅_∷_⦆ : (x h : X){t : NonemptyList X}(p : member x t) → member x (h ∷ t)
@@ -15,7 +15,7 @@ open import Collection.Definition
 
 {-# DISPLAY member v l = v ∈ l #-}
 
-open import Proposition.Decidable
+open import Type.Decidable
 
 instance
   NonemptyListCollection : Collection 𝒰₀ (NonemptyList X) X
@@ -66,11 +66,11 @@ _∪_ ⦃ NonemptyListUnion ⦄ (h ∷ l₀) l₁ = h ∷ (l₀ ∪ l₁)
 ⟶ (∪-valid ⦃ NonemptyListUnion ⦄ {S₀ = [ x' ]})
   (x ∈⦅ x' ∷ p ⦆) = ∨right p
 ⟶ (∪-valid ⦃ NonemptyListUnion ⦄ {S₀ = h ∷ l₀})
-  (h ∈head .(l₀ ∪ _)) = ∨left $ h ∈head l₀
+  (h ∈head .(l₀ ∪ _)) = ∨left (h ∈head l₀)
 ⟶ (∪-valid ⦃ NonemptyListUnion ⦄ {S₀ = h ∷ l₀})
   (x ∈⦅ h ∷ p ⦆) with ⟶ (∪-valid {S₀ = l₀}) p
 ⟶ (∪-valid NonemptyListUnion {S₀ = h ∷ l₀})
-  (x ∈⦅ h ∷ p ⦆) | ∨left q = ∨left $ x ∈⦅ h ∷ q ⦆
+  (x ∈⦅ h ∷ p ⦆) | ∨left q = ∨left (x ∈⦅ h ∷ q ⦆)
 ⟶ (∪-valid NonemptyListUnion {S₀ = h ∷ l₀})
   (x ∈⦅ h ∷ p ⦆) | ∨right q = ∨right q
 ⟵ (∪-valid ⦃ NonemptyListUnion ⦄ {S₀ = [ x ]}{l₁})
@@ -84,15 +84,15 @@ _∪_ ⦃ NonemptyListUnion ⦄ (h ∷ l₀) l₁ = h ∷ (l₀ ∪ l₁)
 ⟵ (∪-valid ⦃ NonemptyListUnion ⦄ {x}{h ∷ l₀}{l₁}) (∨right q) =
   x ∈⦅ h ∷ ⟵ (∪-valid {S₀ = l₀}) $ ∨right q ⦆
 
-open import Proposition.Identity hiding (refl)
+open import Type.Identity
 
 NonemptyListDecidable∈ {x = x} {[ x₁ ]} =
   dif x == x₁
-    then (λ p → true (Id.coe (ap (λ — → x ∈ [ — ]) p) $ ∈[ x ]))
+    then (λ {(Id.refl x) → true ∈[ x ]})
     else λ ¬p → false λ { ∈[ x ] → ¬p (Id.refl x)}
 NonemptyListDecidable∈ {x = x} {h ∷ l} with decide (x == h)
-NonemptyListDecidable∈ {x = x} {h ∷ l}
-  | true p = true (Id.coe (ap (λ — → x ∈ — ∷ l) p) (x ∈head l))
+NonemptyListDecidable∈ {x = x} {x ∷ l}
+  | true (Id.refl x) = true $ x ∈head l
 NonemptyListDecidable∈ {x = x} {h ∷ l}
   | false ¬p with NonemptyListDecidable∈ {x = x}{l}
 NonemptyListDecidable∈ {x = x} {h ∷ l}

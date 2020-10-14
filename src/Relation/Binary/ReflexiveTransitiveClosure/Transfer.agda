@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 open import Relation.Binary.Definition
 open import Relation.Binary.Property
 open import Relation.Binary.ReflexiveTransitiveClosure.Definition
@@ -12,7 +12,7 @@ module Relation.Binary.ReflexiveTransitiveClosure.Transfer
   ⦃ equiv : R ~ rtc single-step ⦄
   where
 
-open import Proposition.Function using (_$_)
+open import Function.Basic
 open import Function.Proof
 
 open import Relation.Binary.ReflexiveTransitiveClosure.Property
@@ -41,5 +41,5 @@ sym ⦃ InheritsSymmetricR ⦄ p = subrel $ sym $ subrel p
 rel-preserv ⦃ InheritsRelatingR ⦄ aRb = subrel $ rel-preserv $ subrel aRb
 
 Subrelation-rtcR-R : rtc R ⊆ R
-subrel ⦃ Subrelation-rtcR-R ⦄ p =
-  subrel $ subrel $ subrel {_P_ = rtc (rtc single-step)} p
+subrel⊆ Subrelation-rtcR-R p = subrel $ subrel ⦃ Subrelation-rtc2 ⦄ $ subrel p
+

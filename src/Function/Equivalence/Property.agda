@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Function.Equivalence.Property where
 
 open import Universes
@@ -11,7 +11,7 @@ open import Proof
   (p : f == g)
   → -----------------
   f ~ g
-==→~ (Idₚ.refl f) x = Het.refl (f x)
+==→~ (Id.refl f) x = Het.refl (f x)
 
 open import Relation.Binary.Property
   using (Reflexive; refl; Symmetric; sym; Transitive; trans)
