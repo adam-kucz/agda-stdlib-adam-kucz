@@ -39,14 +39,14 @@ trans ⦃ Transitive-rtc ⦄ (step s p) q = step s (trans p q)
 sym ⦃ InheritsSymmetric-rtc ⦄ (rfl a) = rfl a
 sym ⦃ InheritsSymmetric-rtc ⦄ (step aRb p) = step-right (sym p) (sym aRb)
 
-subrel ⦃ Subrelation-rtc ⦄ {x} {y} xRy = step xRy (refl y)
+subrel⊆ Subrelation-rtc {x} {y} xRy = step xRy (refl y)
 
-subrel ⦃ Subrelation-rtc2 ⦄ (rfl a) = refl a
-subrel ⦃ Subrelation-rtc2 ⦄ (step xR*z zR**y) =
+subrel⊆ Subrelation-rtc2 (rfl a) = refl a
+subrel⊆ Subrelation-rtc2 (step xR*z zR**y) =
   trans xR*z (subrel ⦃ Subrelation-rtc2 ⦄ zR**y)
 
-subrel ⦃ Subrelation-2-Subrelation-rtc ⦄ {x} {x} (rfl x) = refl x
-subrel ⦃ Subrelation-2-Subrelation-rtc ⦄ {x} {y} (step aRb bR*y) =
+subrel⊆ Subrelation-2-Subrelation-rtc {x} {x} (rfl x) = refl x
+subrel⊆ Subrelation-2-Subrelation-rtc {x} {y} (step aRb bR*y) =
   step (subrel aRb) (subrel bR*y)
 
 rel-preserv ⦃ Relating-rtc {f = f} ⦄ (rfl a) = rfl (f a)
@@ -60,6 +60,6 @@ subrel-rtc-to-rtc-subrel-rtc :
   refl-trans-close P ⊆ refl-trans-close R
 subrel-rtc-to-rtc-subrel-rtc {R = _R_} {P = _P_} = go
   where go : refl-trans-close _P_ ⊆ refl-trans-close _R_
-        subrel ⦃ go ⦄ (rfl a) = refl a
-        subrel ⦃ go ⦄ (step {x} {b} {y} xPb bP*y) =
+        subrel⊆ go (rfl a) = refl a
+        subrel⊆ go (step {x} {b} {y} xPb bP*y) =
           trans (subrel xPb) (subrel ⦃ go ⦄ bP*y)

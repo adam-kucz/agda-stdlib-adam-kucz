@@ -150,8 +150,8 @@ reverse : (v : Vec X m) → Vec X m
 reverse [] = []
 reverse v@(_ ∷ _) = last v ∷ reverse (drop-last v)
 
-open import Type.Sum hiding (_,_)
+open import Type.Sum renaming (_,_ to _Σ,_)
 
 zip : (v₀ : Vec X m)(v₁ : Vec Y m) → Vec (X × Y) m
 zip [] [] = []
-zip (h₀ ∷ v₀) (h₁ ∷ v₁) = (h₀ Σ., h₁) ∷ zip v₀ v₁
+zip (h₀ ∷ v₀) (h₁ ∷ v₁) = (h₀ Σ, h₁) ∷ zip v₀ v₁

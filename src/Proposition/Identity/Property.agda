@@ -11,6 +11,6 @@ instance
   hom⊆het : (_==_ {X = X}) ⊆ Het._==_
   het⊆hom : Het._==_ ⊆ (_==_ {X = X})
 
-subrel ⦃ hom⊆het ⦄ (Idₚ.refl x) = Het.refl x
-subrel ⦃ het⊆hom ⦄ (Het.refl x) = Idₚ.refl x
+subrel⊆ hom⊆het (Idₚ.refl x) = Het.refl x
+subrel⊆ het⊆hom (Het.refl x) = Idₚ.refl x
 

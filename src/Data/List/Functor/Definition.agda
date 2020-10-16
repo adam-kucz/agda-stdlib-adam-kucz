@@ -41,8 +41,8 @@ fmap-L++ f [] l' = refl (f <$> l')
 fmap-L++ f (h ∷ l) l' = ap (f h ∷_) (fmap-L++ f l l')
 
 open import Type.Sum
-  renaming (_×_ to _x_)
-  using (pr₁; pr₂; _,_; [_×_]; Σ-assoc)
+  renaming (_×_ to _x_; 〈_×_〉 to [_×_])
+  using (pr₁; pr₂; _,_; Σ-assoc)
 
 private
   _L⋆_ : (u : List X)(v : List Y) → List (X x Y)

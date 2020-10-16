@@ -99,12 +99,27 @@ open Minimal ⦃ … ⦄ public
 open import Proposition.Decidable.Definition using (Decidable)
 
 infix 21 _⊆_
-record _⊆_ {X : 𝒰 ˙} {Y : 𝒱 ˙} (_R_ : Rel 𝒲 X Y) (_P_ : Rel 𝒯 X Y) : 𝒰 ⊔ 𝒱 ⊔ 𝒲 ⊔ 𝒯 ᵖ
+record _⊆_ {X : 𝒰 ˙}{Y : 𝒱 ˙}(sub : Rel 𝒲 X Y)(sup : Rel 𝒯 X Y)
+  : 𝒰 ⊔ 𝒱 ⊔ 𝒲 ⊔ 𝒯 ᵖ
   where
+  private
+    _R_ = sub
+    _P_ = sup
   field
-    subrel : ∀ {x} {y} (xRy : x R y) → x P y
+    subrel⊆ : ∀ {x} {y} (xRy : x R y) → x P y
 
-open _⊆_ ⦃ … ⦄ public
+open _⊆_ public
+
+subrel :
+  {sup : Rel 𝒰 X Y}
+  {sub : Rel 𝒱 X Y}
+  ⦃ sub-⊆-sup : sub ⊆ sup ⦄
+  → let _R_ = sub; _P_ = sup in
+  ∀{x y}
+  (p : x R y)
+  → ----------------------------------------
+  x P y
+subrel ⦃ sub-⊆-sup ⦄ = subrel⊆ sub-⊆-sup
 
 instance
   Reflexive⊆ : Reflexive (_⊆_ {𝒲 = 𝒰}{X = X}{Y})
@@ -112,8 +127,8 @@ instance
 
 open import Proposition.Function using (_$_; _∘_; id)
 
-subrel ⦃ refl ⦃ Reflexive⊆ ⦄ R ⦄ = id
-subrel ⦃ trans ⦃ Transitive⊆ ⦄ P⊆Q Q⊆R ⦄ = subrel ∘ subrel
+subrel⊆ (refl ⦃ Reflexive⊆ ⦄ R) = id
+subrel⊆ (trans ⦃ Transitive⊆ ⦄ P⊆Q Q⊆R) = subrel ∘ subrel
   where instance
           _ = P⊆Q
           _ = Q⊆R
@@ -150,8 +165,8 @@ open import Logic.Iff.Definition
   → --------------------------------
   _P_ ⊆ _R_
 
-subrel ⦃ ↔-→-⊆ equiv ⦄ = ⟶ equiv
-subrel ⦃ ↔-→-⊇ equiv ⦄ = ⟵ equiv
+subrel⊆ (↔-→-⊆ equiv) = ⟶ equiv
+subrel⊆ (↔-→-⊇ equiv) = ⟵ equiv
 
 instance
   Reflexive~ : Reflexive (_~_ {𝒲 = 𝒰}{X = X}{Y})

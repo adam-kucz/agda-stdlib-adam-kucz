@@ -18,6 +18,8 @@ record FormGroup {X : 𝒰 ˙} (_∙_ : Op X) (e : X) (_⁻¹ : (x : X) → X) :
     ⦃ inverse ⦄ : Inverse _⁻¹ _∙_ ⦃ FormMonoid.unit form-monoid ⦄
 
 record Group (X : 𝒰 ˙) : 𝒰 ˙ where
+  infixl 148 _⁻¹
+  infixl 130 _∙_
   field
     _∙_ : Op X
     e : X

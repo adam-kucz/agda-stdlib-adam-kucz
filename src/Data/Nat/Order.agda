@@ -115,7 +115,7 @@ total ⦃ Connex≤ ⦄ (x +1) (y +1) = ∨[ s≤s ⸴ s≤s ] (total x y)
 
 UniversalPrefix.prefix Prefix-pred-≤ zero = refl 0
 UniversalPrefix.prefix Prefix-pred-≤ (x +1) =
-  subrel {_R_ = _rtc-≤_} $ subrel {_R_ = suc_==_} $ Id.refl (x +1)
+  subrel {sub = _rtc-≤_} $ subrel {sub = suc_==_} $ Id.refl (x +1)
 
 rel-preserv ⦃ Relating-pred-≤ ⦄ {zero} {zero} rab = refl 0
 rel-preserv ⦃ Relating-pred-≤ ⦄ {zero} {b +1} rab = z≤ b

@@ -57,3 +57,18 @@ to-list ⦃ VecListable ⦄ (h ∷ S) = h ∷ to-list S
 vec-to-list-len : (v : Vec X m) → len (to-list v) == m
 vec-to-list-len [] = Id.refl 0
 vec-to-list-len (h ∷ v) = ap suc (vec-to-list-len v)
+
+open import Proposition.Decidable
+
+instance
+  DecidableVec∈ : ⦃ d : HasDecidableIdentity X ⦄
+    → -------------------------------------------
+    ∀{n}{x : X}{v : Vec X n} → Decidable (x ∈ v)
+
+DecidableVec∈ {v = []} = false λ ()
+DecidableVec∈ {x = x}{h ∷ v} with decide (x == h)
+... | true p = true (Id.coe (ap (_∈ h ∷ v) $ sym p) $ x∈x∷ v)
+... | false ¬p with DecidableVec∈ {x = x}{v}
+... | true p = true (x∈tail h p)
+... | false ¬p' = false λ { (x∈x∷ v) → ¬p $ Id.refl x
+                          ; (x∈tail x p') → ¬p' p'}

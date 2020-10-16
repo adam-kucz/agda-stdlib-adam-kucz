@@ -41,5 +41,5 @@ sym ⦃ InheritsSymmetricR ⦄ p = subrel $ sym $ subrel p
 rel-preserv ⦃ InheritsRelatingR ⦄ aRb = subrel $ rel-preserv $ subrel aRb
 
 Subrelation-rtcR-R : rtc R ⊆ R
-subrel ⦃ Subrelation-rtcR-R ⦄ p =
-  subrel $ subrel $ subrel {_P_ = rtc (rtc single-step)} p
+subrel⊆ Subrelation-rtcR-R p =
+  subrel $ subrel $ subrel {sup = rtc (rtc single-step)} p
