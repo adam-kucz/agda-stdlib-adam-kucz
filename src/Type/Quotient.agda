@@ -2,3 +2,4 @@
 module Type.Quotient where
 
 open import Type.Quotient.Class public
+

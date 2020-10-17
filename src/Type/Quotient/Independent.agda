@@ -22,7 +22,7 @@ module Quotient (X : 𝒰 ˙) (_≈_ : Rel 𝒱 X X) ⦃ _ : Equivalence _≈_ �
   class-of x = (x ≈_) , (x , λ x' → refl (x ≈ x'))
 
   class-def : ∀ {x y} (p : class-of x == class-of y) → x ≈ y
-  class-def {x} {y} p = sym $ ⟶ (==→↔ $ ==→~ (from-Σₚ== p) x) $ refl x
+  class-def {x} {y} p = sym $ ⟶ (==→↔ $ ==→~ (from-Σₚ== p) x) $ refl {R = _≈_} x
 
   eq : ∀ {x y} (p : x ≈ y) → class-of x == class-of y
   eq {x} {y} p = Σₚ== $ fun-ext λ z → prop-ext $ equiv z
@@ -36,7 +36,7 @@ module Quotient (X : 𝒰 ˙) (_≈_ : Rel 𝒱 X X) ⦃ _ : Equivalence _≈_ �
     (t : Type)
     → ----------------------------------------
     𝐴 t
-  elim 𝐴 f t@(p , (x , q)) = Id.subst 𝐴 (strong-sym h) (f x)
+  elim 𝐴 f t@(p , (x , q)) = Id.subst 𝐴 (isym h) (f x)
     where h : t == class-of x
           h = Σₚ== (fun-ext q)
 

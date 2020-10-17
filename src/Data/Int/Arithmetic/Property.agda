@@ -3,77 +3,61 @@ module Data.Int.Arithmetic.Property where
 
 open import Data.Int.Definition
 open import Data.Int.Syntax
-open Pattern
 open import Data.Int.Arithmetic.Definition
-import Data.Nat as ℕ
 
+open import Type.Sum hiding (_,_)
+import Data.Nat as ℕ
+open ℕ using (ℕ; m; n)
 open import Operation.Binary.Property
 
-instance
-  Associativeℤ+ : Associative _+_
-  LeftUnitℤ0+ : 0 IsLeftUnitOf _+_
-  RightUnitℤ0+ : 0 IsRightUnitOf _+_
+private
+  instance
+    Associative+ℕ×ℕ : Associative _+ℕ×ℕ_
+    Commutative+ℕ×ℕ : Commutative _+ℕ×ℕ_
+    LeftUnit[0,0]+ℕ×ℕ : (0 ℤ, 0) IsLeftUnitOf _+ℕ×ℕ_
+    RightUnit[0,0]+ℕ×ℕ : (0 ℤ, 0) IsRightUnitOf _+ℕ×ℕ_
 
 open import Proof
 
-left-unit ⦃ LeftUnitℤ0+ ⦄ (nneg n) = Id.refl (nneg n)
-left-unit ⦃ LeftUnitℤ0+ ⦄ -[ n +1] = Id.refl -[ n +1]
-right-unit ⦃ RightUnitℤ0+ ⦄ (nneg n) = ap nneg $ right-unit n
-right-unit ⦃ RightUnitℤ0+ ⦄ -[ n +1] = Id.refl (-[ n +1])
+assoc ⦃ Associative+ℕ×ℕ ⦄ (m₀ ℤ, m₁)(n₀ ℤ, n₁)(k₀ ℤ, k₁) =
+  ap2 _ℤ,_ (assoc m₀ n₀ k₀) (assoc m₁ n₁ k₁)
+left-unit ⦃ LeftUnit[0,0]+ℕ×ℕ ⦄ (m₀ ℤ, m₁) =
+  ap2 _ℤ,_ (left-unit m₀) (left-unit m₁)
+right-unit ⦃ RightUnit[0,0]+ℕ×ℕ ⦄ (m₀ ℤ, m₁) =
+  ap2 _ℤ,_ (right-unit m₀) (right-unit m₁)
+comm ⦃ Commutative+ℕ×ℕ ⦄ (m₀ ℤ, m₁)(n₀ ℤ, n₁) = 
+  ap2 _ℤ,_ (comm m₀ n₀) (comm m₁ n₁)
 
-+-suc : (x y : ℤ) → x + (y + 1) == x + y + 1
-+-suc (nneg m) (nneg n) = ap nneg $ assoc m n 1
-+-suc zero -[ n +1] = left-unit (-[ n +1] + 1)
-+-suc (m +1) -one = ap nneg (
-  proof ℕ.suc (m ℕ.+ 0)
-    === ℕ.suc m :by: ap ℕ.suc (right-unit m) [: _==_ ]
-    === m ℕ.+ 1 :by: comm 1 m
+open import Type.Quotient
+
+open Property checked-+ hiding (LeftInverse⊙; RightInverse⊙) public
+
+instance
+  LeftInverse+ℕ×ℕ : LeftInverse -_ _+_
+  RightInverse+ℕ×ℕ : RightInverse -_ _+_
+
+open import Proposition.Sum
+open import Data.Nat.Arithmetic.Subtraction.Unsafe
+  renaming (_-_ to _ℕ-_)
+
+private instance _ = ℤ-impl
+
+left-inverse ⦃ LeftInverse+ℕ×ℕ ⦄ (m ℤ, n , _) = Σₚ== (
+  proof class-of (n ℕ.+ m ℤ, m ℕ.+ n)
+    === n ℕ.+ m ℕ- (m ℕ.+ n) ℤ, 0
+      :by: ℤ-class-nneg p
+    === 0 ℤ, 0
+      :by: ap (_ℤ, 0){r = _==_}{a = n ℕ.+ m ℕ- (m ℕ.+ n)} (
+        proof n ℕ.+ m ℕ- (m ℕ.+ n)
+          === n ℕ.+ m ℕ- (n ℕ.+ m) :by: ap (n ℕ.+ m ℕ-_) $ comm m n
+          === 0                    :by: (n ℕ.+ m) -self==0
+        qed)
   qed)
-+-suc (m +1) -[ n +2] = {!+-suc (nneg m) -[ n +1]!}
-+-suc -[ m +1] (nneg n) = {!!}
-+-suc -[ m +1] -[ n +1] = {!!}
-
-suc-+ : (x y : ℤ) → (x + 1) + y == x + y + 1
-suc-+ (nneg m)(nneg n) = ap nneg $ swap' m 1 n 
-suc-+ zero -one = refl 0
-suc-+ zero -[ n +2] = refl -[ n +1]
-suc-+ (m +1) -one = refl (nneg (m ℕ.+ 1))
-suc-+ (m +1) -[ n +2] = suc-+ (nneg m) -[ n +1]
-suc-+ -one zero = refl 0
-suc-+ -one (n +1) = ap nneg $ comm 1 n
-suc-+ -one -[ n +1] = refl -[ n +1]
-suc-+ -[ m +2] zero = refl -[ m +1]
-suc-+ -[ m +2] (n +1) = {!suc-+ -[ m +1] (nneg n)!}
-suc-+ -[ m +2] -[ n +1] = refl -[ m ℕ.+ n +2]
-
-assoc ⦃ Associativeℤ+ ⦄ (nneg m)(nneg n)(nneg k) = ap nneg $ assoc m n k
-Associative.assoc Associativeℤ+ (nneg m) zero -[ k +1] = 
-  ap (λ — → nneg — + -[ k +1]) $ sym $ right-unit m
-Associative.assoc Associativeℤ+ (nneg m) (n +1) -one =
-  proof nneg (m ℕ.+ n)
-    === nneg (m ℕ.+ n ℕ.+1) + -one
-      :by: Id.refl _
-    === nneg (m ℕ.+ ℕ.suc n) + -one
-      :by: ap (λ — → nneg — + -one) $ sym $ ℕ.+-suc m n
+  where p : m ℕ.+ n ℕ.≤ n ℕ.+ m
+        p = Id.coe (ap (m ℕ.+ n ℕ.≤_) $ comm m n) $
+            refl {R = ℕ._≤_} (m ℕ.+ n)
+right-inverse ⦃ RightInverse+ℕ×ℕ ⦄ x =
+  proof x + - x
+    === - x + x          :by: comm x (- x)
+    === as-quot (0 ℤ, 0) :by: left-inverse x
   qed
-Associative.assoc Associativeℤ+ (nneg m) (n +1) -[ k +2] =
-  proof nneg m + (nneg n + -[ k +1])
-    === nneg (m ℕ.+ n) + -[ k +1]
-      :by: assoc (nneg m)(nneg n) -[ k +1]
-    === nneg (m ℕ.+ n ℕ.+1) + -[ k +2]
-      :by: Id.refl _
-    === nneg (m ℕ.+ ℕ.suc n) + -[ k +2]
-      :by: ap (λ — → nneg — + -[ k +2]) $ sym $ ℕ.+-suc m n
-  qed
-Associative.assoc Associativeℤ+ zero -[ n +1] z = left-unit (-[ n +1] + z)
-Associative.assoc Associativeℤ+ (m +1) -one zero =
-  ap nneg $ sym $ right-unit m
-Associative.assoc Associativeℤ+ (m +1) -one (k +1) =
-  ap nneg $ sym $ ℕ.+-suc m k
-Associative.assoc Associativeℤ+ (m +1) -one -[ k +1] =
-  Id.refl (nneg m + -[ k +1])
-Associative.assoc Associativeℤ+ (m +1) -[ n +2] zero =
-  sym $ right-unit (nneg m + -[ n +1])
-Associative.assoc Associativeℤ+ (m +1) -[ n +2] (k +1) = {!!}
-Associative.assoc Associativeℤ+ (m +1) -[ n +2] -[ k +1] = {!!}
-Associative.assoc Associativeℤ+ -[ x +1] y z = {!!}

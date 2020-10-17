@@ -22,9 +22,9 @@ unsafe-is-safe {m +1}{n +1} p = unsafe-is-safe {m} $ ap pred p
 open import Function hiding (_$_)
 open import Data.Nat.Arithmetic.Definition
 
-_-self== : ∀ m → m - m == 0
-0 -self== = Id.refl zero
-(m +1) -self== = m -self==
+_-self==0 : ∀ m → m - m == 0
+0 -self==0 = Id.refl zero
+(m +1) -self==0 = m -self==0
 
 open import Function.Proof
 open import Operation.Binary hiding (LeftInverse)
@@ -42,10 +42,10 @@ left-zero ⦃ LeftZeroOf- ⦄ (y +1) = Id.refl 0
 right-unit ⦃ RightUnitOf- ⦄ = Id.refl
 
 open import Data.Nat.Arithmetic.Property
-left-inv ⦃ LeftInverseUnsafeSub {m} ⦄ zero = subrel $ m -self==
+left-inv ⦃ LeftInverseUnsafeSub {m} ⦄ zero = subrel $ m -self==0
 left-inv ⦃ LeftInverseUnsafeSub {0} ⦄ (n +1) = subrel $ right-unit (n +1)
 left-inv ⦃ LeftInverseUnsafeSub {m +1} ⦄ (n +1) =
-  subrel {_R_ = _==_}{_P_ = Het._==_} (
+  subrel {sub = _==_} (
   proof n + (m +1) - m
     === (n +1) + m - m
       :by: ap (_- m) $ +-suc n m

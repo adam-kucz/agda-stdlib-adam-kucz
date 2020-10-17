@@ -90,40 +90,38 @@ record QuotBinOp
   _⊙_ : ClosedOp (QuotientType quot)
   (x , _) ⊙ (y , _) = as-quot ⦃ quot ⦄ (x ∙ y)
 
-open QuotBinOp ⦃ … ⦄ public using (_⊙_)
-
 module Property
   {quot : X / _~_}
   {_∙_ : ClosedOp X}
-  ⦃ q-op : QuotBinOp quot _∙_ ⦄
+  (q-op : QuotBinOp quot _∙_)
   where
   private
-    instance _ = quot
+    instance quotient = quot
     open QuotientRelationProperty quot
-    open QuotBinOp ⦃ … ⦄ hiding (_⊙_)
-    open TransMakeComposable _~_
+    open QuotBinOp q-op
+    open MakeTransComposable _~_
 
   instance
     Commutative⊙ : ⦃ _ : Commutative _∙_ ⦄ → Commutative _⊙_
     Associative⊙ : ⦃ _ : Associative _∙_ ⦄ → Associative _⊙_
     Idempotent⊙ : ⦃ _ : Op.Idempotent _∙_ ⦄ → Op.Idempotent _⊙_
   
-  assoc ⦃ Associative⊙ ⦄
-    (x , _) (y , _) (z , _) =
+  assoc ⦃ Associative⊙ ⦄ (x , _) (y , _) (z , _) =
     Σₚ== $
-    ⟵ class-def (
+    ⟵ (class-def ⦃ quotient ⦄) (
       proof x ∙ class-of (y ∙ z)
         〉 _~_ 〉 x ∙ (y ∙ z)
           :by: preserv (refl x) $ ⟶ class-def $ idemp (y ∙ z)
         〉 _==_ 〉 (x ∙ y) ∙ z
           :by: assoc x y z
         〉 _~_ 〉 class-of (x ∙ y) ∙ z
-          :by: preserv (⟶ class-def $ sym $ idemp (x ∙ y)) (refl z)
+          :by: preserv (⟶ class-def $ sym $ idemp (x ∙ y)) $
+               refl ⦃ refl-quot ⦄ z
       qed)
   
   comm ⦃ Commutative⊙ ⦄ (x , _)(y , _) =
     Σₚ== $
-    ⟵ class-def (
+    ⟵ (class-def ⦃ quotient ⦄) (
       proof x ∙ y
         〉 _~_ 〉 x ∙ y  :by: refl (x ∙ y)
         〉 _==_ 〉 y ∙ x :by: comm x y
@@ -185,7 +183,7 @@ module Property
 
   left-zero ⦃ LeftZero⊙ {zero} ⦄ (y , p) =
     Σₚ== $
-    ⟵ class-def (
+    ⟵ (class-def ⦃ quotient ⦄)  (
       proof class-of zero ∙ y
         〉 _~_ 〉 zero ∙ y
           :by: preserv (⟶ class-def $ idemp zero) (refl y)
@@ -195,10 +193,43 @@ module Property
 
   right-zero ⦃ RightZero⊙ {zero} ⦄ (y , p) =
     Σₚ== $
-    ⟵ class-def (
+    ⟵ (class-def ⦃ quotient ⦄) (
       proof y ∙ class-of zero
         〉 _~_ 〉 y ∙ zero
           :by: preserv (refl y) $ ⟶ class-def $ idemp zero
         〉 _==_ 〉 zero
           :by: right-zero y
       qed)
+
+  instance
+    LeftInverse⊙ :
+      {e : X}
+      ⦃ _ : e IsUnitOf _∙_ ⦄
+      {_⁻¹ : (x : X) → X}
+      ⦃ _ : Op.LeftInverse _⁻¹ _∙_ ⦄
+      → -------------------------------------
+      Op.LeftInverse (as-quot ∘ _⁻¹ ∘ elem) _⊙_
+    RightInverse⊙ :
+      {e : X}
+      ⦃ _ : e IsUnitOf _∙_ ⦄
+      {_⁻¹ : (x : X) → X}
+      ⦃ _ : Op.RightInverse _⁻¹ _∙_ ⦄
+      → -------------------------------------
+      Op.RightInverse (as-quot ∘ _⁻¹ ∘ elem) _⊙_
+
+  left-inverse ⦃ LeftInverse⊙ {e = e}{_⁻¹} ⦄ (x , px) = Σₚ== $
+    ⟵ (class-def ⦃ quotient ⦄) (
+          proof class-of (x ⁻¹) ∙ x
+            〉 _~_ 〉 (x ⁻¹) ∙ x
+              :by: preserv (⟶ class-def $ idemp (x ⁻¹)) (refl x)
+            === e
+              :by: left-inverse x
+          qed)
+  right-inverse ⦃ RightInverse⊙ {e = e}{_⁻¹} ⦄ (x , px) = Σₚ== $
+    ⟵ (class-def ⦃ quotient ⦄) (
+          proof x ∙ class-of (x ⁻¹)
+            〉 _~_ 〉 x ∙ (x ⁻¹)
+              :by: preserv (refl x) $ ⟶ class-def $ idemp (x ⁻¹)
+            === e
+              :by: right-inverse x
+          qed)

@@ -23,22 +23,6 @@ instance
   Negativeℤ : Negative 𝒰₀ ℤ
 
 Nat.Constraint Natℤ _ = ⊤
-Nat.fromℕ Natℤ n = nneg n
+Nat.fromℕ Natℤ n = to-int (n ℤ, 0)
 Negative.Constraint Negativeℤ _ = ⊤
-Negative.fromNeg Negativeℤ 0 = 0
-Negative.fromNeg Negativeℤ (suc n) = -[ n +1]
-
-module Pattern where
-  infixl 130 _+1 _+2 _+3
-  pattern _+1 n = nneg (suc n)
-  pattern _+2 n = (suc n) +1
-  pattern _+3 n = (suc n) +2
-  pattern -[_+2] n = -[ suc n +1]
-  pattern -[_+3] n = -[ suc n +2]
-  pattern zero = nneg 0
-  pattern one = 0 +1
-  pattern two = 0 +2
-  pattern three = 0 +3
-  pattern -one = -[ 0 +1]
-  pattern -two = -[ 0 +2]
-  pattern -three = -[ 0 +3]
+Negative.fromNeg Negativeℤ n = to-int (0 ℤ, n)
