@@ -20,7 +20,7 @@ fmap ⦃ MaybeFunctor ⦄ f (just x) = just (f x)
 fmap-id ⦃ MaybeFunctor ⦄ = subrel $ fun-ext λ
   { nothing → refl nothing
   ; (just x) → refl (just x) }
-fmap-∘ ⦃ MaybeFunctor ⦄ f g = subrel {_P_ = _==_} $ fun-ext λ
+fmap-∘ ⦃ MaybeFunctor ⦄ f g = subrel {sup = _==_} $ fun-ext λ
   { nothing → refl nothing
   ; (just x) → refl (just (f (g x)))}
 

@@ -25,7 +25,7 @@ fmap-id ⦃ BinaryTreeFunctor ⦄ = subrel $ fun-ext go
   where go : map (𝑖𝑑 X) ~ id
         go (leaf x) = Het.refl (leaf x)
         go (l /\ r) = ap2 _/\_ (go l) (go r)  
-fmap-∘ ⦃ BinaryTreeFunctor ⦄ g f = subrel {_P_ = _==_} $ fun-ext go
+fmap-∘ ⦃ BinaryTreeFunctor ⦄ g f = subrel {sup = _==_} $ fun-ext go
   where go : map (g ∘ f) ~ map g ∘ map f
         go (leaf x) = Het.refl (leaf (g (f x)))
         go (l /\ r) = ap2 _/\_ (go l) (go r)  
@@ -94,7 +94,7 @@ unit2 ⦃ BinaryTreeMonad ⦄ = subrel $ fun-ext go
   where go : {X : 𝒰 ˙} → t-join {X = X} ∘ pure ~ id
         go (leaf x) = Het.refl (leaf x)
         go (l /\ r) = ap2 _/\_ (go l) (go r)
-mon-naturality ⦃ BinaryTreeMonad ⦄ f = subrel {_P_ = _==_} $ fun-ext go
+mon-naturality ⦃ BinaryTreeMonad ⦄ f = subrel {sup = _==_} $ fun-ext go
   where go : t-join ∘ fmap (fmap f) ~ fmap f ∘ t-join
         go (leaf x) = Het.refl (fmap f x)
         go (l /\ r) = ap2 _/\_ (go l) (go r)

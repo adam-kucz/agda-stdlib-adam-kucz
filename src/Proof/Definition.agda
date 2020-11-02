@@ -220,3 +220,6 @@ inspect x = x with== Het.refl x
 
 from-instance : ⦃ p : 𝑋 ⦄ → 𝑋
 from-instance ⦃ p ⦄ = p
+
+case_of_ : (p : 𝑋)(f : 𝑋 → 𝑌) → 𝑌
+case p of f = f p

@@ -58,7 +58,7 @@ cap-n-zero==zero {n} =
     === toFinℕ (min n 0) _
       :by: Id.refl (cap n zero)
     === toFinℕ zero (ap suc $ z≤ n)
-      :by: subrel {_P_ = _==_} $
+      :by: subrel {sup = _==_} $
            toFinℕ== (right-zero {_∙_ = min} n)(Id.refl (n +1))_ 
     === zero
       :by: Id.refl zero

@@ -32,8 +32,6 @@ open import Operation.Binary hiding (LeftInverse)
 instance
   LeftZeroOf- : 0 IsLeftZeroOf _-_
   RightUnitOf- : 0 IsRightUnitOf _-_
-  RelatingUnsafeSub-≤-≤ : Relating (_- m) _≤_ _≤_
-  -- RelatingUnsafeSub-≤-≥ : Relating (m -_) _≤_ _≥_
   LeftInverseUnsafeSub : LeftInverse (_+ m) (_- m)
 
 left-zero ⦃ LeftZeroOf- ⦄ zero = Id.refl 0
@@ -52,15 +50,6 @@ left-inv ⦃ LeftInverseUnsafeSub {m +1} ⦄ (n +1) =
     === n +1
       :by: subrel $ left-inv ⦃ LeftInverseUnsafeSub {m} ⦄ (n +1)
   qed)
-
-rel-preserv ⦃ RelatingUnsafeSub-≤-≤ {n} ⦄ (z≤ m) =
-  proof 0 - n
-    === 0        :by: left-zero n [: _==_ ]
-    〉 _≤_ 〉 m - n :by: z≤ (m - n)
-  qed
-rel-preserv ⦃ RelatingUnsafeSub-≤-≤ {zero} ⦄ q@(s≤s _) = q
-rel-preserv ⦃ RelatingUnsafeSub-≤-≤ {k +1} ⦄ (s≤s {n} {m} n≤m) =
-  rel-preserv ⦃ RelatingUnsafeSub-≤-≤ {k} ⦄ n≤m
 
 -suc : ∀ a b →
   a - suc b == a - b - 1
@@ -93,3 +82,51 @@ unsafe-prop-from-safe :
   𝐴 (n - m)
 unsafe-prop-from-safe 𝐴 p q =
   Id.coe (ap 𝐴 $ sym $ unsafe-is-safe p) q
+
+-+ : ∀ m n k → m - (n + k) == m - n - k
+-+ m 0 k = refl (m - k)
+-+ 0 (n +1) k = sym $ left-zero k
+-+ (m +1) (n +1) k = -+ m n k
+
+*- : ∀ m n k → m * (n - k) == m * n - m * k
+*- m n 0 = proof m * n
+             === m * n - 0     :by: refl (m * n)
+             === m * n - m * 0 :by: ap (m * n -_) $ sym $ right-zero m
+           qed
+*- m 0 (k +1) = proof m * 0
+                  === 0                  :by: right-zero m
+                  === 0 - m * (k +1)     :by: sym $ left-zero (m * (k +1))
+                  === m * 0 - m * (k +1)
+                    :by: ap (_- m * (k +1)) $ sym $ right-zero m
+                qed
+*- m (n +1) (k +1) =
+  proof m * (n - k)
+    === m * n - m * k           :by: *- m n k
+    === m * n + m - m - m * k
+      :by: ap (_- m * k) $ sym $ subrel $ left-inverse-of (_+ m) (m * n)
+    === m + m * n - m - m * k   :by: ap (λ — → — - m - m * k) $ comm (m * n) m
+    === m + m * n - (m + m * k) :by: sym $ -+ (m + m * n) m (m * k)
+    === m * (n +1) - m * (k +1) :by: sym $ ap2 _-_ (*-suc m n) (*-suc m k)
+  qed
+
+double- : ∀ m n k (p : k ≤ n) → m - (n - k) == m + k - n
+double- m n 0 p = ap (_- n) $ sym $ right-unit m
+double- m (n +1) (k +1) p =
+  proof m - (n - k)
+    === m + k - n           :by: double- m n k (ap pred p)
+    === m + (k +1) - (n +1) :by: ap (_- (n +1)) $ sym $ +-suc m k
+  qed
+
+instance
+  RelatingUnsafeSub-≤-≤ : Relating (_- m) _≤_ _≤_
+  -- RelatingUnsafeSub-≤-≥ : Relating (m -_) _≤_ _≥_
+
+rel-preserv ⦃ RelatingUnsafeSub-≤-≤ {n} ⦄ (z≤ m) =
+  proof 0 - n
+    === 0        :by: left-zero n [: _==_ ]
+    〉 _≤_ 〉 m - n :by: z≤ (m - n)
+  qed
+rel-preserv ⦃ RelatingUnsafeSub-≤-≤ {zero} ⦄ q@(s≤s _) = q
+rel-preserv ⦃ RelatingUnsafeSub-≤-≤ {k +1} ⦄ (s≤s {n} {m} n≤m) =
+  rel-preserv ⦃ RelatingUnsafeSub-≤-≤ {k} ⦄ n≤m
+

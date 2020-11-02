@@ -19,7 +19,7 @@ bijection-of-bijective :
 bijection-of-bijective f = record { forw = f; back = inv }
   where uniq : (y : codomain f) → ∃! λ x → f x == y
         uniq y with sur f y
-        uniq y | x , p = x , (p , λ x₁ p₁ → inj $ subrel {_R_ = _==_} (
+        uniq y | x , p = x , (p , λ x₁ p₁ → inj $ subrel {sub = _==_} (
           proof f x₁
             === y   :by: p₁
             === f x :by: sym p

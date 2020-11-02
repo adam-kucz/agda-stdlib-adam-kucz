@@ -9,6 +9,7 @@ _ᵖ : ∀ 𝒰 → Set (𝒰 ⁺)
 
 variable
   𝑋 𝑌 𝑍 𝑊 : 𝒰 ᵖ
+  𝐴 𝐵 : (x : X) → 𝒱 ᵖ
   
 record Lift𝒰ᵖ {𝒱} (X : 𝒰 ᵖ) : 𝒰 ⊔ 𝒱 ᵖ where
   constructor ↑prop
@@ -16,3 +17,8 @@ record Lift𝒰ᵖ {𝒱} (X : 𝒰 ᵖ) : 𝒰 ⊔ 𝒱 ᵖ where
     ↓prop : X
 
 open Lift𝒰ᵖ public
+
+instance
+  LiftInstance : ⦃ x : 𝑋 ⦄ → Lift𝒰ᵖ {𝒱 = 𝒱} 𝑋
+
+LiftInstance ⦃ x ⦄ = ↑prop x

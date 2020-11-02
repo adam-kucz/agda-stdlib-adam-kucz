@@ -11,7 +11,14 @@ open import Proof
   (p : f == g)
   → -----------------
   f ~ g
-==→~ (Idₚ.refl f) x = Het.refl (f x)
+==→~ (Id.refl f) x = Het.refl (f x)
+
+het==→~ :
+  {f g : Π A}
+  (p : f Het.== g)
+  → -----------------
+  f ~ g
+het==→~ (Het.refl f) x = Het.refl (f x)
 
 open import Relation.Binary.Property
   using (Reflexive; refl; Symmetric; sym; Transitive; trans)

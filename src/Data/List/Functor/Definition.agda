@@ -31,7 +31,7 @@ fmap-id ⦃ ListFunctor ⦄ = subrel $ fun-ext go
   where go : map (𝑖𝑑 X) ~ 𝑖𝑑 (List X)
         go [] = refl []
         go (h ∷ t) = ap (h ∷_) (go t)
-fmap-∘ ⦃ ListFunctor ⦄ g f = subrel {_P_ = _==_} $ fun-ext $ map-∘ g f
+fmap-∘ ⦃ ListFunctor ⦄ g f = subrel {sup = _==_} $ fun-ext $ map-∘ g f
 
 fmap-L++ : {X : 𝒰 ˙}{Y : 𝒱 ˙}
   (f : X → Y)(l l' : List X)
@@ -101,7 +101,7 @@ naturality ⦃ ListApplicative ⦄ f g (u₀ ∷ u) v =
             :by: sym {R = _==_} $ fmap-∘ [ f × g ] (u₀ ,_)
           === fmap ((f u₀ ,_) ∘ g)
             :by: ap fmap $
-                 subrel {_P_ = _==_} $
+                 subrel {sup = _==_} $
                  fun-ext (λ v' → refl (f u₀ , g v'))
           === fmap (f u₀ ,_) ∘ fmap g
             :by: fmap-∘ (f u₀ ,_) g 
@@ -160,11 +160,11 @@ right-identity ⦃ ListApplicative ⦄ u =
               :by: ap (_++ (fmap (h ,_) v L⋆ w)){r = _==_}(
                 proof fmap (Σ-assoc ∘ (h ,_)) (fmap (v₀ ,_) w)
                   === fmap (Σ-assoc ∘ (h ,_) ∘ (v₀ ,_)) w
-                    :by: subrel {_P_ = _==_} $
+                    :by: subrel {sup = _==_} $
                          ==→~ (sym {R = _==_} $ fmap-∘ (Σ-assoc ∘ (h ,_)) (v₀ ,_)) w
                   === fmap (h , v₀ ,_) w
                     :by: ap (λ — → fmap — w) $
-                         subrel {_P_ = _==_} $
+                         subrel {sup = _==_} $
                          fun-ext (λ x → refl (h , v₀ , x))
                 qed)
           qed
@@ -201,7 +201,7 @@ unit2 ⦃ ListMonad ⦄ = subrel $ fun-ext go
   where go : mconcat ∘ pure ~ id
         go [] = Het.refl []
         go (h ∷ t) = ap (h ∷_) (go t)
-mon-naturality ⦃ ListMonad ⦄ f = subrel {_P_ = _==_} $ fun-ext go
+mon-naturality ⦃ ListMonad ⦄ f = subrel {sup = _==_} $ fun-ext go
   where go : mconcat ∘ fmap (fmap f) ~ fmap f ∘ mconcat
         go [] = Het.refl []
         go ([] ∷ t) = go t

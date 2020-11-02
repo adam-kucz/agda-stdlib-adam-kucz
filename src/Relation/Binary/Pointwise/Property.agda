@@ -17,7 +17,7 @@ instance
     → -----------------------------------
     Pointwise {X = X} (λ {x}{x'} → R {x}{x'}) ⊆ Pointwise P
 
-subrel ⦃ Pointwise⊆Pointwise ⦄ xRy x = subrel (xRy x)
+subrel⊆ Pointwise⊆Pointwise xRy x = subrel (xRy x)
 
 {-
 open import Type.Finite

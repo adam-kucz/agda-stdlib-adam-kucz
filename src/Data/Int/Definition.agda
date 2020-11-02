@@ -41,14 +41,19 @@ open import Proof
 open import Function.Proof
 open import Operation.Binary hiding (left-inverse; right-inverse)
 
-ℤ-class-nneg : (p : n ≤ m) → ℤ-class (m , n) == (m - n , 0)
-ℤ-class-nneg (z≤ 0) = refl (0 , 0)
-ℤ-class-nneg (z≤ (m +1)) = refl (m +1 , 0)
-ℤ-class-nneg (s≤s p) = ℤ-class-nneg p
+ℤ-class-nneg : ∀{m n} → n ≤ m ↔ ℤ-class (m , n) == (m - n , 0)
+⟶ ℤ-class-nneg (z≤ 0) = refl (0 , 0)
+⟶ ℤ-class-nneg (z≤ (m +1)) = refl (m +1 , 0)
+⟶ ℤ-class-nneg (s≤s p) = ⟶ ℤ-class-nneg p
+⟵ (ℤ-class-nneg {0} {0}) (Id.refl (0 ℤ, 0)) = refl 0
+⟵ (ℤ-class-nneg {m +1} {0}) q = z≤ m +1
+⟵ (ℤ-class-nneg {m +1} {n +1}) q = ap suc $ ⟵ ℤ-class-nneg q
 
-ℤ-class-npos : (p : m ≤ n) → ℤ-class (m , n) == (0 , n - m)
-ℤ-class-npos (z≤ n) = refl (0 , n)
-ℤ-class-npos (s≤s p) = ℤ-class-npos p
+ℤ-class-npos : ∀{m n} → m ≤ n ↔ ℤ-class (m , n) == (0 , n - m)
+⟶ ℤ-class-npos (z≤ n) = refl (0 , n)
+⟶ ℤ-class-npos (s≤s p) = ⟶ ℤ-class-npos p
+⟵ (ℤ-class-npos {zero} {n}) q = z≤ n
+⟵ (ℤ-class-npos {m +1} {n +1}) q = ap suc $ ⟵ ℤ-class-npos q
 
 open import Proposition.Decidable
 
@@ -59,7 +64,8 @@ is-ℤ-class-fixpoint : ∀{x} →
   where prf : n == 0
         prf = proof n === pr₂ (m ℤ, n)           :by: refl n
                       === pr₂ (ℤ-class (m ℤ, n)) :by: ap pr₂ p
-                      === pr₂ (m - n ℤ, 0)       :by: ap pr₂ $ ℤ-class-nneg n≤m
+                      === pr₂ (m - n ℤ, 0)
+                        :by: ap pr₂ $ ⟶ ℤ-class-nneg n≤m
                       === 0                      :by: refl 0
               qed
 ... | false ¬n≤m = n ∧, ∨left $ ap (_ℤ, n) prf
@@ -68,7 +74,7 @@ is-ℤ-class-fixpoint : ∀{x} →
                 === pr₁ (m ℤ, n)           :by: refl m
                 === pr₁ (ℤ-class (m ℤ, n)) :by: ap pr₁ p
                 === 0
-                  :by: ap pr₁ $ ℤ-class-npos $ total-other ¬n≤m
+                  :by: ap pr₁ $ ⟶ ℤ-class-npos $ total-other ¬n≤m
               qed
 ⟵ is-ℤ-class-fixpoint (m ∧, ∨left (Id.refl (0 ℤ, m))) = refl (0 ℤ, m)
 ⟵ is-ℤ-class-fixpoint (0 ∧, ∨right (Idₚ.refl (0 ℤ, 0))) = refl (0 ℤ, 0)
@@ -83,11 +89,11 @@ is-ℤ-class-fixpoint : ∀{x} →
     === 0 , n₀ + m₁ - n₀
       :by: ap (λ — → (0 , — - n₀)) $ comm m₁ n₀
     === ℤ-class (n₀ , n₀ + m₁)
-      :by: sym $ ℤ-class-npos $ postfix (_+ m₁) n₀
+      :by: sym $ ⟶ ℤ-class-npos $ postfix (_+ m₁) n₀
   qed
 ⟶ (ℤ≈↔ℤ≈' {m₀ +1 , .(m₀ + n₁ +1)} {0 , n₁}) (Id.refl .(m₀ + n₁ +1)) =
   proof ℤ-class (m₀ +1 , m₀ + n₁ +1)
-    === 0 , m₀ + n₁ - m₀ :by: ℤ-class-npos $ s≤s (postfix (_+ n₁) m₀)
+    === 0 , m₀ + n₁ - m₀ :by: ⟶ ℤ-class-npos $ s≤s (postfix (_+ n₁) m₀)
     === 0 , n₁ + m₀ - m₀ :by: ap (λ — → 0 , — - m₀) $ comm m₀ n₁
     === 0 , n₁           :by: ap (0 ,_) $ subrel $ left-inverse-of (_+ m₀) n₁
   qed
