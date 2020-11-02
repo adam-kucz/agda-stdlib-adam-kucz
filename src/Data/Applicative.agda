@@ -1,10 +1,10 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Data.Applicative where
 
 open import Universes
 open import Type.Unit using (𝟙)
 open import Type.Sum
-open import Proposition.Identity
+open import Type.Identity
 open import Data.Functor
 open import Function
 

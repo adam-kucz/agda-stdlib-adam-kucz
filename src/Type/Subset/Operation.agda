@@ -1,9 +1,9 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Type.Subset.Operation where
 
 open import Type.Subset.Definition hiding (_∪_; ⋃_; _∩_; ⋂_)
 
-open import PropUniverses
+open import Universes
 open import Logic
 
 module General where
@@ -12,8 +12,8 @@ module General where
   
   infixl 105 _∪_
   _∪_ : (A : Subset 𝒰 X)(B : Subset 𝒱 Y) → Subset (𝒰 ⊔ 𝒱) (X + Y)
-  _∪_ {𝒱 = 𝒱} A B (inl x) = Lift𝒰ᵖ {𝒱 = 𝒱} (x ∈ A)
-  _∪_ {𝒰 = 𝒰} A B (inr y) = Lift𝒰ᵖ {𝒱 = 𝒰} (y ∈ B)
+  _∪_ {𝒱 = 𝒱} A B (inl x) = Lift𝒰 {𝒱 = 𝒱} (x ∈ A)
+  _∪_ {𝒰 = 𝒰} A B (inr y) = Lift𝒰 {𝒱 = 𝒰} (y ∈ B)
 
 module SamePowerset where
 
@@ -25,7 +25,7 @@ infixr 108 ⋃_
 ⋃_ : {X : 𝒰 ˙}(U : Subset 𝒱 (Subset 𝒲 X)) → Subset (𝒰 ⊔ 𝒱 ⊔ 𝒲 ⁺) X
 ⋃_ {𝒲 = 𝒲}{X = X} U x = ∃ λ (S : Subset 𝒲 X) → S ∈ U ∧ x ∈ S
 
-open import Proposition.Identity
+open import Type.Identity
 
 infixl 104 _∩_
 _∩_ : (A : Subset 𝒰 X)(B : Subset 𝒱 X) → Subset (𝒰 ⊔ 𝒱) X

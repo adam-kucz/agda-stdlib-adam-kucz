@@ -1,17 +1,15 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Structure.Semigroup.Function where
 
 open import Structure.Semigroup.Definition
 
-open import PropUniverses
+open import Universes
 
-open import Proposition.Identity hiding (refl)
 open import Data.NonemptyList
-open import Logic hiding (⊥-recursion)
+open import Logic
   
 module WithSemigroup {X : 𝒰 ˙}⦃ sem : Semigroup X ⦄ where
 
-  open import Proposition.Empty
   open import Proof
 
   semconcat : (l : NonemptyList X) → X

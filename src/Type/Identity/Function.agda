@@ -38,6 +38,14 @@ coe-eval :
   f (coe p x) Het.== f x
 coe-eval (refl _) x f = Het.refl (f x)
 
+coe-eval' :
+  {X : 𝒰 ˙}
+  (p : X == Y)
+  (x : X)
+  → ---------------
+  coe p x Het.== x
+coe-eval' (refl X) x = Het.refl x
+
 -- more general than Function.Proof.ap
 -- it doesn't require the two sides
 -- to be of the same type

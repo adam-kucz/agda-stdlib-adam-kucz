@@ -136,10 +136,10 @@ open import Function hiding (_$_)
 to-vec-to-list : to-vec ∘ (to-list {Col = Vec X m}) ~ id
 to-vec-to-list [] = refl []
 to-vec-to-list {X = X} (h ∷ v) =
-  Het.Id'.ap2 {K = λ m v → Vec X (m +1)}
-              (λ m (v : Vec X m) → h ∷ v)
-              (subrel $ vec-to-list-len v)
-              (to-vec-to-list v)
+  Het.ap2 {K = λ m v → Vec X (m +1)}
+          (λ m (v : Vec X m) → h ∷ v)
+          (subrel $ vec-to-list-len v)
+          (to-vec-to-list v)
 
 to-list-to-vec : to-list ∘ (to-vec {X = X}) ~ id
 to-list-to-vec [] = refl []

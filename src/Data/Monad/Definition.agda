@@ -1,9 +1,9 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Data.Monad.Definition where
 
 open import Universes
 open import Type.Sum
-open import Proposition.Identity
+open import Type.Identity
 open import Data.Functor
 open import Data.Applicative
 open import Function

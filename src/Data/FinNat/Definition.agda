@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Data.FinNat.Definition where
 
 open import Universes
@@ -18,7 +18,7 @@ instance
   Nat.fromℕ (NatFinℕ {suc n}) zero = zero
   Nat.fromℕ (NatFinℕ {suc n}) (suc m) = suc $ Nat.fromℕ (NatFinℕ {n}) m
 
-open import Logic using (⋆ₚ) public
+open import Logic using (⋆) public
 open N using (fromℕ) public
 
 toℕ : ∀ {n} → Finℕ n → ℕ

@@ -1,4 +1,4 @@
-{-# OPTIONS --exact-split --prop  #-}
+{-# OPTIONS --exact-split  #-}
 module Data.List.Functor.Property where
 
 open import Data.List.Functor.Definition

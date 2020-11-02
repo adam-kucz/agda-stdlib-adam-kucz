@@ -2,19 +2,11 @@
 module Type.Enumerable.Definition where
 
 open import Universes
+open import Type.Finite
 open import Data.List renaming ([_] to L[_])
 open import Data.Vec renaming ([_] to V[_])
 open import Collection
 open import Logic
-
-contains-all :
-  (X : 𝒰 ˙)
-  {Col : 𝒱 ˙}
-  (l : Col)
-  ⦃ col : Collection 𝒲 Col X ⦄
-  → ------------------------
-  𝒰 ⊔ 𝒲 ˙
-contains-all X l = ∀ (x : X) → x ∈ l
 
 is-enumerable : (X : 𝒰 ˙) → 𝒰 ˙
 is-enumerable X = ∃ λ (l : List X) → contains-all X l

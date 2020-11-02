@@ -42,12 +42,11 @@ _≠_ : {X Y : 𝒰 ˙}
   𝒰 ˙
 x ≠ y = ¬ x == y
 
-module Id' where
-  ap2 : ∀ {K : (x : X)(y : A x) → 𝒲 ˙}
-    (f : (x : X)(y : A x) → K x y)
-    {x x' y y'}
-    (p : x == x')
-    (q : y == y')
-    → -----------------
-    f x y == f x' y'
-  ap2 f (refl x) (refl y) = refl (f x y)
+ap2 : ∀ {K : (x : X)(y : A x) → 𝒲 ˙}
+  (f : (x : X)(y : A x) → K x y)
+  {x x' y y'}
+  (p : x == x')
+  (q : y == y')
+  → -----------------
+  f x y == f x' y'
+ap2 f (refl x) (refl y) = refl (f x y)

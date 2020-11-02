@@ -1,15 +1,15 @@
-{-# OPTIONS --exact-split --safe --prop #-}
+{-# OPTIONS --exact-split --safe #-}
 module Structure.Group where
 
 open import Structure.Semigroup
 open import Structure.Monoid
 
-open import PropUniverses
-open import Proposition.Identity using (_==_)
+open import Universes
+open import Type.Identity using (_==_)
 open import Operation.Binary
   renaming (ClosedOp to Op) hiding (Op)
 
-record FormGroup {X : 𝒰 ˙} (_∙_ : Op X) (e : X) (_⁻¹ : (x : X) → X) : 𝒰 ᵖ where
+record FormGroup {X : 𝒰 ˙} (_∙_ : Op X) (e : X) (_⁻¹ : (x : X) → X) : 𝒰 ˙ where
   -- TODO: figure out why this has no effect
   -- infixl 160 _⁻¹
   -- infixl 130 _∙_
@@ -18,6 +18,8 @@ record FormGroup {X : 𝒰 ˙} (_∙_ : Op X) (e : X) (_⁻¹ : (x : X) → X) :
     ⦃ inverse ⦄ : Inverse _⁻¹ _∙_ ⦃ FormMonoid.unit form-monoid ⦄
 
 record Group (X : 𝒰 ˙) : 𝒰 ˙ where
+  infixl 148 _⁻¹
+  infixl 130 _∙_
   field
     _∙_ : Op X
     e : X
